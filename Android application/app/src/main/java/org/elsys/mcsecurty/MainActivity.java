@@ -15,6 +15,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("First time rujsjijn", true);
+        if (isFirstRun)
+        {
+            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("First time run", false).apply();
+            Intent myIntent = new Intent(this,LoginRegisterActivity.class);
+            startActivity(myIntent);
+        }
+
         Button LocationButton =  findViewById(R.id.LocBtn);
         Button AlarmButton =  findViewById(R.id.AlarmBtn);
         LocationButton.setOnClickListener(this);
