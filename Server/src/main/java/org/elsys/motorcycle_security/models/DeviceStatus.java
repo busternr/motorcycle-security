@@ -2,20 +2,23 @@ package org.elsys.motorcycle_security.models;
 
 
 import javax.persistence.*;
-//Select * from DataTransmiter as dataTransmiter where dataTransmiter.deviceId == deviceId order by time
+
 @Entity
-public class DataTransmiter {
+public class DeviceStatus {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
-    @Column(name="Latitude")
+    @Column(name="isParked")
+    private boolean isParked;
+
+    @Column(name="Parked at Latitude")
     private long x;
 
-    @Column(name="Longitude")
+    @Column(name="Parked at Longitude")
     private long y;
 
-    @Column(name="Time")
-    private String time;
+    @Column(name="Timeout")
+    private long timeout;
 
     @Column(name="Deviceid")
     private long deviceid;
@@ -26,6 +29,14 @@ public class DataTransmiter {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public boolean isParked() {
+        return isParked;
+    }
+
+    public void setParked(boolean parked) {
+        isParked = parked;
     }
 
     public long getX() {
@@ -44,12 +55,12 @@ public class DataTransmiter {
         this.y = y;
     }
 
-    public String getTime() {
-        return time;
+    public long getTimeout() {
+        return timeout;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
     }
 
     public long getDeviceid() {

@@ -31,4 +31,7 @@ public class GPSCordsHandler {
         d.setTime(CurrDay);
         dataTransmiterRepository.save(d);
     }
+    public void GetGPSCords(Long deviceid){
+        DataTransmiter d = new DataTransmiter();
+    }
 }
