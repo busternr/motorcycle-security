@@ -10,8 +10,6 @@ import java.util.List;
 
 @Repository
 public interface DataTransmiterRepository extends CrudRepository<DataTransmiter,Long> {
-//dataTrans.deviceid e poleto ot bazata/entity
-    //:deviceId e named parameter i se vzima ot methoda
     @Query("select x,y from DataTransmiter dataTrans where dataTrans.deviceid=:deviceId")
     List<DataTransmiter> getGpsCordinatesByDeviceId(@Param("deviceId") long deviceId);
 }

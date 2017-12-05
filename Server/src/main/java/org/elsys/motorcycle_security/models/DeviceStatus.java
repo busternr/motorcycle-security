@@ -11,12 +11,6 @@ public class DeviceStatus {
     @Column(name="isParked")
     private boolean isParked;
 
-    @Column(name="Parked at Latitude")
-    private long x;
-
-    @Column(name="Parked at Longitude")
-    private long y;
-
     @Column(name="Timeout")
     private long timeout;
 
@@ -25,6 +19,10 @@ public class DeviceStatus {
 
     public long getId() {
         return id;
+    }
+
+    public DeviceStatus() {
+        this.isParked = false;
     }
 
     public void setId(long id) {
@@ -37,22 +35,6 @@ public class DeviceStatus {
 
     public void setParked(boolean parked) {
         isParked = parked;
-    }
-
-    public long getX() {
-        return x;
-    }
-
-    public void setX(long x) {
-        this.x = x;
-    }
-
-    public long getY() {
-        return y;
-    }
-
-    public void setY(long y) {
-        this.y = y;
     }
 
     public long getTimeout() {

@@ -1,6 +1,6 @@
 package org.elsys.motorcycle_security.controllers;
 
-import org.elsys.motorcycle_security.business.logic.GPSCordsHandler;
+import org.elsys.motorcycle_security.business.logic.DataTransmiterHandler;
 import org.elsys.motorcycle_security.business.logic.UsersHandler;
 import org.elsys.motorcycle_security.business.logic.DevicesHandler;
 import org.elsys.motorcycle_security.business.logic.DeviceStatusHandler;
@@ -16,18 +16,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
-import javax.xml.crypto.Data;
 import java.util.List;
+import java.util.Objects;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static sun.security.ssl.HandshakeMessage.debug;
 
 @RestController
 public class httpController {
-    //Arduino
     @Autowired
-    private GPSCordsHandler  gpsCordsHandler;
+    private DataTransmiterHandler dataTransmiterHandler;
     @Autowired
     private UsersHandler UsersHandler;
     @Autowired
@@ -47,7 +47,7 @@ public class httpController {
 
     @RequestMapping(value="/device/send/gps-cordinates",method=POST)
     public void  sendGpsCordinates(@RequestParam(value="deviceid", defaultValue="0") long deviceid,@RequestParam(value="x", defaultValue="0") long x,@RequestParam(value="y", defaultValue="0") long y) {
-        gpsCordsHandler.UpdateGPSCords(deviceid,x,y);
+        dataTransmiterHandler.UpdateGPSCords(deviceid,x,y);
     }
     @RequestMapping(value="/device/receive/{deviceid}/parking-status",method=GET)
     @ResponseBody
@@ -67,8 +67,14 @@ public class httpController {
         return list.get(list.size() - 1);
     }
     @RequestMapping(value="/client/send/parking-status",method=PUT)
-    public void  request(@RequestParam(value="deviceid", defaultValue="0") long deviceid,@RequestParam(value="isParked", defaultValue="0") boolean isParked) {
-        //DeviceStatusHandler.updateParkingStatus(deviceid,isParked);
+    public void request(@RequestParam(value="deviceid", defaultValue="0") long deviceid,@RequestParam(value="isParked", defaultValue="0") boolean isParked) {
+        //DeviceStatusHandler.createDeviceStatus(deviceid); I want to kill myself
+        /*long id = DeviceStatusRepository.getDeviceStatusDeviceIdById(deviceid);
+        if(Objects.isNull(id)) DeviceStatusHandler.createDeviceStatus(deviceid);
+        DeviceStatus d = DeviceStatusRepository.findOne(id);
+        d.setParked(true);
+        DeviceStatusRepository.save(d);*/
+        DeviceStatusRepository.updateParkingStatusByDeviceId(deviceid,isParked);
     }
 
     @RequestMapping(value="/post/users",method=POST)
