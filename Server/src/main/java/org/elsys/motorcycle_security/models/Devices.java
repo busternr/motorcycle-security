@@ -10,14 +10,13 @@ public class Devices {
     private long id;
 
     @Column(name="Userid")
-    private long userid;
+    private long userId;
 
-    public long getUserid() {
-        return userid;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setUserid(long userid_) {
-        this.userid = userid_;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
-
 }

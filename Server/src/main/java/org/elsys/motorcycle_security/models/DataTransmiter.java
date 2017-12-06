@@ -18,15 +18,7 @@ public class DataTransmiter {
     private String time;
 
     @Column(name="Deviceid")
-    private long deviceid;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
+    private long deviceId;
 
     public long getX() {
         return x;
@@ -52,11 +44,11 @@ public class DataTransmiter {
         this.time = time;
     }
 
-    public long getDeviceid() {
-        return deviceid;
+    public long getDeviceId() {
+        return deviceId;
     }
 
-    public void setDeviceid(long deviceid) {
-        this.deviceid = deviceid;
+    public void setDeviceId(long deviceId) {
+        this.deviceId = deviceId;
     }
 }

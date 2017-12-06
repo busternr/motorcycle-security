@@ -18,7 +18,7 @@ public class Users {
     private String password;
 
     @Column(name="Deviceid")
-    private long deviceid;
+    private long deviceId;
 
     public String getUsername() {
         return username;
@@ -44,12 +44,12 @@ public class Users {
         this.password = password_;
     }
 
-    public long getDeviceid() {
-        return deviceid;
+    public long getDeviceId() {
+        return deviceId;
     }
 
-    public void setDeviceid(long deviceid_) {
-        this.deviceid = deviceid_;
+    public void setDeviceid(long deviceId_) {
+        this.deviceId = deviceId_;
     }
 
 }
