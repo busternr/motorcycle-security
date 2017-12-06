@@ -49,15 +49,15 @@ public class httpController {
     public void  sendGpsCordinates(@RequestParam(value="deviceid", defaultValue="0") long deviceid,@RequestParam(value="x", defaultValue="0") long x,@RequestParam(value="y", defaultValue="0") long y) {
         dataTransmiterHandler.UpdateGPSCords(deviceid,x,y);
     }
+    @RequestMapping(value="/device/receive/{deviceid}/timeout",method=GET)
+    @ResponseBody
+    public long getTimeoutByDeviceId(@PathVariable (value="deviceid") long deviceid) {
+        return DeviceStatusRepository.getTimeoutByDeviceId(deviceid);
+    }
     @RequestMapping(value="/device/receive/{deviceid}/parking-status",method=GET)
     @ResponseBody
     public boolean getParkingStatusByDeviceId(@PathVariable (value="deviceid") long deviceid) {
         return DeviceStatusRepository.getParkingStatusByDeviceId(deviceid);
-    }
-    @RequestMapping(value="/device/receive/{deviceid}/settings",method=GET)
-    @ResponseBody
-    public long getSettingsByDeviceId(@PathVariable (value="deviceid") long deviceid) {
-        return DeviceStatusRepository.getSettingsByDeviceId(deviceid);
     }
 
     @RequestMapping(value="/client/receive/{deviceid}/gps-cordinates",method=GET)
@@ -68,15 +68,13 @@ public class httpController {
     }
     @RequestMapping(value="/client/send/parking-status",method=PUT)
     public void request(@RequestParam(value="deviceid", defaultValue="0") long deviceid,@RequestParam(value="isParked", defaultValue="0") boolean isParked) {
-        //DeviceStatusHandler.createDeviceStatus(deviceid); I want to kill myself
-        /*long id = DeviceStatusRepository.getDeviceStatusDeviceIdById(deviceid);
-        if(Objects.isNull(id)) DeviceStatusHandler.createDeviceStatus(deviceid);
-        DeviceStatus d = DeviceStatusRepository.findOne(id);
-        d.setParked(true);
-        DeviceStatusRepository.save(d);*/
         DeviceStatusRepository.updateParkingStatusByDeviceId(deviceid,isParked);
     }
-
+    @RequestMapping(value="/client/send/timeout",method=PUT)
+    public void request(@RequestParam(value="deviceid", defaultValue="0") long deviceid,@RequestParam(value="timeout", defaultValue="0") long timeout) {
+        DeviceStatusRepository.updateTimeoutByDeviceId(deviceid,timeout);
+    }
+    
     @RequestMapping(value="/post/users",method=POST)
     public void  request(@RequestParam(value="username", defaultValue="") String username, @RequestParam(value="email", defaultValue="") String email, @RequestParam(value="password", defaultValue="") String password, @RequestParam(value="deviceid", defaultValue="0") long deviceid) {
         UsersHandler.UpdateUsers(username,password,email,deviceid);

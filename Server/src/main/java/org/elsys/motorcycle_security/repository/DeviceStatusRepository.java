@@ -11,9 +11,13 @@ public interface DeviceStatusRepository extends CrudRepository<DeviceStatus,Long
     @Query("select isParked from DeviceStatus dev where dev.deviceid=:deviceId")
     boolean getParkingStatusByDeviceId(@Param("deviceId") long deviceId);
     @Query("select timeout from DeviceStatus dev where dev.deviceid=:deviceId")
-    long getSettingsByDeviceId(@Param("deviceId") long deviceId);
+    long getTimeoutByDeviceId(@Param("deviceId") long deviceId);
     @Modifying
     @Transactional
     @Query("update DeviceStatus dev set dev.isParked=:IsParked where dev.deviceid=:deviceId")
     void updateParkingStatusByDeviceId(@Param("deviceId") long deviceId,@Param("IsParked") boolean IsParked);
+    @Modifying
+    @Transactional
+    @Query("update DeviceStatus dev set dev.timeout=:timeout where dev.deviceid=:deviceId")
+    void updateTimeoutByDeviceId(@Param("deviceId") long deviceId,@Param("timeout") long timeout);
 }
