@@ -1,27 +1,28 @@
 package org.elsys.motorcycle_security.business.logic;
 
 import org.elsys.motorcycle_security.models.DataTransmiter;
+import org.elsys.motorcycle_security.models.Devices;
 import org.elsys.motorcycle_security.repository.DataTransmiterRepository;
+import org.elsys.motorcycle_security.repository.DevicesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.text.SimpleDateFormat;
 
 
 @Component
 public class DataTransmiterHandler {
     @Autowired
     private DataTransmiterRepository dataTransmiterRepository;
+    @Autowired
+    private DevicesRepository devicesRepository;
 
-    public void UpdateGPSCords(Long deviceId,Long x,Long y){
+    public void UpdateGPSCords(final String deviceId,Long x,Long y){
         DataTransmiter d = new DataTransmiter();
-        d.setDeviceId(deviceId);
         d.setX(x);
         d.setY(y);
         Long Date = System.currentTimeMillis();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        String CurrDay = sdf.format(Date);
-        d.setTime(CurrDay);
+        d.setTime(Date);
+        Devices device = devicesRepository.getDeviceByDeviceId(deviceId);
+        d.setDevice(device);
         dataTransmiterRepository.save(d);
     }
 }

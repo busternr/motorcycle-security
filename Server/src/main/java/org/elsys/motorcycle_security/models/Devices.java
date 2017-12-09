@@ -2,6 +2,8 @@ package org.elsys.motorcycle_security.models;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Devices {
@@ -9,14 +11,37 @@ public class Devices {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
-    @Column(name="Userid")
-    private long userId;
+    @ManyToOne
+    @JoinColumn(name="userid", nullable=false)
+    private Users user;
 
-    public long getUserId() {
-        return userId;
+    @Column(name="DeviceId",nullable = false)
+    private String deviceId;
+
+    @OneToMany(mappedBy="device")
+    private List<DataTransmiter> transmiterData = new ArrayList<>();
+
+    public long getId() {
+        return id;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 }

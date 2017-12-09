@@ -2,6 +2,9 @@ package org.elsys.motorcycle_security.models;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 //Select * from DataTransmiter as dataTransmiter where dataTransmiter.deviceId == deviceId order by time
 @Entity
 public class DataTransmiter {
@@ -15,10 +18,11 @@ public class DataTransmiter {
     private long y;
 
     @Column(name="Time")
-    private String time;
+    private long time;
 
-    @Column(name="Deviceid")
-    private long deviceId;
+    @ManyToOne
+    @JoinColumn(name="deviceId", nullable=false)
+    private Devices device;
 
     public long getX() {
         return x;
@@ -36,19 +40,19 @@ public class DataTransmiter {
         this.y = y;
     }
 
-    public String getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         this.time = time;
     }
 
-    public long getDeviceId() {
-        return deviceId;
+    public Devices getDevice() {
+        return device;
     }
 
-    public void setDeviceId(long deviceId) {
-        this.deviceId = deviceId;
+    public void setDevice(Devices device) {
+        this.device = device;
     }
 }

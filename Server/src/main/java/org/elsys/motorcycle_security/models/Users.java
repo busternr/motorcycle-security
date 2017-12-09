@@ -2,6 +2,8 @@ package org.elsys.motorcycle_security.models;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Users {
@@ -17,8 +19,9 @@ public class Users {
     @Column(name="Password")
     private String password;
 
-    @Column(name="Deviceid")
-    private long deviceId;
+    //"user" trqbvda e imeto na promenlivata vuv deviceids
+    @OneToMany(mappedBy="user")
+    private List<Devices> userDevices=new ArrayList<>();
 
     public String getUsername() {
         return username;
@@ -44,12 +47,15 @@ public class Users {
         this.password = password_;
     }
 
-    public long getDeviceId() {
-        return deviceId;
+    public long getId() {
+        return id;
     }
 
-    public void setDeviceid(long deviceId_) {
-        this.deviceId = deviceId_;
+    public List<Devices> getUserDevices() {
+        return userDevices;
     }
 
+    public void setUserDevices(List<Devices> userDevices) {
+        this.userDevices = userDevices;
+    }
 }
