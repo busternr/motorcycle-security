@@ -13,13 +13,16 @@ public class Devices {
 
     @ManyToOne
     @JoinColumn(name="userid", nullable=false)
-    private Users user;
+    private User user;
 
     @Column(name="DeviceId",nullable = false)
     private String deviceId;
 
     @OneToMany(mappedBy="device")
     private List<DataTransmiter> transmiterData = new ArrayList<>();
+
+    @OneToMany(mappedBy="device")
+    private List<DeviceConfiguration> deviceConfigurations = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -29,11 +32,11 @@ public class Devices {
         this.id = id;
     }
 
-    public Users getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(Users user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

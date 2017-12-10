@@ -12,11 +12,22 @@ public class DeviceConfiguration {
     @Column(name="isParked")
     private boolean isParked;
 
-    @Column(name="Timeout")
+    @Column(name="timeout")
     private long timeout;
+
+    @ManyToOne
+    @JoinColumn(name="deviceId", nullable=false)
+    private Devices device;
 
     public DeviceConfiguration() {
         this.isParked = false;
         this.timeout = 300000;
+    }
+    public Devices getDevice() {
+        return device;
+    }
+
+    public void setDevice(Devices device) {
+        this.device = device;
     }
 }

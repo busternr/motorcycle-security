@@ -13,4 +13,6 @@ import java.util.List;
 public interface DevicesRepository extends CrudRepository<Devices,Long> {
     @Query("select dev from Devices dev where dev.deviceId=:deviceId")
     Devices getDeviceByDeviceId(@Param("deviceId") String deviceId);
+    @Query("select dev from Devices dev where dev.id=:Id")
+    Devices getDeviceById(@Param("Id") long Id);
 }
