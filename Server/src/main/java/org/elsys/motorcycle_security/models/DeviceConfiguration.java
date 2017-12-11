@@ -17,17 +17,17 @@ public class DeviceConfiguration {
 
     @ManyToOne
     @JoinColumn(name="deviceId", nullable=false)
-    private Devices device;
+    private Device device;
 
     public DeviceConfiguration() {
         this.isParked = false;
         this.timeout = 300000;
     }
-    public Devices getDevice() {
+    public Device getDevice() {
         return device;
     }
 
-    public void setDevice(Devices device) {
+    public void setDevice(Device device) {
         this.device = device;
     }
 }

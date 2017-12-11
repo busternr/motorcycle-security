@@ -10,7 +10,7 @@ public class UserInfo {
    private String email;
    private List<DeviceInfo> devices = new ArrayList<DeviceInfo>() {};
 
-    public UserInfo(String userName, String email) {
+   public UserInfo(String userName, String email) {
         this.userName = userName;
         this.email = email;
     }

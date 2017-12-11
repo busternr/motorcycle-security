@@ -1,7 +1,6 @@
 package org.elsys.motorcycle_security.repository;
 
 import org.elsys.motorcycle_security.models.DataTransmiter;
-import org.elsys.motorcycle_security.models.Devices;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

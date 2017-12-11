@@ -20,14 +20,16 @@ public class DeviceController {
                                    @RequestParam(value="y", defaultValue="0") long y) {
         dataTransmiterHandler.UpdateGPSCords(deviceId,x,y);
     }
-//    @RequestMapping(value="/device/receive/{deviceId}/timeout",method=GET)
-//    @ResponseBody
-//    public long getTimeoutBydeviceId(@PathVariable (value="deviceId") long deviceId) {
-//        return DeviceSettingsRepository.getTimeoutByDeviceId(deviceId);
-//    }
-//    @RequestMapping(value="/device/receive/{deviceId}/parking-status",method=GET)
-//    @ResponseBody
-//    public boolean getParkingStatusBydeviceId(@PathVariable (value="deviceId") long deviceId) {
-//        return DeviceSettingsRepository.getParkingStatusByDeviceId(deviceId);
-//    }
+
+    @RequestMapping(value="/device/receive/{deviceId}/timeout",method=GET)
+    @ResponseBody
+    public long getTimeoutBydeviceId(@PathVariable (value="deviceId") long deviceId) {
+        return deviceConfigurationRepository.getTimeoutByDeviceId(deviceId);
+    }
+
+    @RequestMapping(value="/device/receive/{deviceId}/parking-status",method=GET)
+    @ResponseBody
+    public boolean getParkingStatusBydeviceId(@PathVariable (value="deviceId") long deviceId) {
+        return deviceConfigurationRepository.getParkingStatusByDeviceId(deviceId);
+    }
 }

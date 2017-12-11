@@ -22,7 +22,7 @@ public class User {
 
     //"user" trqbvda e imeto na promenlivata vuv deviceids
     @OneToMany(mappedBy="user")
-    private List<Devices> userDevices=new ArrayList<>();
+    private List<Device> userDevices=new ArrayList<>();
 
     public String getUsername() {
         return username;
@@ -52,11 +52,11 @@ public class User {
         return id;
     }
 
-    public List<Devices> getUserDevices() {
+    public List<Device> getUserDevices() {
         return userDevices;
     }
 
-    public void setUserDevices(List<Devices> userDevices) {
+    public void setUserDevices(List<Device> userDevices) {
         this.userDevices = userDevices;
     }
 }
