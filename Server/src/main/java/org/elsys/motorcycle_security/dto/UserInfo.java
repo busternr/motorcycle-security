@@ -1,5 +1,6 @@
 package org.elsys.motorcycle_security.dto;
 
+import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.User;
 
 import java.util.ArrayList;
@@ -8,15 +9,16 @@ import java.util.List;
 public class UserInfo {
    private String userName;
    private String email;
-   private List<DeviceInfo> devices = new ArrayList<DeviceInfo>() {};
+   private List<Device> devices = new ArrayList<>();
 
-   public UserInfo(String userName, String email) {
+   public UserInfo(String userName, String email, List<Device> devices) {
         this.userName = userName;
         this.email = email;
+        this.devices = devices;
     }
 
     public UserInfo(User user) {
-        this(user.getUsername(), user.getEmail());
+        this(user.getUsername(), user.getEmail(), user.getUserDevices());
     }
 
     public String getUserName() {
@@ -35,11 +37,11 @@ public class UserInfo {
         this.email = email;
     }
 
-    public List<DeviceInfo> getDevices() {
+    public List<Device> getDevices() {
         return devices;
     }
 
-    public void setDevices(List<DeviceInfo> devices) {
+    public void setDevices(List<Device> devices) {
         this.devices = devices;
     }
 }

@@ -1,5 +1,6 @@
 package org.elsys.motorcycle_security.business.logic;
 
+import org.elsys.motorcycle_security.dto.DataTransmiterInfo;
 import org.elsys.motorcycle_security.models.DataTransmiter;
 import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.repository.DataTransmiterRepository;
@@ -15,7 +16,7 @@ public class DataTransmiterHandler {
     @Autowired
     private DeviceRepository deviceRepository;
 
-    public void UpdateGPSCords(final String deviceId,Long x,Long y){
+    public void UpdateGPSCordinates(final String deviceId,Long x,Long y){
         DataTransmiter d = new DataTransmiter();
         d.setX(x);
         d.setY(y);
@@ -24,5 +25,10 @@ public class DataTransmiterHandler {
         Device device = deviceRepository.getDeviceByDeviceId(deviceId);
         d.setDevice(device);
         dataTransmiterRepository.save(d);
+    }
+
+    public DataTransmiterInfo getGPSCordinates(long deviceId) {
+        DataTransmiter dataTransmiter = dataTransmiterRepository.getGpsCordinatesByDeviceId(deviceId);
+        return new DataTransmiterInfo(dataTransmiter);
     }
 }

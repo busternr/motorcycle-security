@@ -1,16 +1,13 @@
 package org.elsys.motorcycle_security.controllers;
 
+import org.elsys.motorcycle_security.business.logic.DataTransmiterHandler;
 import org.elsys.motorcycle_security.business.logic.UserHandler;
+import org.elsys.motorcycle_security.dto.DataTransmiterInfo;
 import org.elsys.motorcycle_security.dto.UserInfo;
-import org.elsys.motorcycle_security.models.DataTransmiter;
-import org.elsys.motorcycle_security.models.Device;
-import org.elsys.motorcycle_security.repository.DataTransmiterRepository;
 import org.elsys.motorcycle_security.repository.DeviceConfigurationRepository;
-import org.elsys.motorcycle_security.repository.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
@@ -20,11 +17,9 @@ public class ClientController {
     @Autowired
     private UserHandler usersHandler;
     @Autowired
-    private DataTransmiterRepository dataTransmiterRepository;
+    private DataTransmiterHandler dataTransmiterHandler;
     @Autowired
     private DeviceConfigurationRepository deviceConfigurationRepository;
-    @Autowired
-    private DeviceRepository deviceRepository;
 
     @RequestMapping(value = "/client/send/parking-status", method = PUT)
     public void updateParkingStatusByDeviceId(@RequestParam(value = "deviceId", defaultValue = "0") long deviceId, @RequestParam(value = "isParked", defaultValue = "0") boolean isParked) {
@@ -43,11 +38,9 @@ public class ClientController {
 
     @RequestMapping(value = "/client/receive/{deviceId}/gps-cordinates", method = GET)
     @ResponseBody
-    public Object getGpsCordinatesBydeviceId(@PathVariable(value = "deviceId") long deviceId) {
-        Device device = deviceRepository.getDeviceById(deviceId);
-        long devid = device.getId();
-        List<DataTransmiter> list = dataTransmiterRepository.getGpsCordinatesByDeviceId(devid);
-        return list.get(list.size() - 1);
+    public DataTransmiterInfo getGpsCordinatesBydeviceId(@PathVariable(value = "deviceId") long deviceId) {
+        DataTransmiterInfo dataTransmiterInfo = dataTransmiterHandler.getGPSCordinates(deviceId);
+        return dataTransmiterInfo;
     }
 
     @RequestMapping(value="/client/receive/user-account",method=GET)

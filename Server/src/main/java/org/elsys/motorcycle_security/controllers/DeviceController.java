@@ -1,6 +1,8 @@
 package org.elsys.motorcycle_security.controllers;
 
 import org.elsys.motorcycle_security.business.logic.DataTransmiterHandler;
+import org.elsys.motorcycle_security.business.logic.DeviceConfigurationHandler;
+import org.elsys.motorcycle_security.dto.DeviceConfigurationInfo;
 import org.elsys.motorcycle_security.repository.DeviceConfigurationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,24 +14,21 @@ public class DeviceController {
     @Autowired
     private DataTransmiterHandler dataTransmiterHandler;
     @Autowired
+    private DeviceConfigurationHandler deviceConfigurationHandler;
+    @Autowired
     private DeviceConfigurationRepository deviceConfigurationRepository;
 
     @RequestMapping(value="/device/send/gps-cordinates",method=POST)
     public void  sendGpsCordinates(@RequestParam(value="deviceId") String deviceId,
                                    @RequestParam(value="x", defaultValue="0") long x,
                                    @RequestParam(value="y", defaultValue="0") long y) {
-        dataTransmiterHandler.UpdateGPSCords(deviceId,x,y);
+        dataTransmiterHandler.UpdateGPSCordinates(deviceId,x,y);
     }
 
-    @RequestMapping(value="/device/receive/{deviceId}/timeout",method=GET)
+    @RequestMapping(value="/device/receive/{deviceId}/device-configuration",method=GET)
     @ResponseBody
-    public long getTimeoutBydeviceId(@PathVariable (value="deviceId") long deviceId) {
-        return deviceConfigurationRepository.getTimeoutByDeviceId(deviceId);
-    }
-
-    @RequestMapping(value="/device/receive/{deviceId}/parking-status",method=GET)
-    @ResponseBody
-    public boolean getParkingStatusBydeviceId(@PathVariable (value="deviceId") long deviceId) {
-        return deviceConfigurationRepository.getParkingStatusByDeviceId(deviceId);
+    public DeviceConfigurationInfo getDeviceConfigurationDeviceId(@PathVariable (value="deviceId") long deviceId) {
+        DeviceConfigurationInfo deviceConfigurationInfo = deviceConfigurationHandler.getDeviceConfigurationIsParked(deviceId);
+        return deviceConfigurationInfo;
     }
 }
