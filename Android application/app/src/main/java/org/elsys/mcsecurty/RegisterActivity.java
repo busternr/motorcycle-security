@@ -1,40 +1,40 @@
 package org.elsys.mcsecurty;
 
-import android.app.LoaderManager.LoaderCallbacks;
-import android.database.Cursor;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-
 
 import org.elsys.http.Api;
 import org.elsys.models.GpsCordinates;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.Response;
 
 
 public class RegisterActivity extends AppCompatActivity {
-
-    Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://127.0.0.1:8080")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
-
-    Api service = retrofit.create(Api.class);
-    service.getGpsCordinates((long)1).enqueue(new Callback<ResponseBody>()
-    {
-        @Override
-        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-        if (response.isSuccessful()) {
-
-
-
-        } else {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_current_location);
+        Api api = Api.RetrofitInstance.create();
+        api.getGpsCordinates(1l).enqueue(new Callback<GpsCordinates>() {
+            @Override
+            public void onResponse (Call < GpsCordinates > call, Response< GpsCordinates > response){
+                if (response.isSuccessful()) {
+                    GpsCordinates gpsCordinates = response.body();
+                }
+                else {
 
 
-        }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GpsCordinates> call, Throwable t) {
+
+            }
+        });
     }
 }
 

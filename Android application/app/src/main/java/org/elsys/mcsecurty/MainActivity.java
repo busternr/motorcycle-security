@@ -5,14 +5,7 @@ package org.elsys.mcsecurty;
         import android.os.Bundle;
         import android.view.View;
         import android.widget.Button;
-        import android.widget.TextView;
         import android.widget.Toast;
-
-        import org.elsys.http.Api;
-        import org.elsys.models.GpsCordinates;
-
-        import retrofit2.Call;
-        import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -35,17 +28,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         locationButton.setOnClickListener(this);
         parkButton.setOnClickListener(this);
 
-
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://127.0.0.1:8080")
-                .build();
-        Api service = retrofit.create(Api.class);
-        GpsCordinates cords = service.getGpsCordinates(1);
-
-        TextView textElement = (TextView) findViewById(R.id.teeeext);
-        textElement.setText(cords);
-        textElement.setVisibility(true);
     }
 
     public void onClick(View v) {

@@ -62,13 +62,4 @@
         android:orientation="vertical"
         app:layout_constraintGuide_begin="20dp" />
 
-    <TextView
-        android:id="@+id/teeeext"
-        android:layout_width="155dp"
-        android:layout_height="67dp"
-        android:text="TextView"
-        android:textSize="20sp"
-        tools:layout_editor_absoluteX="107dp"
-        tools:layout_editor_absoluteY="328dp" />
-
 </android.support.constraint.ConstraintLayout>
