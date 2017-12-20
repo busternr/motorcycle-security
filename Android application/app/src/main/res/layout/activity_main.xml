@@ -20,10 +20,22 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <Button
-        android:id="@+id/AlarmBtn"
+        android:id="@+id/HistoryBtn"
         android:layout_width="178dp"
         android:layout_height="60dp"
-        android:text="Alarm"
+        android:text="Hisotry"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.271" />
+
+    <Button
+        android:id="@+id/ParkBtn"
+        android:layout_width="178dp"
+        android:layout_height="60dp"
+        android:text="Park"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,19 +44,7 @@
         app:layout_constraintVertical_bias="0.133" />
 
     <Button
-        android:id="@+id/CallBtn"
-        android:layout_width="178dp"
-        android:layout_height="60dp"
-        android:text="Call"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.274" />
-
-    <Button
-        android:id="@+id/StatBtn"
+        android:id="@+id/StatusBtn"
         android:layout_width="178dp"
         android:layout_height="60dp"
         android:text="Status"
@@ -54,5 +54,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.408" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <TextView
+        android:id="@+id/teeeext"
+        android:layout_width="155dp"
+        android:layout_height="67dp"
+        android:text="TextView"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="107dp"
+        tools:layout_editor_absoluteY="328dp" />
 
 </android.support.constraint.ConstraintLayout>
