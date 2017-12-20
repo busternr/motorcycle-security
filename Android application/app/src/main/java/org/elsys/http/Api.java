@@ -33,7 +33,7 @@ public interface Api {
         private static Api service;
         public static Api create() {
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://10.0.2.2:8080")
+                    .baseUrl("http://130.204.140.70:8080")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             service = retrofit.create(Api.class);
