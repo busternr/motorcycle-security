@@ -1,6 +1,7 @@
 package org.elsys.motorcycle_security.controllers;
 
 import org.elsys.motorcycle_security.business.logic.DataTransmiterHandler;
+import org.elsys.motorcycle_security.business.logic.DeviceHandler;
 import org.elsys.motorcycle_security.business.logic.UserHandler;
 import org.elsys.motorcycle_security.dto.DataTransmiterInfo;
 import org.elsys.motorcycle_security.dto.UserInfo;
@@ -15,7 +16,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 @RestController
 public class ClientController {
     @Autowired
-    private UserHandler usersHandler;
+    private UserHandler userHandler;
+    @Autowired
+    private DeviceHandler deviceHandler;
     @Autowired
     private DataTransmiterHandler dataTransmiterHandler;
     @Autowired
@@ -32,11 +35,16 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/send/create-new-user", method = POST)
-    public void createNewUser(@RequestParam(value = "username", defaultValue = "") String username, @RequestParam(value = "email", defaultValue = "") String email, @RequestParam(value = "password", defaultValue = "") String password, @RequestParam(value = "deviceId", defaultValue = "") String deviceId) {
-        usersHandler.createNewUser(username, password, email, deviceId);
+    public void createNewUser(@RequestParam(value = "userName", defaultValue = "") String userName, @RequestParam(value = "email", defaultValue = "") String email, @RequestParam(value = "password", defaultValue = "") String password, @RequestParam(value = "deviceId", defaultValue = "") String deviceId) {
+        userHandler.createNewUser(userName, password, email, deviceId);
     }
 
-    @RequestMapping(value = "/client/receive/{deviceId}/gps-cordinates", method = GET)
+    @RequestMapping(value = "/client/send/create-new-device", method = POST)
+    public void createNewUser(@RequestParam(value = "userId", defaultValue = "0") long userId, @RequestParam(value = "deviceId", defaultValue = "") String deviceId) {
+        deviceHandler.createNewDevice(userId, deviceId);
+    }
+
+    @RequestMapping(value = "/client/{deviceId}/receive/gps-cordinates", method = GET)
     @ResponseBody
     public DataTransmiterInfo getGpsCordinatesBydeviceId(@PathVariable(value = "deviceId") long deviceId) {
         DataTransmiterInfo dataTransmiterInfo = dataTransmiterHandler.getGPSCordinates(deviceId);
@@ -46,7 +54,7 @@ public class ClientController {
     @RequestMapping(value="/client/receive/user-account",method=GET)
     @ResponseBody
     public UserInfo getUserAccountByUsername(@RequestHeader("userName") String userName) {
-        UserInfo userInfo = usersHandler.getUser(userName);
+        UserInfo userInfo = userHandler.getUser(userName);
         return userInfo;
     }
 }

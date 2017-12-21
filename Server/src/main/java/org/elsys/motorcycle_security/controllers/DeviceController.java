@@ -25,7 +25,7 @@ public class DeviceController {
         dataTransmiterHandler.UpdateGPSCordinates(deviceId,x,y);
     }
 
-    @RequestMapping(value="/device/receive/{deviceId}/device-configuration",method=GET)
+    @RequestMapping(value="/device/{deviceId}/receive/device-configuration",method=GET)
     @ResponseBody
     public DeviceConfigurationInfo getDeviceConfigurationDeviceId(@PathVariable (value="deviceId") long deviceId) {
         DeviceConfigurationInfo deviceConfigurationInfo = deviceConfigurationHandler.getDeviceConfigurationIsParked(deviceId);
