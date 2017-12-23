@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.elsys.http.Api;
+import org.elsys.models.Device;
 import org.elsys.models.GpsCordinates;
 
 import retrofit2.Call;
@@ -18,12 +19,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CurrentLocation extends FragmentActivity implements OnMapReadyCallback {
-
-    private long userDeviceId = 1;
-    private long x;
-    private long y;
     private GoogleMap mMap;
-
+    private long userDeviceId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,30 +33,40 @@ public class CurrentLocation extends FragmentActivity implements OnMapReadyCallb
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Api api = Api.RetrofitInstance.create();
-        api.getGpsCordinates(userDeviceId).enqueue(new Callback<GpsCordinates>() {
-            @Override
-            public void onResponse (Call< GpsCordinates > call, Response< GpsCordinates > response){
-                if (response.isSuccessful()) {
-                    GpsCordinates gpsCordinates = response.body();
-                    x = gpsCordinates.getX();
-                    y = gpsCordinates.getY();
-                }
-                else {
-
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GpsCordinates> call, Throwable t) {
-
-            }
-        });
         mMap = googleMap;
-        float zoomlevel = 18;
-        LatLng CurrLoc = new LatLng(x, y);
-        mMap.addMarker(new MarkerOptions().position(CurrLoc).title("Your motorcycle"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CurrLoc,zoomlevel));
+        final float zoomlevel = 18;
+        Api api = Api.RetrofitInstance.create();
+        for (int counter = 0; counter < GlobalVariables.userDevices.size(); counter++) {
+            String deviceId = GlobalVariables.userDevices.get(counter);
+            System.out.println("------------------------------------------------------------>deviceId" + GlobalVariables.userDevices.get(counter));
+            api.getDevice(GlobalVariables.userDevices.get(counter)).enqueue(new Callback<Device>() {
+                @Override
+                public void onResponse(Call<Device> call, Response<Device> response) {
+                    if (response.isSuccessful()) {
+                        Device device = response.body();
+                        userDeviceId = device.getId();
+                        System.out.println("------------------------------------------------------------>userDeviceId" + userDeviceId);
+                    }
+                }
+                @Override
+                public void onFailure(Call<Device> call, Throwable t) {
+                }
+            });
+            api.getGpsCordinates(userDeviceId).enqueue(new Callback<GpsCordinates>() {
+                @Override
+                public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
+                    if (response.isSuccessful()) {
+                        GpsCordinates gpsCordinates = response.body();
+                        LatLng CurrLoc = new LatLng(gpsCordinates.getX(), gpsCordinates.getX());
+                        System.out.println("X========================================================================" + gpsCordinates.getX());
+                        mMap.addMarker(new MarkerOptions().position(CurrLoc).title("Device "));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CurrLoc, zoomlevel));
+                    }
+                }
+                @Override
+                public void onFailure(Call<GpsCordinates> call, Throwable t) {
+                }
+            });
+        }
     }
 }

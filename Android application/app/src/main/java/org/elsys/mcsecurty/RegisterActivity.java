@@ -48,6 +48,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 });
                 Intent myIntent = new Intent(v.getContext(), MainActivity.class);
                 myIntent.putExtra("isAuthorized",true);
+                myIntent.putExtra("DeviceId1", deviceIdInput.getText().toString());
                 startActivity(myIntent);
                 break;
             }

@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Device {
 
+    @SerializedName("id")
+    @Expose
+    private long id;
     @SerializedName("deviceId")
     @Expose
     private String deviceId;
@@ -17,4 +20,11 @@ public class Device {
         this.deviceId = deviceId;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }

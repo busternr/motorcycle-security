@@ -1,5 +1,6 @@
 package org.elsys.http;
 
+import org.elsys.models.Device;
 import org.elsys.models.GpsCordinates;
 import org.elsys.models.User;
 
@@ -15,14 +16,15 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 
 public interface Api {
     @PUT("/client/send/parking-status")
-    Call<User> updateParkingStatus(@Field("deviceId") long deviceId, @Field("isParked") boolean isParked);
+    Call<User> updateParkingStatus(@Query("deviceId") long deviceId, @Query("isParked") boolean isParked);
 
     @PUT("/client/send/timeout")
-    Call<User> updateTimeout(@Field("deviceId") long deviceId, @Field("timeout") long timeout);
+    Call<User> updateTimeout(@Query("deviceId") long deviceId, @Query("timeout") long timeout);
 
     @POST("/client/send/create-new-user")
     Call<User> createUserAccount(@Body User user);
@@ -30,7 +32,10 @@ public interface Api {
     @GET("/client/receive/user-account")
     Call<User> getUserAccount(@Header("email") String email);
 
-    @GET("/client/receive/{id}/gps-cordinates")
+    @GET("/client/receive/device")
+    Call<Device> getDevice(@Query("deviceId") String deviceId);
+
+    @GET("/client/{id}/receive/gps-cordinates")
     Call<GpsCordinates> getGpsCordinates(@Path("id") long id);
 
     class RetrofitInstance {

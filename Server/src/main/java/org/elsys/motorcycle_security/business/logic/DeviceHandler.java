@@ -1,5 +1,6 @@
 package org.elsys.motorcycle_security.business.logic;
 
+import org.elsys.motorcycle_security.dto.DeviceInfo;
 import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.User;
@@ -29,5 +30,10 @@ public class DeviceHandler {
         userRepository.save(user);
         deviceRepository.save(device);
         deviceConfigurationRepository.save(deviceConfiguration);
+    }
+
+    public DeviceInfo getDevice(String deviceId) {
+        Device device = deviceRepository.getDeviceByDeviceId(deviceId);
+        return new DeviceInfo(device);
     }
 }

@@ -4,6 +4,7 @@ import org.elsys.motorcycle_security.business.logic.DataTransmiterHandler;
 import org.elsys.motorcycle_security.business.logic.DeviceHandler;
 import org.elsys.motorcycle_security.business.logic.UserHandler;
 import org.elsys.motorcycle_security.dto.DataTransmiterInfo;
+import org.elsys.motorcycle_security.dto.DeviceInfo;
 import org.elsys.motorcycle_security.dto.UserDto;
 import org.elsys.motorcycle_security.dto.UserInfo;
 import org.elsys.motorcycle_security.repository.DeviceConfigurationRepository;
@@ -57,6 +58,13 @@ public class ClientController {
     public UserInfo getUserAccountByUsername(@RequestHeader("email") String email) {
         UserInfo userInfo = userHandler.getUser(email);
         return userInfo;
+    }
+
+    @RequestMapping(value="/client/receive/device",method=GET)
+    @ResponseBody
+    public DeviceInfo geDeviceByDeviceID(@RequestParam(value = "deviceId", defaultValue = "0") String deviceId) {
+        DeviceInfo deviceInfo = deviceHandler.getDevice(deviceId);
+        return deviceInfo;
     }
 }
 

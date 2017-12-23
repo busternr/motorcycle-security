@@ -7,9 +7,13 @@ package org.elsys.mcsecurty;
         import android.widget.Button;
         import android.widget.Toast;
 
+        import java.util.ArrayList;
+        import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private boolean ParkedStatus;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +31,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button parkButton =  findViewById(R.id.ParkBtn);
         locationButton.setOnClickListener(this);
         parkButton.setOnClickListener(this);
-
+        int counter  = 1;
+        while(counter <= 5)
+        {
+            String deviceId = getIntent().getStringExtra("DeviceId" + counter);
+            if(deviceId == null) break;
+            GlobalVariables.userDevices.add(deviceId);
+            counter++;
+        }
     }
 
     public void onClick(View v) {
