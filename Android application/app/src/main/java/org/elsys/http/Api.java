@@ -3,28 +3,32 @@ package org.elsys.http;
 import org.elsys.models.GpsCordinates;
 import org.elsys.models.User;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 
 public interface Api {
-    @POST("/client/send/parking-status")
-    Call<User> updateParkingStatus(@Field("deviceId") long deviceId);
+    @PUT("/client/send/parking-status")
+    Call<User> updateParkingStatus(@Field("deviceId") long deviceId, @Field("isParked") boolean isParked);
 
-    @POST("/client/send/timeout")
+    @PUT("/client/send/timeout")
     Call<User> updateTimeout(@Field("deviceId") long deviceId, @Field("timeout") long timeout);
 
     @POST("/client/send/create-new-user")
-    Call<User> updateTimeout(@Field("userName") String userName, @Field("email") String email, @Field("password") String password, @Field("deviceId") String deviceId);
+    Call<User> createUserAccount(@Body User user);
 
     @GET("/client/receive/user-account")
-    Call<User> getUserAccount(@Header("userName") String userName);
+    Call<User> getUserAccount(@Header("email") String email);
 
     @GET("/client/receive/{id}/gps-cordinates")
     Call<GpsCordinates> getGpsCordinates(@Path("id") long id);

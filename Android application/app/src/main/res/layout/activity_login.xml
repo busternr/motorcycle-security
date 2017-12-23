@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content">
 
                 <AutoCompleteTextView
-                    android:id="@+id/RegEmail"
+                    android:id="@+id/LoginEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_email"
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/RegPwd"
+                    android:id="@+id/LoginPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Password"
@@ -63,7 +63,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                android:id="@+id/SignInBtn"
+                android:id="@+id/LoginBtn"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

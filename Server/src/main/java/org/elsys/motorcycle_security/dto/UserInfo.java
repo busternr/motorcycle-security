@@ -7,26 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserInfo {
-   private String userName;
    private String email;
    private List<Device> devices = new ArrayList<>();
 
-   public UserInfo(String userName, String email, List<Device> devices) {
-        this.userName = userName;
+   public UserInfo(String email, List<Device> devices) {
         this.email = email;
         this.devices = devices;
     }
 
     public UserInfo(User user) {
-        this(user.getUsername(), user.getEmail(), user.getUserDevices());
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
+        this(user.getEmail(), user.getUserDevices());
     }
 
     public String getEmail() {

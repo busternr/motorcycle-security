@@ -14,9 +14,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("First time rujsjijn", true);
-        if (isFirstRun)
+        boolean isAuthorized = getIntent().getBooleanExtra("isAuthorized", false);
+        boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("First time rujsjijn", true);
+        if (isFirstRun && !isAuthorized)
         {
             getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("First time run", false).apply();
             Intent myIntent = new Intent(this,LoginRegisterActivity.class);

@@ -6,15 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "Users",uniqueConstraints={@UniqueConstraint(columnNames={"email"})})
 public class User {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
-    @Column(name="Username")
-    private String username;
 
-    @Column(name="Email")
+    @Column(name="Email",unique=true)
     private String email;
 
     @Column(name="Password")
@@ -23,14 +21,6 @@ public class User {
     //"user" trqbvda e imeto na promenlivata vuv deviceids
     @OneToMany(mappedBy="user")
     private List<Device> userDevices=new ArrayList<>();
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username_) {
-        this.username = username_;
-    }
 
     public String getEmail() {
         return email;

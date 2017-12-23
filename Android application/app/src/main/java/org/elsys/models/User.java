@@ -14,23 +14,22 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class User {
-
-    @SerializedName("userName")
-    @Expose
-    private String userName;
     @SerializedName("email")
     @Expose
     private String email;
+    @SerializedName("password")
+    @Expose
+    private String password;
     @SerializedName("devices")
     @Expose
-    private List<Device> devices = null;
+    private List<Device> devices = new ArrayList<>();
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public User(String email, String password, String deviceId) {
+        this.email = email;
+        this.password = password;
+        Device device = new Device();
+        device.setDeviceId(deviceId);
+        this.getDevices().add(device);
     }
 
     public String getEmail() {
@@ -41,6 +40,14 @@ public class User {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public List<Device> getDevices() {
         return devices;
     }
@@ -48,5 +55,4 @@ public class User {
     public void setDevices(List<Device> devices) {
         this.devices = devices;
     }
-
 }

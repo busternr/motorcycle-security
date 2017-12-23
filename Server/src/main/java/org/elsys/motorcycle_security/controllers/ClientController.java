@@ -4,6 +4,7 @@ import org.elsys.motorcycle_security.business.logic.DataTransmiterHandler;
 import org.elsys.motorcycle_security.business.logic.DeviceHandler;
 import org.elsys.motorcycle_security.business.logic.UserHandler;
 import org.elsys.motorcycle_security.dto.DataTransmiterInfo;
+import org.elsys.motorcycle_security.dto.UserDto;
 import org.elsys.motorcycle_security.dto.UserInfo;
 import org.elsys.motorcycle_security.repository.DeviceConfigurationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,8 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/send/create-new-user", method = POST)
-    public void createNewUser(@RequestParam(value = "userName", defaultValue = "") String userName, @RequestParam(value = "email", defaultValue = "") String email, @RequestParam(value = "password", defaultValue = "") String password, @RequestParam(value = "deviceId", defaultValue = "") String deviceId) {
-        userHandler.createNewUser(userName, password, email, deviceId);
+    public void createNewUser(@RequestBody UserDto newUser) {
+        userHandler.createNewUser(newUser);
     }
 
     @RequestMapping(value = "/client/send/create-new-device", method = POST)
@@ -53,8 +54,8 @@ public class ClientController {
 
     @RequestMapping(value="/client/receive/user-account",method=GET)
     @ResponseBody
-    public UserInfo getUserAccountByUsername(@RequestHeader("userName") String userName) {
-        UserInfo userInfo = userHandler.getUser(userName);
+    public UserInfo getUserAccountByUsername(@RequestHeader("email") String email) {
+        UserInfo userInfo = userHandler.getUser(email);
         return userInfo;
     }
 }
