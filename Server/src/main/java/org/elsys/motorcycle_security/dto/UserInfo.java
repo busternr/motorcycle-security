@@ -7,16 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserInfo {
-   private String email;
-   private List<Device> devices = new ArrayList<>();
+    private String email;
+    private String password;
+    private List<DeviceInfo> devices = new ArrayList<>();
 
-   public UserInfo(String email, List<Device> devices) {
+    public UserInfo(String email, String password) {
         this.email = email;
-        this.devices = devices;
+        this.password = password;
     }
 
     public UserInfo(User user) {
-        this(user.getEmail(), user.getUserDevices());
+        this(user.getEmail(), user.getPassword());
+
+        for(Device device : user.getUserDevices()) {
+            this.devices.add(new DeviceInfo(device));
+        }
     }
 
     public String getEmail() {
@@ -27,11 +32,20 @@ public class UserInfo {
         this.email = email;
     }
 
-    public List<Device> getDevices() {
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<DeviceInfo> getDevices() {
         return devices;
     }
 
-    public void setDevices(List<Device> devices) {
+    public void setDevices(List<DeviceInfo> devices) {
         this.devices = devices;
     }
 }
+

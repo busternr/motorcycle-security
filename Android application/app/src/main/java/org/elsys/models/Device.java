@@ -7,7 +7,7 @@ public class Device {
 
     @SerializedName("id")
     @Expose
-    private long id;
+    private int id;
     @SerializedName("deviceId")
     @Expose
     private String deviceId;
@@ -20,11 +20,11 @@ public class Device {
         this.deviceId = deviceId;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 }

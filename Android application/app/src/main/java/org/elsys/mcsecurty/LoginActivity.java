@@ -18,7 +18,6 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener  {
     private EditText passwordInput;
     private EditText emailInput;
-    private EditText deviceIdInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +36,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 api.getUserAccount(emailInput.getText().toString()).enqueue(new Callback<User>() {
                     @Override
                     public void onResponse (Call<User> call, Response<User> response){
-                        System.out.println("===================================RESPONCE");
                         if (response.isSuccessful()) {
-                            System.out.println("===================================SUCCESS");
                             User user = response.body();
                             if (user.getEmail().equals(emailInput.getText().toString()) && user.getPassword().equals(passwordInput.getText().toString()))
                             {

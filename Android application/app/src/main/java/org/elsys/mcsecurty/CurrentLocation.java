@@ -20,7 +20,7 @@ import retrofit2.Response;
 
 public class CurrentLocation extends FragmentActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
-    private long userDeviceId;
+    private int userDeviceId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +52,7 @@ public class CurrentLocation extends FragmentActivity implements OnMapReadyCallb
                 public void onFailure(Call<Device> call, Throwable t) {
                 }
             });
-            api.getGpsCordinates(userDeviceId).enqueue(new Callback<GpsCordinates>() {
+            api.getGpsCordinates((long) userDeviceId).enqueue(new Callback<GpsCordinates>() {
                 @Override
                 public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                     if (response.isSuccessful()) {
