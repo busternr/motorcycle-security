@@ -7,9 +7,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.elsys.http.Api;
 import org.elsys.models.User;
+import org.w3c.dom.Text;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,6 +21,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText passwordInput;
     private EditText emailInput;
     private EditText deviceIdInput;
+    private TextView errorsText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,30 +30,40 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
          passwordInput = (EditText) findViewById(R.id.RegPassword);
          emailInput = (EditText) findViewById(R.id.RegEmail);
          deviceIdInput = (EditText) findViewById(R.id.RegDeviceId);
+         errorsText = (TextView) findViewById(R.id.ErrorsRegText);
         Button registerButton = findViewById(R.id.RegBtn);
         registerButton.setOnClickListener(this);
     }
 
-//500 e internal na servera
-    //huu az bqgam vsichko e tochno vij zashto ne poluchavash maila na servera neshto si oburkal tuka s maila
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.RegBtn: {
-                Api api = Api.RetrofitInstance.create();
-                User user = new User(emailInput.getText().toString(), passwordInput.getText().toString(), deviceIdInput.getText().toString());
-                api.createUserAccount(user).enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
-                    }
-                    @Override
-                    public void onFailure(Call<User> call, Throwable t) {
-                    }
-                });
-                Intent myIntent = new Intent(v.getContext(), MainActivity.class);
-                myIntent.putExtra("isAuthorized",true);
-                myIntent.putExtra("DeviceId1", deviceIdInput.getText().toString());
-                startActivity(myIntent);
-                break;
+                if(deviceIdInput.getText().toString().length() == 0) errorsText.setText("Device pin number field can't be blank");
+                else if(emailInput.getText().toString().length() == 0) errorsText.setText("Email field can't be blank");
+                else if(passwordInput.getText().toString().length() == 0) errorsText.setText("Password field can't be blank");
+                else if(emailInput.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")) errorsText.setText("Invalid email address.");
+                else if(passwordInput.getText().toString().length() < 6) errorsText.setText("Password is too short (Minumum 6 characters)");
+                else if(deviceIdInput.getText().toString().length() < 6) errorsText.setText("Invalid device pin number");
+                else {
+                    Api api = Api.RetrofitInstance.create();
+                    User user = new User(emailInput.getText().toString(), passwordInput.getText().toString(), deviceIdInput.getText().toString());
+                    api.createUserAccount(user).enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                        }
+
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+                        }
+                    });
+                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", 1);
+                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device 1", user.getDevices().get(0).getDeviceId());
+                    Intent myIntent = new Intent(v.getContext(), MainActivity.class);
+                    myIntent.putExtra("isAuthorized", true);
+                    myIntent.putExtra("DeviceId1", deviceIdInput.getText().toString());
+                    startActivity(myIntent);
+                    break;
+                }
             }
         }
     }

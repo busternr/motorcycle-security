@@ -55,31 +55,10 @@
         <activity
             android:name=".RegisterActivity"
             android:label="@string/title_activity_register" />
-
-        <service
-            android:name="org.elsys.http.MyService"
-            android:enabled="true"
-            android:exported="true" />
-        <service
-            android:name="org.elsys.http.gpsService"
-            android:enabled="true"
-            android:exported="true" />
-        <service
-            android:name="org.elsys.http.gpsApi"
-            android:enabled="true"
-            android:exported="false" />
-        <service
-            android:name="org.elsys.http.usersApi"
-            android:enabled="true"
-            android:exported="true" />
-
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
 
-        <service
-            android:name="org.elsys.http.MyIntentService"
-            android:exported="false"></service>
     </application>
 
 </manifest>

@@ -8,8 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface DeviceConfigurationRepository extends CrudRepository<DeviceConfiguration,Long> {
-    @Query("select dev from DeviceConfiguration dev where dev.device.id=:deviceId")
-    DeviceConfiguration getDeviceConfigurationDeviceId(@Param("deviceId") long deviceId);
+    @Query("select dev from DeviceConfiguration dev where dev.device.deviceId=:deviceId")
+    DeviceConfiguration getDeviceConfigurationDeviceId(@Param("deviceId") String deviceId);
     @Modifying
     @Transactional
     @Query("update DeviceConfiguration dev set dev.isParked=:IsParked where dev.device.id=:deviceId")

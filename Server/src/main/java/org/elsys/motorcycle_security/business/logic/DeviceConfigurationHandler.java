@@ -11,7 +11,7 @@ public class DeviceConfigurationHandler {
     @Autowired
     private DeviceConfigurationRepository deviceConfigurationRepository;
 
-    public DeviceConfigurationInfo getDeviceConfigurationIsParked(long deviceId) {
+    public DeviceConfigurationInfo getDeviceConfigurationIsParked(String deviceId) {
         DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationDeviceId(deviceId);
         return new DeviceConfigurationInfo(deviceConfiguration);
     }
