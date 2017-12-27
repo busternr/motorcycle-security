@@ -12,7 +12,7 @@ long timeout = 60000;
 char deviceId[7] = "23323";
 char latitude[10];
 char longtitude[10];
-//char http_get_cmd[] = "POST /device/22233/receive/device-configuration HTTP/1.0\r\n\r\n";
+//char http_get_cmd[] = "GET /device/22233/receive/device-configuration HTTP/1.0\r\n\r\n";
 //char http_post_cmd[] = "POST /device/send/gps-cordinates?deviceId=22233&x=4333332&y=223 HTTP/1.0\r\n\r\n";
 char http_get_cmd[100] = "GET /device/";
 char http_post_cmd[100] = "POST /device/send/gps-cordinates?deviceId=";
