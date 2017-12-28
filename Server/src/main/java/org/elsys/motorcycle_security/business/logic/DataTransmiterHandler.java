@@ -27,7 +27,7 @@ public class DataTransmiterHandler {
         dataTransmiterRepository.save(d);
     }
 
-    public DataTransmiterInfo getGPSCordinates(long deviceId) {
+    public DataTransmiterInfo getGPSCordinates(String deviceId) {
         DataTransmiter dataTransmiter = dataTransmiterRepository.getGpsCordinatesByDeviceId(deviceId);
         return new DataTransmiterInfo(dataTransmiter);
     }

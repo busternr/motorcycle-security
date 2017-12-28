@@ -50,14 +50,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             if (response.isSuccessful()) {
                                 User user = response.body();
                                 if (user.getEmail().equals(emailInput.getText().toString()) && user.getPassword().equals(passwordInput.getText().toString())) {
-                                    List<Device> numberOfUserDevices = user.getDevices();
-                                    for(int counter=0;counter<numberOfUserDevices.size(); counter++)
+                                    List<Device> userDevices = user.getDevices();
+                                    for(int counter=0;counter<userDevices.size(); counter++)
                                     {
                                         String deviceId = user.getDevices().get(counter).getDeviceId();
                                         Log.d("DEVICEID:", deviceId);
                                         Log.d("ADDING DEVICE NUMBER:", "Device " + counter);
                                         getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device " + counter, deviceId).apply();
-                                        GlobalVariables.userDevices.add(deviceId);
+                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", counter).apply();
                                     }
                                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
                                     Intent myIntent = new Intent(v.getContext(), MainActivity.class);

@@ -48,7 +48,7 @@ public class ClientController {
 
     @RequestMapping(value = "/client/{deviceId}/receive/gps-cordinates", method = GET)
     @ResponseBody
-    public DataTransmiterInfo getGpsCordinatesBydeviceId(@PathVariable(value = "deviceId") long deviceId) {
+    public DataTransmiterInfo getGpsCordinatesBydeviceId(@PathVariable(value = "deviceId") String deviceId) {
         DataTransmiterInfo dataTransmiterInfo = dataTransmiterHandler.getGPSCordinates(deviceId);
         return dataTransmiterInfo;
     }

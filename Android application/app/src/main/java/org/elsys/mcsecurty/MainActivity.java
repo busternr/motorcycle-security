@@ -27,13 +27,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button parkButton =  findViewById(R.id.ParkBtn);
         locationButton.setOnClickListener(this);
         parkButton.setOnClickListener(this);
-        int counter  = 1;
-        while(counter <= 5) {
-            String deviceId = getIntent().getStringExtra("DeviceId" + counter);
-            if(deviceId == null) break;
-            GlobalVariables.userDevices.add(deviceId);
-            counter++;
-        }
     }
 
     public void onClick(View v) {

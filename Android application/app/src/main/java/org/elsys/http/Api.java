@@ -35,8 +35,8 @@ public interface Api {
     @GET("/client/receive/device")
     Call<Device> getDevice(@Query("deviceId") String deviceId);
 
-    @GET("/client/{id}/receive/gps-cordinates")
-    Call<GpsCordinates> getGpsCordinates(@Path("id") long id);
+    @GET("/client/{deviceId}/receive/gps-cordinates")
+    Call<GpsCordinates> getGpsCordinates(@Path("deviceId") String deviceId);
 
     class RetrofitInstance {
         private static Api service;

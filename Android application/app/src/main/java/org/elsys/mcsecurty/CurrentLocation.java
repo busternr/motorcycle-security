@@ -11,7 +11,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.elsys.http.Api;
-import org.elsys.models.Device;
 import org.elsys.models.GpsCordinates;
 
 import retrofit2.Call;
@@ -19,8 +18,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CurrentLocation extends FragmentActivity implements OnMapReadyCallback {
+    private int counter;
     private GoogleMap mMap;
-    private int userDeviceId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,36 +29,21 @@ public class CurrentLocation extends FragmentActivity implements OnMapReadyCallb
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         final float zoomlevel = 18;
+        int numberOfUserDevices = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getInt("Number of devices", 1);
         Api api = Api.RetrofitInstance.create();
-        for (int counter = 0; counter < GlobalVariables.userDevices.size(); counter++) {
-            String deviceId = GlobalVariables.userDevices.get(counter);
-            System.out.println("------------------------------------------------------------>deviceId" + GlobalVariables.userDevices.get(counter));
-            api.getDevice(GlobalVariables.userDevices.get(counter)).enqueue(new Callback<Device>() {
-                @Override
-                public void onResponse(Call<Device> call, Response<Device> response) {
-                    if (response.isSuccessful()) {
-                        Device device = response.body();
-                        userDeviceId = device.getId();
-                        System.out.println("------------------------------------------------------------>userDeviceId" + userDeviceId);
-                    }
-                }
-                @Override
-                public void onFailure(Call<Device> call, Throwable t) {
-                }
-            });
-            api.getGpsCordinates((long) userDeviceId).enqueue(new Callback<GpsCordinates>() {
+        for (counter = 0; counter <= numberOfUserDevices; counter++) {
+            final String deviceId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Device " + counter ,"1");
+            api.getGpsCordinates(deviceId).enqueue(new Callback<GpsCordinates>() {
                 @Override
                 public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                     if (response.isSuccessful()) {
                         GpsCordinates gpsCordinates = response.body();
                         LatLng CurrLoc = new LatLng(gpsCordinates.getX(), gpsCordinates.getX());
-                        System.out.println("X========================================================================" + gpsCordinates.getX());
-                        mMap.addMarker(new MarkerOptions().position(CurrLoc).title("Device "));
+                        mMap.addMarker(new MarkerOptions().position(CurrLoc).title(deviceId));
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CurrLoc, zoomlevel));
                     }
                 }
