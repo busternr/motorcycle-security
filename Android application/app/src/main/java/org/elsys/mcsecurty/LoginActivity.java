@@ -11,8 +11,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.elsys.http.Api;
+import org.elsys.models.Device;
 import org.elsys.models.GpsCordinates;
 import org.elsys.models.User;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,16 +50,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             if (response.isSuccessful()) {
                                 User user = response.body();
                                 if (user.getEmail().equals(emailInput.getText().toString()) && user.getPassword().equals(passwordInput.getText().toString())) {
-                                    int numberOfDevices =  getSharedPreferences("PREFERENCE", MODE_PRIVATE).getInt("Number of devices", numberOfDevices);
-                                    for(int counter=1;counter<=numberOfDevices; counter++)
+                                    List<Device> numberOfUserDevices = user.getDevices();
+                                    for(int counter=0;counter<numberOfUserDevices.size(); counter++)
                                     {
-                                        String deviceId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Device " + counter , deviceId);
+                                        String deviceId = user.getDevices().get(counter).getDeviceId();
                                         Log.d("DEVICEID:", deviceId);
-                                        Log.d("ADDING DEVICE TO LIST:", "Device " + counter);
+                                        Log.d("ADDING DEVICE NUMBER:", "Device " + counter);
+                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device " + counter, deviceId).apply();
                                         GlobalVariables.userDevices.add(deviceId);
                                     }
+                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
                                     Intent myIntent = new Intent(v.getContext(), MainActivity.class);
-                                    myIntent.putExtra("isAuthorized", true);
                                     startActivity(myIntent);
                                 }
                                 else errorsText.setText("Email or password doesn't match.");

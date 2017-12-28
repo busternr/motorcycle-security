@@ -56,11 +56,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         public void onFailure(Call<User> call, Throwable t) {
                         }
                     });
-                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", 1);
-                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device 1", user.getDevices().get(0).getDeviceId());
+                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", 1).apply();
+                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
+                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device 1", user.getDevices().get(0).getDeviceId()).apply();
+                    GlobalVariables.userDevices.add(user.getDevices().get(0).getDeviceId());
                     Intent myIntent = new Intent(v.getContext(), MainActivity.class);
-                    myIntent.putExtra("isAuthorized", true);
-                    myIntent.putExtra("DeviceId1", deviceIdInput.getText().toString());
                     startActivity(myIntent);
                     break;
                 }
