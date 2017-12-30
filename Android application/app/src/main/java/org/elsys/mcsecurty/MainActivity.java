@@ -8,9 +8,11 @@ package org.elsys.mcsecurty;
         import android.widget.Toast;
 
         import org.elsys.http.Api;
+        import org.elsys.models.User;
 
-        import java.util.ArrayList;
-        import java.util.List;
+        import retrofit2.Call;
+        import retrofit2.Callback;
+        import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -27,11 +29,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         Button locationButton =  findViewById(R.id.LocBtn);
         Button parkButton =  findViewById(R.id.ParkBtn);
+        Button historyButton =  findViewById(R.id.HistoryBtn);
+        Button settingsButton =  findViewById(R.id.SettingsBtn);
         locationButton.setOnClickListener(this);
         parkButton.setOnClickListener(this);
+        historyButton.setOnClickListener(this);
+        settingsButton.setOnClickListener(this);
     }
 
     public void onClick(View v) {
+        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Currently device in use", "cbr600").apply();
+        String deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Currently device in use", "");
         switch (v.getId()) {
             case R.id.LocBtn: {
                 Intent myIntent = new Intent(v.getContext(),CurrentLocation.class);
@@ -54,17 +62,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     toast.show();
                     ParkedStatus = false;
                 }
-                /*Api api = Api.RetrofitInstance.create();
-                api.getGpsCordinates(deviceId).enqueue(new Callback<GpsCordinates>() {
-                api.createUserAccount(user).enqueue(new Callback<User>() {
+                Api api = Api.RetrofitInstance.create();
+                api.updateParkingStatus(deviceInUse,ParkedStatus).enqueue(new Callback<User>() {
                     @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
-                    }
-
+                    public void onResponse(Call<User> call, Response<User> response) {}
                     @Override
-                    public void onFailure(Call<User> call, Throwable t) {
-                    }
-                });*/
+                    public void onFailure(Call<User> call, Throwable t) {}
+                });
+                break;
+            }
+            case R.id.SettingsBtn: {
+                Intent myIntent = new Intent(v.getContext(),Settings.class);
+                startActivity(myIntent);
                 break;
             }
         }

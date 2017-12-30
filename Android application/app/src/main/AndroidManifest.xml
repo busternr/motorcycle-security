@@ -55,10 +55,11 @@
         <activity
             android:name=".RegisterActivity"
             android:label="@string/title_activity_register" />
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" />
-
+        <activity android:name=".Srttings" />
+        <activity android:name=".Settings" />
+        <activity android:name=".CurrentDevice" />
+        <activity android:name=".AllDevices" />
+        <activity android:name=".AddDevice"></activity>
     </application>
 
 </manifest>

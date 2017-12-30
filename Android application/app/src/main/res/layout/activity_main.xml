@@ -23,7 +23,7 @@
         android:id="@+id/HistoryBtn"
         android:layout_width="178dp"
         android:layout_height="60dp"
-        android:text="Hisotry"
+        android:text="History"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,6 +44,18 @@
         app:layout_constraintVertical_bias="0.133" />
 
     <Button
+        android:id="@+id/SettingsBtn"
+        android:layout_width="178dp"
+        android:layout_height="60dp"
+        android:text="Settings"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.408" />
+
+    <Button
         android:id="@+id/StatusBtn"
         android:layout_width="178dp"
         android:layout_height="60dp"
@@ -53,7 +65,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.408" />
+        app:layout_constraintVertical_bias="0.539" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"

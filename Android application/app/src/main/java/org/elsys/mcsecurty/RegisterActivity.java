@@ -59,7 +59,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", 1).apply();
                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device 1", user.getDevices().get(0).getDeviceId()).apply();
-                    GlobalVariables.userDevices.add(user.getDevices().get(0).getDeviceId());
                     Intent myIntent = new Intent(v.getContext(), MainActivity.class);
                     startActivity(myIntent);
                     break;

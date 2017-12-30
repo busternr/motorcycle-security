@@ -21,10 +21,10 @@ import retrofit2.http.Query;
 
 public interface Api {
     @PUT("/client/send/parking-status")
-    Call<User> updateParkingStatus(@Query("deviceId") long deviceId, @Query("isParked") boolean isParked);
+    Call<User> updateParkingStatus(@Query("deviceId") String deviceId, @Query("isParked") boolean isParked);
 
     @PUT("/client/send/timeout")
-    Call<User> updateTimeout(@Query("deviceId") long deviceId, @Query("timeout") long timeout);
+    Call<User> updateTimeout(@Query("deviceId") String deviceId, @Query("timeout") long timeout);
 
     @POST("/client/send/create-new-user")
     Call<User> createUserAccount(@Body User user);
