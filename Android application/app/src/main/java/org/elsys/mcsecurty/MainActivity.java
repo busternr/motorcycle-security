@@ -7,6 +7,8 @@ package org.elsys.mcsecurty;
         import android.widget.Button;
         import android.widget.Toast;
 
+        import org.elsys.http.Api;
+
         import java.util.ArrayList;
         import java.util.List;
 
@@ -52,6 +54,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     toast.show();
                     ParkedStatus = false;
                 }
+                /*Api api = Api.RetrofitInstance.create();
+                api.getGpsCordinates(deviceId).enqueue(new Callback<GpsCordinates>() {
+                api.createUserAccount(user).enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                    }
+                });*/
                 break;
             }
         }

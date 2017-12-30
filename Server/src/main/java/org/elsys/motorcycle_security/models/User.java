@@ -18,7 +18,6 @@ public class User {
     @Column(name="Password")
     private String password;
 
-    //"user" trqbvda e imeto na promenlivata vuv deviceids
     @OneToMany(mappedBy="user")
     private List<Device> userDevices=new ArrayList<>();
 

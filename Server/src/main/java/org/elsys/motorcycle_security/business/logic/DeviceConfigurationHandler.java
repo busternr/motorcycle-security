@@ -15,4 +15,17 @@ public class DeviceConfigurationHandler {
         DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationDeviceId(deviceId);
         return new DeviceConfigurationInfo(deviceConfiguration);
     }
+
+    public void updateTimeOut(String deviceId, long timeOut) {
+        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationDeviceId(deviceId);
+        deviceConfiguration.setTimeOut(timeOut);
+        deviceConfigurationRepository.save(deviceConfiguration);
+    }
+
+    public void updateParkingStatus(String deviceId, boolean isParked) {
+        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationDeviceId(deviceId);
+        deviceConfiguration.setParked(isParked);
+        deviceConfigurationRepository.save(deviceConfiguration);
+    }
 }
+

@@ -22,8 +22,8 @@ public class Device {
     @OneToMany(mappedBy="device")
     private List<DataTransmiter> transmiterData = new ArrayList<>();
 
-    @OneToMany(mappedBy="device")
-    private List<DeviceConfiguration> deviceConfigurations = new ArrayList<>();
+    @OneToOne(mappedBy="device")
+    private DeviceConfiguration deviceConfiguration;
 
     public long getId() {
         return id;

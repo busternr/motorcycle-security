@@ -15,7 +15,7 @@ public class DeviceConfiguration {
     @Column(name="timeout")
     private long timeOut;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name="deviceId", nullable=false)
     private Device device;
 

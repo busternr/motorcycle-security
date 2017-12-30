@@ -1,13 +1,13 @@
 package org.elsys.motorcycle_security.controllers;
 
 import org.elsys.motorcycle_security.business.logic.DataTransmiterHandler;
+import org.elsys.motorcycle_security.business.logic.DeviceConfigurationHandler;
 import org.elsys.motorcycle_security.business.logic.DeviceHandler;
 import org.elsys.motorcycle_security.business.logic.UserHandler;
 import org.elsys.motorcycle_security.dto.DataTransmiterInfo;
 import org.elsys.motorcycle_security.dto.DeviceInfo;
 import org.elsys.motorcycle_security.dto.UserDto;
 import org.elsys.motorcycle_security.dto.UserInfo;
-import org.elsys.motorcycle_security.repository.DeviceConfigurationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,16 +24,16 @@ public class ClientController {
     @Autowired
     private DataTransmiterHandler dataTransmiterHandler;
     @Autowired
-    private DeviceConfigurationRepository deviceConfigurationRepository;
+    private DeviceConfigurationHandler deviceConfigurationHandler;
 
     @RequestMapping(value = "/client/send/parking-status", method = PUT)
-    public void updateParkingStatusByDeviceId(@RequestParam(value = "deviceId", defaultValue = "0") long deviceId, @RequestParam(value = "isParked", defaultValue = "0") boolean isParked) {
-        deviceConfigurationRepository.updateParkingStatusByDeviceId(deviceId, isParked);
+    public void updateParkingStatusByDeviceId(@RequestParam(value = "deviceId", defaultValue = "0") String deviceId, @RequestParam(value = "isParked", defaultValue = "0") boolean isParked) {
+        deviceConfigurationHandler.updateParkingStatus(deviceId, isParked);
     }
 
     @RequestMapping(value = "/client/send/timeout", method = PUT)
-    public void updateTimeoutByDeviceId(@RequestParam(value = "deviceId", defaultValue = "0") long deviceId, @RequestParam(value = "timeout", defaultValue = "0") long timeout) {
-        deviceConfigurationRepository.updateTimeoutByDeviceId(deviceId, timeout);
+    public void updateTimeoutByDeviceId(@RequestParam(value = "deviceId", defaultValue = "0") String deviceId, @RequestParam(value = "timeout", defaultValue = "0") long timeOut) {
+        deviceConfigurationHandler.updateTimeOut(deviceId, timeOut);
     }
 
     @RequestMapping(value = "/client/send/create-new-user", method = POST)
