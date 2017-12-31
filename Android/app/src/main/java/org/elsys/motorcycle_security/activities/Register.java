@@ -16,7 +16,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Register extends AppCompatActivity implements View.OnClickListener  {
+public class Register extends AppCompatActivity implements View.OnClickListener {
     private EditText passwordInput;
     private EditText emailInput;
     private EditText deviceIdInput;
@@ -26,10 +26,10 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-         passwordInput = (EditText) findViewById(R.id.RegPassword);
-         emailInput = (EditText) findViewById(R.id.RegEmail);
-         deviceIdInput = (EditText) findViewById(R.id.RegDeviceId);
-         errorsText = (TextView) findViewById(R.id.ErrorsRegText);
+         passwordInput = findViewById(R.id.RegPassword);
+         emailInput = findViewById(R.id.RegEmail);
+         deviceIdInput = findViewById(R.id.RegDeviceId);
+         errorsText = findViewById(R.id.ErrorsRegText);
         Button registerButton = findViewById(R.id.RegBtn);
         registerButton.setOnClickListener(this);
     }
@@ -58,6 +58,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", 1).apply();
                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device 1", user.getDevices().get(0).getDeviceId()).apply();
+                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceIdInput.getText().toString()).apply();
                     Intent myIntent = new Intent(v.getContext(), Main.class);
                     startActivity(myIntent);
                     break;

@@ -1,6 +1,7 @@
 package org.elsys.motorcycle_security.http;
 
 import org.elsys.motorcycle_security.models.Device;
+import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.GpsCordinates;
 import org.elsys.motorcycle_security.models.User;
 
@@ -18,10 +19,10 @@ import retrofit2.http.Query;
 
 public interface Api {
     @PUT("/client/send/parking-status")
-    Call<User> updateParkingStatus(@Query("deviceId") String deviceId, @Query("isParked") boolean isParked);
+    Call<DeviceConfiguration> updateParkingStatus(@Query("deviceId") String deviceId, @Query("isParked") boolean isParked);
 
     @PUT("/client/send/timeout")
-    Call<User> updateTimeout(@Query("deviceId") String deviceId, @Query("timeout") long timeout);
+    Call<DeviceConfiguration> updateTimeOut(@Query("deviceId") String deviceId, @Query("timeout") long timeOut);
 
     @POST("/client/send/create-new-user")
     Call<User> createUserAccount(@Body User user);
@@ -34,6 +35,9 @@ public interface Api {
 
     @GET("/client/{deviceId}/receive/gps-cordinates")
     Call<GpsCordinates> getGpsCordinates(@Path("deviceId") String deviceId);
+
+    @GET("/device/{deviceId}/receive/device-configuration")
+    Call<DeviceConfiguration> getDeviceConfiguration(@Path("deviceId") String deviceId);
 
     class RetrofitInstance {
         private static Api service;

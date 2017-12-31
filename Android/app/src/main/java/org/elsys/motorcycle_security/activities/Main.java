@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
-import org.elsys.motorcycle_security.models.User;
+import org.elsys.motorcycle_security.models.DeviceConfiguration;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,7 +40,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
 
     public void onClick(View v) {
         getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Currently device in use", "cbr600").apply();
-        String deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Currently device in use", "");
+        String deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
         switch (v.getId()) {
             case R.id.LocBtn: {
                 Intent myIntent = new Intent(v.getContext(),CurrentLocation.class);
@@ -64,11 +64,11 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                     ParkedStatus = false;
                 }
                 Api api = Api.RetrofitInstance.create();
-                api.updateParkingStatus(deviceInUse,ParkedStatus).enqueue(new Callback<User>() {
+                api.updateParkingStatus(deviceInUse,ParkedStatus).enqueue(new Callback<DeviceConfiguration>() {
                     @Override
-                    public void onResponse(Call<User> call, Response<User> response) {}
+                    public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
                     @Override
-                    public void onFailure(Call<User> call, Throwable t) {}
+                    public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
                 });
                 break;
             }

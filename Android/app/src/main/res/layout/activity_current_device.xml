@@ -20,33 +20,39 @@
         app:layout_constraintVertical_bias="0.078" />
 
     <TextView
-        android:id="@+id/DeviceIdTextView"
+        android:id="@+id/DeviceIdText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="36dp"
         android:text="Device pin number:"
         android:textColor="@color/common_google_signin_btn_text_dark_default"
-        android:textSize="20sp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="151dp" />
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ChangeTimeOutBtn" />
 
     <TextView
-        android:id="@+id/ParkingStatusTextView"
+        android:id="@+id/ParkingStatusText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Parking status:"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="17dp"
+        android:text="Vehicle is parked:"
         android:textColor="@color/common_google_signin_btn_text_dark_default"
-        android:textSize="20sp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="187dp" />
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DeviceIdText" />
 
     <TextView
-        android:id="@+id/TimeOutTextView"
+        android:id="@+id/TimeOutText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="GPS Sending frequency"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="20dp"
+        android:text="GPS Sending frequency:"
         android:textColor="@color/common_google_signin_btn_text_dark_default"
-        android:textSize="20sp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="222dp" />
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ParkingStatusText" />
 
 </android.support.constraint.ConstraintLayout>

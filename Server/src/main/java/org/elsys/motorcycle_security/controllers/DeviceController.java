@@ -15,8 +15,6 @@ public class DeviceController {
     private DataTransmiterHandler dataTransmiterHandler;
     @Autowired
     private DeviceConfigurationHandler deviceConfigurationHandler;
-    @Autowired
-    private DeviceConfigurationRepository deviceConfigurationRepository;
 
     @RequestMapping(value="/device/send/gps-cordinates",method=POST)
     public void  sendGpsCordinates(@RequestParam(value="deviceId") String deviceId,

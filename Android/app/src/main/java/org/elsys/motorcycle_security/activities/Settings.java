@@ -17,6 +17,9 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
         Button currentDeviceButton =  findViewById(R.id.CurrentDeviceBtn);
         Button allDevicesButton =  findViewById(R.id.AllDevicesBtn);
         Button addDeviceButton =  findViewById(R.id.AddDeviceBtn);
+        currentDeviceButton.setOnClickListener(this);
+        allDevicesButton.setOnClickListener(this);
+        addDeviceButton.setOnClickListener(this);
     }
 
     @Override

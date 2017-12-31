@@ -20,7 +20,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Login extends AppCompatActivity implements View.OnClickListener  {
+public class Login extends AppCompatActivity implements View.OnClickListener {
     private EditText passwordInput;
     private EditText emailInput;
     private TextView errorsText;
@@ -29,9 +29,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        passwordInput = (EditText) findViewById(R.id.LoginPassword);
-        emailInput = (EditText) findViewById(R.id.LoginEmail);
-        errorsText = (TextView) findViewById(R.id.ErrorsLoginText);
+        passwordInput = findViewById(R.id.LoginPassword);
+        emailInput = findViewById(R.id.LoginEmail);
+        errorsText = findViewById(R.id.ErrorsLoginText);
         Button loginButton = findViewById(R.id.LoginBtn);
         loginButton.setOnClickListener(this);
     }
@@ -57,6 +57,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener  {
                                         Log.d("ADDING DEVICE NUMBER:", "Device " + counter);
                                         getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device " + counter, deviceId).apply();
                                         getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", counter).apply();
+                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceId).apply();
                                     }
                                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
                                     Intent myIntent = new Intent(v.getContext(), Main.class);

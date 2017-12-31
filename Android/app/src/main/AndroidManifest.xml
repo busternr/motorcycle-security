@@ -22,7 +22,7 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="org.elsys.motorcycle_security.activities.Main">
+        <activity android:name=".activities.Main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,24 +42,25 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="org.elsys.motorcycle_security.activities.CurrentLocation"
+            android:name=".activities.CurrentLocation"
             android:label="@string/title_activity_current_location" />
-        <activity android:name="org.elsys.motorcycle_security.activities.History" />
+        <activity android:name=".activities.History" />
         <activity
-            android:name="org.elsys.motorcycle_security.activities.HistoryForDifferentDays"
+            android:name=".activities.HistoryForDifferentDays"
             android:label="@string/title_activity_history_for_different_days" />
-        <activity android:name="org.elsys.motorcycle_security.activities.LoginRegister" />
+        <activity android:name=".activities.LoginRegister" />
         <activity
-            android:name="org.elsys.motorcycle_security.activities.Login"
+            android:name=".activities.Login"
             android:label="@string/title_activity_login" />
         <activity
-            android:name="org.elsys.motorcycle_security.activities.Register"
+            android:name=".activities.Register"
             android:label="@string/title_activity_register" />
         <activity android:name=".Srttings" />
-        <activity android:name="org.elsys.motorcycle_security.activities.Settings" />
-        <activity android:name="org.elsys.motorcycle_security.activities.CurrentDevice" />
-        <activity android:name="org.elsys.motorcycle_security.activities.AllDevices" />
-        <activity android:name="org.elsys.motorcycle_security.activities.AddDevice"></activity>
+        <activity android:name=".activities.Settings" />
+        <activity android:name=".activities.CurrentDevice" />
+        <activity android:name=".activities.AllDevices" />
+        <activity android:name=".activities.AddDevice" />
+        <activity android:name=".activities.ChangeTimeOut"></activity>
     </application>
 
 </manifest>
