@@ -1,7 +1,5 @@
 package org.elsys.motorcycle_security.business.logic;
 
-import com.mysql.jdbc.StringUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.elsys.motorcycle_security.dto.DeviceDto;
 import org.elsys.motorcycle_security.dto.UserDto;
 import org.elsys.motorcycle_security.dto.UserInfo;
@@ -27,14 +25,11 @@ public class UserHandler {
     @Autowired
     private DeviceConfigurationRepository deviceConfigurationRepository;
 
-
-
     public void createNewUser(UserDto userDto){
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         long violations = validator.validate(userDto).size();
-        if(violations>0)
-            throw new InvalidParameterException("Input is missing or contains invalid field data "+validator.validate(userDto).iterator().next().getConstraintDescriptor().getMessageTemplate());
+        if(violations>0) throw new InvalidParameterException("Input is missing or contains invalid field data "+validator.validate(userDto).iterator().next().getConstraintDescriptor().getMessageTemplate());
         User user = new User();
         user.setPassword(userDto.getPassword());
         user.setEmail(userDto.getEmail());
@@ -45,16 +40,11 @@ public class UserHandler {
             device.setUser(user);
             device.setDeviceId(userDeviceDto.getDeviceId());
             deviceRepository.save(device);
-
             user.getUserDevices().add(device);
-
             DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
             deviceConfiguration.setDevice(device);
             deviceConfigurationRepository.save(deviceConfiguration);
         }
-
-
-
     }
 
     public UserInfo getUser(String email) {

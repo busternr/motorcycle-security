@@ -7,21 +7,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserInfo {
+    private long id;
     private String email;
     private String password;
     private List<DeviceInfo> devices = new ArrayList<>();
 
-    public UserInfo(String email, String password) {
+    public UserInfo(long id, String email, String password) {
+        this.id = id;
         this.email = email;
         this.password = password;
     }
 
     public UserInfo(User user) {
-        this(user.getEmail(), user.getPassword());
+        this(user.getId(), user.getEmail(), user.getPassword());
 
         for(Device device : user.getUserDevices()) {
             this.devices.add(new DeviceInfo(device));
         }
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getEmail() {

@@ -53,11 +53,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                     for(int counter=0;counter<userDevices.size(); counter++)
                                     {
                                         String deviceId = user.getDevices().get(counter).getDeviceId();
-                                        Log.d("DEVICEID:", deviceId);
-                                        Log.d("ADDING DEVICE NUMBER:", "Device " + counter);
                                         getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device " + counter, deviceId).apply();
                                         getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", counter).apply();
                                         getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceId).apply();
+                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putLong("UserId", user.getId()).apply();
                                     }
                                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
                                     Intent myIntent = new Intent(v.getContext(), Main.class);

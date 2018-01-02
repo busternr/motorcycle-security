@@ -8,6 +8,9 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 
 public class User {
+    @SerializedName("id")
+    @Expose
+    private long id;
     @SerializedName("email")
     @Expose
     private String email;
@@ -48,5 +51,13 @@ public class User {
 
     public void setDevices(List<Device> devices) {
         this.devices = devices;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

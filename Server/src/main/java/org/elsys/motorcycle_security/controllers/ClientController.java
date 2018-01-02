@@ -4,10 +4,7 @@ import org.elsys.motorcycle_security.business.logic.DataTransmiterHandler;
 import org.elsys.motorcycle_security.business.logic.DeviceConfigurationHandler;
 import org.elsys.motorcycle_security.business.logic.DeviceHandler;
 import org.elsys.motorcycle_security.business.logic.UserHandler;
-import org.elsys.motorcycle_security.dto.DataTransmiterInfo;
-import org.elsys.motorcycle_security.dto.DeviceInfo;
-import org.elsys.motorcycle_security.dto.UserDto;
-import org.elsys.motorcycle_security.dto.UserInfo;
+import org.elsys.motorcycle_security.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,8 +39,8 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/send/create-new-device", method = POST)
-    public void createNewUser(@RequestParam(value = "userId", defaultValue = "0") long userId, @RequestParam(value = "deviceId", defaultValue = "") String deviceId) {
-        deviceHandler.createNewDevice(userId, deviceId);
+    public void createNewUser(@RequestBody DeviceDto newDevice) {
+        deviceHandler.createNewDevice(newDevice);
     }
 
     @RequestMapping(value = "/client/{deviceId}/receive/gps-cordinates", method = GET)

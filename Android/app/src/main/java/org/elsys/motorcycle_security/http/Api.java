@@ -27,6 +27,9 @@ public interface Api {
     @POST("/client/send/create-new-user")
     Call<User> createUserAccount(@Body User user);
 
+    @POST("/client/send/create-new-device")
+    Call<Device> createDevice(@Body Device device);
+
     @GET("/client/receive/user-account")
     Call<User> getUserAccount(@Header("email") String email);
 
