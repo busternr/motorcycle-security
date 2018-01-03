@@ -3,6 +3,7 @@ package org.elsys.motorcycle_security.activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -39,7 +40,6 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
     }
 
     public void onClick(View v) {
-        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Currently device in use", "cbr600").apply();
         String deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
         switch (v.getId()) {
             case R.id.LocBtn: {

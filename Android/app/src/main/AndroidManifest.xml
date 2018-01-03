@@ -60,7 +60,8 @@
         <activity android:name=".activities.CurrentDevice" />
         <activity android:name=".activities.AllDevices" />
         <activity android:name=".activities.AddDevice" />
-        <activity android:name=".activities.ChangeTimeOut"></activity>
+        <activity android:name=".activities.ChangeTimeOut" />
+        <activity android:name=".activities.SetCurrentDevice"></activity>
     </application>
 
 </manifest>

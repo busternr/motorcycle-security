@@ -3,6 +3,7 @@ package org.elsys.motorcycle_security.activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,16 +33,26 @@ public class CurrentDevice extends AppCompatActivity implements View.OnClickList
         String deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
         deviceIdText.setText("Device pin number:" + deviceInUse);
         Api api = Api.RetrofitInstance.create();
+        Log.d("deviceId ", deviceInUse);
         api.getDeviceConfiguration(deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
             @Override
             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
+                Log.d("responce", "");
                 DeviceConfiguration deviceConfiguration = response.body();
-                if(deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "ON");
-                else if(!deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "OFF");
+                if(deviceConfiguration.isParked()) {
+                    parkingStatusText.setText("Vehicle is parked:" + "ON");
+                    Log.d("on", "");
+                }
+                else if(!deviceConfiguration.isParked()) {
+                    parkingStatusText.setText("Vehicle is parked:" + "OFF");
+                    Log.d("off ", "");
+                }
                 timeOutText.setText("GPS Sending frequency:" + String.valueOf(deviceConfiguration.getTimeOut()) + " mileseconds");
             }
             @Override
-            public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
+            public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
+                Log.d("failure", "");
+            }
         });
     }
 
