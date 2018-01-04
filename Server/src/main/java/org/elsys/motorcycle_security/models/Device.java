@@ -19,6 +19,9 @@ public class Device {
     @Column(name="DeviceId",nullable = false)
     private String deviceId;
 
+    @Column(name="upTime",nullable = false)
+    private long upTime;
+
     @OneToMany(mappedBy="device")
     private List<DataTransmiter> transmiterData = new ArrayList<>();
 
@@ -47,5 +50,13 @@ public class Device {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public long getUpTime() {
+        return upTime;
+    }
+
+    public void setUpTime(long upTime) {
+        this.upTime = upTime;
     }
 }

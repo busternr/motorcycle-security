@@ -47,4 +47,10 @@ public class DeviceHandler {
         Device device = deviceRepository.getDeviceByDeviceId(deviceId);
         return new DeviceInfo(device);
     }
+
+    public void updateUpTime(String deviceId, long upTime) {
+        Device device = deviceRepository.getDeviceByDeviceId(deviceId);
+        device.setUpTime(upTime);
+        deviceRepository.save(device);
+    }
 }

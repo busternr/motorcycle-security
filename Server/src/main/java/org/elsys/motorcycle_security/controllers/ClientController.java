@@ -57,9 +57,9 @@ public class ClientController {
         return userInfo;
     }
 
-    @RequestMapping(value="/client/receive/device",method=GET)
+    @RequestMapping(value="/client/{deviceId}/receive/device",method=GET)
     @ResponseBody
-    public DeviceInfo geDeviceByDeviceID(@RequestParam(value = "deviceId", defaultValue = "0") String deviceId) {
+    public DeviceInfo geDeviceByDeviceID(@PathVariable(value = "deviceId") String deviceId) {
         DeviceInfo deviceInfo = deviceHandler.getDevice(deviceId);
         return deviceInfo;
     }

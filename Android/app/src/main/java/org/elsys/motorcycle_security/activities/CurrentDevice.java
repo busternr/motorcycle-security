@@ -20,6 +20,8 @@ public class CurrentDevice extends AppCompatActivity implements View.OnClickList
     private TextView deviceIdText;
     private TextView parkingStatusText;
     private TextView timeOutText;
+    private TextView statusText;
+    private TextView runningTimeText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,8 @@ public class CurrentDevice extends AppCompatActivity implements View.OnClickList
         deviceIdText = findViewById(R.id.DeviceIdText);
         parkingStatusText = findViewById(R.id.ParkingStatusText);
         timeOutText = findViewById(R.id.TimeOutText);
+        statusText = findViewById(R.id.StatusText);
+        runningTimeText = findViewById(R.id.RunningTimeText);
         Button timeOutButton = findViewById(R.id.ChangeTimeOutBtn);
         timeOutButton.setOnClickListener(this);
         String deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");

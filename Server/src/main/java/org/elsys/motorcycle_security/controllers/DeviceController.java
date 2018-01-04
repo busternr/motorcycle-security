@@ -2,19 +2,28 @@ package org.elsys.motorcycle_security.controllers;
 
 import org.elsys.motorcycle_security.business.logic.DataTransmiterHandler;
 import org.elsys.motorcycle_security.business.logic.DeviceConfigurationHandler;
+import org.elsys.motorcycle_security.business.logic.DeviceHandler;
 import org.elsys.motorcycle_security.dto.DeviceConfigurationInfo;
 import org.elsys.motorcycle_security.repository.DeviceConfigurationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
 public class DeviceController {
     @Autowired
+    private DeviceHandler deviceHandler;
+    @Autowired
     private DataTransmiterHandler dataTransmiterHandler;
     @Autowired
     private DeviceConfigurationHandler deviceConfigurationHandler;
+
+    @RequestMapping(value = "/device/{deviceId}/send/status", method = PUT)
+    public void updateStatusByDeviceId(@PathVariable(value = "deviceId") String deviceId, @RequestParam(value = "upTime", defaultValue = "0") long upTime) {
+        deviceHandler.updateUpTime(deviceId, upTime);
+    }
 
     @RequestMapping(value="/device/send/gps-cordinates",method=POST)
     public void  sendGpsCordinates(@RequestParam(value="deviceId") String deviceId,
