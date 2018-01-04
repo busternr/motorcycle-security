@@ -18,8 +18,8 @@ import retrofit2.Response;
 
 public class Main extends AppCompatActivity implements View.OnClickListener {
 
-    private boolean ParkedStatus;
-
+    String deviceInUse;
+    private boolean isParked;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,10 +37,24 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
         parkButton.setOnClickListener(this);
         historyButton.setOnClickListener(this);
         settingsButton.setOnClickListener(this);
+        if(isAuthorized) {
+            deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
+            Api api = Api.RetrofitInstance.create();
+            api.getDeviceConfiguration(deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
+                @Override
+                public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
+                    DeviceConfiguration deviceConfiguration = response.body();
+                    isParked = deviceConfiguration.isParked();
+                }
+
+                @Override
+                public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
+                }
+            });
+        }
     }
 
     public void onClick(View v) {
-        String deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
         switch (v.getId()) {
             case R.id.LocBtn: {
                 Intent myIntent = new Intent(v.getContext(),CurrentLocation.class);
@@ -53,18 +67,18 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                 break;
             }
             case R.id.ParkBtn: {
-                if(ParkedStatus == false) {
+                if(isParked == false) {
                     Toast toast = Toast.makeText(getApplicationContext(), "Parked mode ON", Toast.LENGTH_LONG);
                     toast.show();
-                    ParkedStatus = true;
+                    isParked = true;
                 }
-                else {
+                else if(isParked == true) {
                     Toast toast = Toast.makeText(getApplicationContext(), "Parked mode OFF", Toast.LENGTH_LONG);
                     toast.show();
-                    ParkedStatus = false;
+                    isParked = false;
                 }
                 Api api = Api.RetrofitInstance.create();
-                api.updateParkingStatus(deviceInUse,ParkedStatus).enqueue(new Callback<DeviceConfiguration>() {
+                api.updateParkingStatus(deviceInUse,isParked).enqueue(new Callback<DeviceConfiguration>() {
                     @Override
                     public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
                     @Override
@@ -79,5 +93,4 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
             }
         }
     }
-
 }

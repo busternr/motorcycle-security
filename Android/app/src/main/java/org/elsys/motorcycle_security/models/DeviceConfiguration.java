@@ -8,9 +8,9 @@ public class DeviceConfiguration {
     @SerializedName("timeOut")
     @Expose
     private long timeOut;
-    @SerializedName("isParked")
+    @SerializedName("parked")
     @Expose
-    private boolean isParked;
+    private boolean parked;
 
     public long getTimeOut() {
         return timeOut;
@@ -21,10 +21,10 @@ public class DeviceConfiguration {
     }
 
     public boolean isParked() {
-        return isParked;
+        return parked;
     }
 
     public void setParked(boolean parked) {
-        isParked = parked;
+        this.parked = parked;
     }
 }

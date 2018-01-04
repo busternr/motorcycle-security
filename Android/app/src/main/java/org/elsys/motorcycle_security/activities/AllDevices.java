@@ -26,7 +26,7 @@ public class AllDevices extends AppCompatActivity implements View.OnClickListene
         device3Button.setOnClickListener(this);
         device4Button.setOnClickListener(this);
         device5Button.setOnClickListener(this);
-        int devices = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getInt("Number of devices", 1);
+        int devices = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getInt("Number of devices", 0);
         for(int i=1;i<=5;i++)
         {
             device1Button.setVisibility(View.GONE);
