@@ -10,7 +10,11 @@ import android.widget.TextView;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
+import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
+
+import java.text.SimpleDateFormat;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,28 +38,56 @@ public class CurrentDevice extends AppCompatActivity implements View.OnClickList
         runningTimeText = findViewById(R.id.RunningTimeText);
         Button timeOutButton = findViewById(R.id.ChangeTimeOutBtn);
         timeOutButton.setOnClickListener(this);
+        Api api;
         String deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
         deviceIdText.setText("Device pin number:" + deviceInUse);
-        Api api = Api.RetrofitInstance.create();
-        Log.d("deviceId ", deviceInUse);
+        api = Api.RetrofitInstance.create();
         api.getDeviceConfiguration(deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
             @Override
             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
-                Log.d("responce", "");
                 DeviceConfiguration deviceConfiguration = response.body();
-                if(deviceConfiguration.isParked()) {
-                    parkingStatusText.setText("Vehicle is parked:" + "ON");
-                    Log.d("on", "");
-                }
-                else if(!deviceConfiguration.isParked()) {
-                    parkingStatusText.setText("Vehicle is parked:" + "OFF");
-                    Log.d("off ", "");
-                }
+                if(deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "ON");
+                else if(!deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "OFF");
                 timeOutText.setText("GPS Sending frequency:" + String.valueOf(deviceConfiguration.getTimeOut()) + " mileseconds");
             }
             @Override
             public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
-                Log.d("failure", "");
+            }
+        });
+        api = Api.RetrofitInstance.create();
+        api.getDevice(deviceInUse).enqueue(new Callback<Device>() {
+            @Override
+            public void onResponse(Call<Device> call, Response<Device> response) {
+                Device device = response.body();
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                runningTimeText.setText("Running time:" + sdf.format(device.getUpTime()) + " hours");
+                long millis = device.getUpTime();
+                long days = TimeUnit.MILLISECONDS.toDays(millis);
+                millis -= TimeUnit.DAYS.toMillis(days);
+                long hours = TimeUnit.MILLISECONDS.toHours(millis);
+                millis -= TimeUnit.HOURS.toMillis(hours);
+                long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+                millis -= TimeUnit.MINUTES.toMillis(minutes);
+                long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
+                StringBuilder sb = new StringBuilder(64);
+                if(days >=1) {
+                    sb.append(days);
+                    sb.append(" Days ");
+                }
+                if(hours >=1) {
+                    sb.append(hours);
+                    sb.append(" Hours ");
+                }
+                if(minutes >=1) {
+                    sb.append(minutes);
+                    sb.append(" Minutes ");
+                }
+                sb.append(seconds);
+                sb.append(" Seconds");
+                runningTimeText.setText("Running time:" + sb.toString());
+            }
+            @Override
+            public void onFailure(Call<Device> call, Throwable t) {
             }
         });
     }

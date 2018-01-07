@@ -12,17 +12,13 @@ public class DeviceInfo {
     @NotNull
     private String deviceId;
 
-    @NotNull
-    private long upTime;
-
-    public DeviceInfo(long id, String deviceId, long upTime) {
+    public DeviceInfo(long id, String deviceId) {
         this.id = id;
         this.deviceId = deviceId;
-        this.upTime = upTime;
     }
 
     public DeviceInfo(Device device) {
-        this(device.getId(), device.getDeviceId(), device.getUpTime());
+        this(device.getId(), device.getDeviceId());
     }
 
     public long getId() {
@@ -39,13 +35,5 @@ public class DeviceInfo {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
-    }
-
-    public long getUpTime() {
-        return upTime;
-    }
-
-    public void setUpTime(long upTime) {
-        this.upTime = upTime;
     }
 }

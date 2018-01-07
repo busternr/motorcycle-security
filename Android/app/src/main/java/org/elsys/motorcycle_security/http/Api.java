@@ -33,8 +33,8 @@ public interface Api {
     @GET("/client/receive/user-account")
     Call<User> getUserAccount(@Header("email") String email);
 
-    @GET("/client/receive/device")
-    Call<Device> getDevice(@Query("deviceId") String deviceId);
+    @GET("/client/{deviceId}/receive/device")
+    Call<Device> getDevice(@Path("deviceId") String deviceId);
 
     @GET("/client/{deviceId}/receive/gps-cordinates")
     Call<GpsCordinates> getGpsCordinates(@Path("deviceId") String deviceId);

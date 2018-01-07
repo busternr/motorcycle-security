@@ -7,19 +7,19 @@ public class Device {
 
     @SerializedName("id")
     @Expose
-    private int id;
+    private long id;
     @SerializedName("deviceId")
     @Expose
     private String deviceId;
 
-    @SerializedName("userId")
+    @SerializedName("upTime")
     @Expose
-    private long userId;
+    private long upTime;
 
     public Device() {}
-    public Device(String deviceId, long userId) {
+    public Device(String deviceId, long upTime) {
         this.deviceId = deviceId;
-        this.userId = userId;
+        this.upTime = upTime;
     }
 
     public String getDeviceId() {
@@ -30,11 +30,19 @@ public class Device {
         this.deviceId = deviceId;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public long getUpTime() {
+        return upTime;
+    }
+
+    public void setUpTime(long upTime) {
+        this.upTime = upTime;
     }
 }
