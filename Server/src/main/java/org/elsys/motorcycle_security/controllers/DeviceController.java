@@ -25,7 +25,7 @@ public class DeviceController {
     @RequestMapping(value="/device/{deviceId}/receive/device-configuration",method=GET)
     @ResponseBody
     public DeviceConfigurationInfo getDeviceConfigurationDeviceId(@PathVariable (value="deviceId") String deviceId) {
-        DeviceConfigurationInfo deviceConfigurationInfo = deviceConfigurationHandler.getDeviceConfigurationIsParked(deviceId);
+        DeviceConfigurationInfo deviceConfigurationInfo = deviceConfigurationHandler.getDeviceConfiguration(deviceId);
         return deviceConfigurationInfo;
     }
 }

@@ -25,6 +25,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         boolean isAuthorized = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isAuthorized", false);
+        boolean justRegistered = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("justRegistered", false);
         if (!isAuthorized) {
             Intent myIntent = new Intent(this,LoginRegister.class);
             startActivity(myIntent);
@@ -37,7 +38,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
         parkButton.setOnClickListener(this);
         historyButton.setOnClickListener(this);
         settingsButton.setOnClickListener(this);
-        if(isAuthorized) {
+        if(isAuthorized && !justRegistered) {
             deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
             Api api = Api.RetrofitInstance.create();
             api.getDeviceConfiguration(deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
@@ -46,7 +47,6 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                     DeviceConfiguration deviceConfiguration = response.body();
                     isParked = deviceConfiguration.isParked();
                 }
-
                 @Override
                 public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
                 }

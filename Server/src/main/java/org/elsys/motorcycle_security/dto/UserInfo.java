@@ -20,7 +20,6 @@ public class UserInfo {
 
     public UserInfo(User user) {
         this(user.getId(), user.getEmail(), user.getPassword());
-
         for(Device device : user.getUserDevices()) {
             this.devices.add(new DeviceInfo(device));
         }

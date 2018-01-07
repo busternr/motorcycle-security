@@ -63,7 +63,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                     startActivity(myIntent);
                                 }
                                 else errorsText.setText("Email or password doesn't match.");
-                            } else {
+                            }
+                            else {
                             }
                         }
 

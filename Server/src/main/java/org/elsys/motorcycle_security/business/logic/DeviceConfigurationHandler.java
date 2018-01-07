@@ -11,19 +11,19 @@ public class DeviceConfigurationHandler {
     @Autowired
     private DeviceConfigurationRepository deviceConfigurationRepository;
 
-    public DeviceConfigurationInfo getDeviceConfigurationIsParked(String deviceId) {
-        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationDeviceId(deviceId);
+    public DeviceConfigurationInfo getDeviceConfiguration(String deviceId) {
+        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceId);
         return new DeviceConfigurationInfo(deviceConfiguration);
     }
 
     public void updateTimeOut(String deviceId, long timeOut) {
-        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationDeviceId(deviceId);
+        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceId);
         deviceConfiguration.setTimeOut(timeOut);
         deviceConfigurationRepository.save(deviceConfiguration);
     }
 
     public void updateParkingStatus(String deviceId, boolean isParked) {
-        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationDeviceId(deviceId);
+        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceId);
         deviceConfiguration.setParked(isParked);
         deviceConfigurationRepository.save(deviceConfiguration);
     }

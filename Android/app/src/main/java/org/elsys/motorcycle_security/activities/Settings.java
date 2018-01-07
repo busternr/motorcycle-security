@@ -17,9 +17,11 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
         Button currentDeviceButton =  findViewById(R.id.CurrentDeviceBtn);
         Button allDevicesButton =  findViewById(R.id.AllDevicesBtn);
         Button addDeviceButton =  findViewById(R.id.AddDeviceBtn);
+        Button logoutButton =  findViewById(R.id.LogoutBtn);
         currentDeviceButton.setOnClickListener(this);
         allDevicesButton.setOnClickListener(this);
         addDeviceButton.setOnClickListener(this);
+        logoutButton.setOnClickListener(this);
     }
 
     @Override
@@ -40,6 +42,15 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
             case R.id.AddDeviceBtn:
             {
                 Intent myIntent = new Intent(v.getContext(),AddDevice.class);
+                startActivity(myIntent);
+                break;
+            }
+            case R.id.LogoutBtn:
+            {
+                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", 0).apply();
+                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", false).apply();
+                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("justRegistered", false).apply();
+                Intent myIntent = new Intent(v.getContext(),Main.class);
                 startActivity(myIntent);
                 break;
             }

@@ -52,10 +52,10 @@ public class SetCurrentDevice extends AppCompatActivity implements View.OnClickL
         api.getGPSCordinates(deviceId).enqueue(new Callback<GpsCordinates>() {
             @Override
             public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
-                GpsCordinates gpsCordinates = response.body();
+                GpsCordinates GpsCordinates = response.body();
                 Long Date = System.currentTimeMillis();
-                if(Date - gpsCordinates.getTime() < 600000) statusText.setText("Status:" + "Turned ON");
-                else if(Date - gpsCordinates.getTime() > 600000) statusText.setText("Status:" + "Turned OFF");
+                if(Date - GpsCordinates.getTime() < 600000) statusText.setText("Status:" + "Turned ON");
+                else if(Date - GpsCordinates.getTime() > 600000) statusText.setText("Status:" + "Turned OFF");
             }
             @Override
             public void onFailure(Call<GpsCordinates> call, Throwable t) {

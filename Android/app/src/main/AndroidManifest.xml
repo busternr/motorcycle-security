@@ -55,7 +55,6 @@
         <activity
             android:name=".activities.Register"
             android:label="@string/title_activity_register" />
-        <activity android:name=".Srttings" />
         <activity android:name=".activities.Settings" />
         <activity android:name=".activities.CurrentDevice" />
         <activity android:name=".activities.AllDevices" />
@@ -63,5 +62,4 @@
         <activity android:name=".activities.ChangeTimeOut" />
         <activity android:name=".activities.SetCurrentDevice"></activity>
     </application>
-
 </manifest>

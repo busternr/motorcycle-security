@@ -7,5 +7,5 @@ import org.springframework.data.repository.query.Param;
 
 public interface DeviceConfigurationRepository extends CrudRepository<DeviceConfiguration,Long> {
     @Query("select dev from DeviceConfiguration dev where dev.device.deviceId=:deviceId")
-    DeviceConfiguration getDeviceConfigurationDeviceId(@Param("deviceId") String deviceId);
+    DeviceConfiguration getDeviceConfigurationByDeviceId(@Param("deviceId") String deviceId);
 }
