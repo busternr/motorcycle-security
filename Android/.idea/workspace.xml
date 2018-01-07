@@ -44,7 +44,17 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="136">
               <caret line="9" column="25" lean-forward="false" selection-start-line="9" selection-start-column="25" selection-end-line="9" selection-end-column="25" />
-              <folding />
+              <folding>
+                <element signature="imports" expanded="false" />
+                <element signature="e#347#348#0" expanded="false" />
+                <element signature="e#377#378#0" expanded="false" />
+                <element signature="e#421#422#0" expanded="false" />
+                <element signature="e#459#460#0" expanded="false" />
+                <element signature="e#492#493#0" expanded="false" />
+                <element signature="e#521#522#0" expanded="false" />
+                <element signature="e#566#567#0" expanded="false" />
+                <element signature="e#602#603#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -55,8 +65,21 @@
             <state relative-caret-position="442">
               <caret line="33" column="5" lean-forward="false" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
               <folding>
-                <element signature="e#791#792#0" expanded="true" />
-                <element signature="e#819#820#0" expanded="true" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#861#862#0" expanded="false" />
+                <element signature="e#895#896#0" expanded="false" />
+                <element signature="e#930#931#0" expanded="false" />
+                <element signature="e#961#962#0" expanded="false" />
+                <element signature="e#1009#1010#0" expanded="false" />
+                <element signature="e#1049#1050#0" expanded="false" />
+                <element signature="e#1089#1090#0" expanded="false" />
+                <element signature="e#1119#1120#0" expanded="false" />
+                <element signature="e#1171#1172#0" expanded="false" />
+                <element signature="e#1209#1210#0" expanded="false" />
+                <element signature="e#1236#1237#0" expanded="false" />
+                <element signature="e#1261#1262#0" expanded="false" />
+                <element signature="e#1295#1296#0" expanded="false" />
+                <element signature="e#1323#1324#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -67,7 +90,9 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="697">
               <caret line="55" column="1" lean-forward="false" selection-start-line="55" selection-start-column="1" selection-end-line="55" selection-end-column="1" />
-              <folding />
+              <folding>
+                <element signature="imports" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -112,8 +137,8 @@
       <file leaf-file-name="CurrentDevice.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/org/elsys/motorcycle_security/activities/CurrentDevice.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="295">
-              <caret line="75" column="17" lean-forward="false" selection-start-line="75" selection-start-column="17" selection-end-line="75" selection-end-column="17" />
+            <state relative-caret-position="601">
+              <caret line="93" column="0" lean-forward="true" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -137,11 +162,13 @@
             <state relative-caret-position="527">
               <caret line="40" column="28" lean-forward="false" selection-start-line="40" selection-start-column="28" selection-end-line="40" selection-end-column="28" />
               <folding>
-                <element signature="e#688#689#0" expanded="true" />
-                <element signature="e#713#714#0" expanded="true" />
-                <element signature="e#834#835#0" expanded="true" />
-                <element signature="e#876#877#0" expanded="true" />
-                <element signature="e#912#913#0" expanded="true" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#542#543#0" expanded="false" />
+                <element signature="e#573#574#0" expanded="false" />
+                <element signature="e#621#622#0" expanded="false" />
+                <element signature="e#661#662#0" expanded="false" />
+                <element signature="e#746#747#0" expanded="false" />
+                <element signature="e#774#775#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -2108,7 +2135,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1515317175777" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1515317280388" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -2155,7 +2182,7 @@
         <option name="ADVANCED_PROFILING_ENABLED" value="false" />
       </Profilers>
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1515317175778" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1515317280388" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -2316,7 +2343,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1515317175780" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1515317280390" />
       </method>
     </configuration>
     <list size="1">
@@ -2364,7 +2391,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Android Profiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.32900432" sideWeight="0.4936034" order="7" side_tool="false" content_ui="tabs" />
@@ -2697,8 +2724,21 @@
         <state relative-caret-position="442">
           <caret line="33" column="5" lean-forward="false" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
           <folding>
-            <element signature="e#791#792#0" expanded="true" />
-            <element signature="e#819#820#0" expanded="true" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#861#862#0" expanded="false" />
+            <element signature="e#895#896#0" expanded="false" />
+            <element signature="e#930#931#0" expanded="false" />
+            <element signature="e#961#962#0" expanded="false" />
+            <element signature="e#1009#1010#0" expanded="false" />
+            <element signature="e#1049#1050#0" expanded="false" />
+            <element signature="e#1089#1090#0" expanded="false" />
+            <element signature="e#1119#1120#0" expanded="false" />
+            <element signature="e#1171#1172#0" expanded="false" />
+            <element signature="e#1209#1210#0" expanded="false" />
+            <element signature="e#1236#1237#0" expanded="false" />
+            <element signature="e#1261#1262#0" expanded="false" />
+            <element signature="e#1295#1296#0" expanded="false" />
+            <element signature="e#1323#1324#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2727,7 +2767,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="697">
           <caret line="55" column="1" lean-forward="false" selection-start-line="55" selection-start-column="1" selection-end-line="55" selection-end-column="1" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2735,7 +2777,17 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="9" column="25" lean-forward="false" selection-start-line="9" selection-start-column="25" selection-end-line="9" selection-end-column="25" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#347#348#0" expanded="false" />
+            <element signature="e#377#378#0" expanded="false" />
+            <element signature="e#421#422#0" expanded="false" />
+            <element signature="e#459#460#0" expanded="false" />
+            <element signature="e#492#493#0" expanded="false" />
+            <element signature="e#521#522#0" expanded="false" />
+            <element signature="e#566#567#0" expanded="false" />
+            <element signature="e#602#603#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2755,11 +2807,13 @@
         <state relative-caret-position="527">
           <caret line="40" column="28" lean-forward="false" selection-start-line="40" selection-start-column="28" selection-end-line="40" selection-end-column="28" />
           <folding>
-            <element signature="e#688#689#0" expanded="true" />
-            <element signature="e#713#714#0" expanded="true" />
-            <element signature="e#834#835#0" expanded="true" />
-            <element signature="e#876#877#0" expanded="true" />
-            <element signature="e#912#913#0" expanded="true" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#542#543#0" expanded="false" />
+            <element signature="e#573#574#0" expanded="false" />
+            <element signature="e#621#622#0" expanded="false" />
+            <element signature="e#661#662#0" expanded="false" />
+            <element signature="e#746#747#0" expanded="false" />
+            <element signature="e#774#775#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2774,8 +2828,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/org/elsys/motorcycle_security/activities/CurrentDevice.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="295">
-          <caret line="75" column="17" lean-forward="false" selection-start-line="75" selection-start-column="17" selection-end-line="75" selection-end-column="17" />
+        <state relative-caret-position="601">
+          <caret line="93" column="0" lean-forward="true" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

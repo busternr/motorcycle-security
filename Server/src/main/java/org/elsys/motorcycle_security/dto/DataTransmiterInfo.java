@@ -10,15 +10,16 @@ public class DataTransmiterInfo
 {
     private long x;
     private long y;
-    List<Device> devices = new ArrayList<Device>();
+    private long time;
 
-    public DataTransmiterInfo(long x, long y) {
+    public DataTransmiterInfo(long x, long y, long time) {
         this.x = x;
         this.y = y;
+        this.time = time;
     }
 
     public DataTransmiterInfo(DataTransmiter dataTransmiter) {
-        this(dataTransmiter.getX(), dataTransmiter.getY());
+        this(dataTransmiter.getX(), dataTransmiter.getY(), dataTransmiter.getTime());
     }
 
     public long getX() {
@@ -35,5 +36,13 @@ public class DataTransmiterInfo
 
     public void setY(long y) {
         this.y = y;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 }
