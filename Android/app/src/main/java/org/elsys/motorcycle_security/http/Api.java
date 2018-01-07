@@ -37,7 +37,7 @@ public interface Api {
     Call<Device> getDevice(@Path("deviceId") String deviceId);
 
     @GET("/client/{deviceId}/receive/gps-cordinates")
-    Call<GpsCordinates> getGpsCordinates(@Path("deviceId") String deviceId);
+    Call<GpsCordinates> getGPSCordinates(@Path("deviceId") String deviceId);
 
     @GET("/device/{deviceId}/receive/device-configuration")
     Call<DeviceConfiguration> getDeviceConfiguration(@Path("deviceId") String deviceId);

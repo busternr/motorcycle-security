@@ -11,6 +11,9 @@ public class GpsCordinates {
     @SerializedName("y")
     @Expose
     private long y;
+    @SerializedName("time")
+    @Expose
+    private long time;
 
     public long getX() {
         return x;
@@ -26,5 +29,13 @@ public class GpsCordinates {
 
     public void setY(long y) {
         this.y = y;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 }

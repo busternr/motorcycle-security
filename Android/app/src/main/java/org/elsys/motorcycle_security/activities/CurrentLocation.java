@@ -37,12 +37,12 @@ public class CurrentLocation extends FragmentActivity implements OnMapReadyCallb
         Api api = Api.RetrofitInstance.create();
         for (counter = 0; counter <= numberOfUserDevices; counter++) {
             final String deviceId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Device " + counter ,"");
-            api.getGpsCordinates(deviceId).enqueue(new Callback<GpsCordinates>() {
+            api.getGPSCordinates(deviceId).enqueue(new Callback<GpsCordinates>() {
                 @Override
                 public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                     if (response.isSuccessful()) {
-                        GpsCordinates gpsCordinates = response.body();
-                        LatLng CurrLoc = new LatLng(gpsCordinates.getX(), gpsCordinates.getX());
+                        GpsCordinates GpsCordinates = response.body();
+                        LatLng CurrLoc = new LatLng(GpsCordinates.getX(), GpsCordinates.getX());
                         mMap.addMarker(new MarkerOptions().position(CurrLoc).title(deviceId));
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CurrLoc, zoomlevel));
                     }

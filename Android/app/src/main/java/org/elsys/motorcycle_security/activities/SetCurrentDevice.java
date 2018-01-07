@@ -3,7 +3,6 @@ package org.elsys.motorcycle_security.activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -11,6 +10,7 @@ import android.widget.TextView;
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
+import org.elsys.motorcycle_security.models.GpsCordinates;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,6 +20,7 @@ public class SetCurrentDevice extends AppCompatActivity implements View.OnClickL
     private TextView deviceIdText;
     private TextView parkingStatusText;
     private TextView timeOutText;
+    private TextView statusText;
     String deviceId;
 
     @Override
@@ -30,10 +31,12 @@ public class SetCurrentDevice extends AppCompatActivity implements View.OnClickL
         deviceIdText = findViewById(R.id.DeviceIdText2);
         parkingStatusText = findViewById(R.id.ParkingStatusText2);
         timeOutText = findViewById(R.id.TimeOutText2);
+        statusText = findViewById(R.id.StatusText2);
         Button setCurrentDeviceButton = findViewById(R.id.SetCurrentDeviceBtn);
         setCurrentDeviceButton.setOnClickListener(this);
         deviceIdText.setText("Device pin number:" + deviceId);
-        Api api = Api.RetrofitInstance.create();
+        Api api;
+        api = Api.RetrofitInstance.create();
         api.getDeviceConfiguration(deviceId).enqueue(new Callback<DeviceConfiguration>() {
             @Override
             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
@@ -44,6 +47,19 @@ public class SetCurrentDevice extends AppCompatActivity implements View.OnClickL
             }
             @Override
             public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
+        });
+        api = Api.RetrofitInstance.create();
+        api.getGPSCordinates(deviceId).enqueue(new Callback<GpsCordinates>() {
+            @Override
+            public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
+                GpsCordinates gpsCordinates = response.body();
+                Long Date = System.currentTimeMillis();
+                if(Date - gpsCordinates.getTime() < 600000) statusText.setText("Status:" + "Turned ON");
+                else if(Date - gpsCordinates.getTime() > 600000) statusText.setText("Status:" + "Turned OFF");
+            }
+            @Override
+            public void onFailure(Call<GpsCordinates> call, Throwable t) {
+            }
         });
     }
 

@@ -3,8 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Android.iml" filepath="$PROJECT_DIR$/Android.iml" />
-      <module fileurl="file://C:\motorcycle-security\Android\Android application.iml" filepath="C:\motorcycle-security\Android\Android application.iml" />
-      <module fileurl="file://C:\motorcycle-security\Android application\MCSecurty.iml" filepath="C:\motorcycle-security\Android application\MCSecurty.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
