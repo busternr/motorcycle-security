@@ -31,6 +31,11 @@ public class ClientController {
     @Autowired
     private DeviceConfiguration deviceConfigurationHandler;
 
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public static ResponseEntity handleTypeMismatch() {
+        return new ResponseEntity(new ErrorDto("Invalid input"), HttpStatus.BAD_REQUEST);
+    }
+
     @RequestMapping(value = "/client/send/parking-status", method = PUT)
     public ResponseEntity updateParkingStatusByDeviceId(@RequestParam(value = "deviceId", defaultValue = "0") String deviceId, @RequestParam(value = "isParked", defaultValue = "0") boolean isParked) {
         try {

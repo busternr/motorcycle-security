@@ -1,6 +1,7 @@
 package org.elsys.motorcycle_security.business.logic.handlers;
 
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
+import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
 import org.elsys.motorcycle_security.dto.DataTransmiterInfo;
 import org.elsys.motorcycle_security.models.DataTransmiter;
 import org.elsys.motorcycle_security.models.Device;
@@ -23,6 +24,7 @@ public class DataTransmiterHandler implements org.elsys.motorcycle_security.busi
     public void updateGPSCordinates(String deviceId, Long x, Long y) {
         Device device = deviceRepository.getDeviceByDeviceId(deviceId);
         if(device == null) throw new InvalidDeviceIdException("Invalid device id");
+        if(x == 0 || y == 0) throw new InvalidInputException("Invalid input");
         DataTransmiter d = new DataTransmiter();
         d.setX(x);
         d.setY(y);

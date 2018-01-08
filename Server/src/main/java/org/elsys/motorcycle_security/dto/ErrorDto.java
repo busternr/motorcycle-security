@@ -5,7 +5,9 @@ import org.elsys.motorcycle_security.business.logic.exceptions.AbstractRestExcep
 public class ErrorDto {
     private String message;
 
-    public ErrorDto(){}
+    public ErrorDto(String message){
+        this.message = message;
+    }
 
     public ErrorDto(AbstractRestException e){
         this.message=e.getMessage();
