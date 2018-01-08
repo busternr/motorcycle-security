@@ -1,5 +1,7 @@
-package org.elsys.motorcycle_security.business.logic;
+package org.elsys.motorcycle_security.business.logic.handlers;
 
+import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
+import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
 import org.elsys.motorcycle_security.dto.DeviceDto;
 import org.elsys.motorcycle_security.dto.DeviceInfo;
 import org.elsys.motorcycle_security.models.Device;
@@ -17,7 +19,7 @@ import javax.validation.ValidatorFactory;
 import java.security.InvalidParameterException;
 
 @Component
-public class DeviceHandler {
+public class DeviceHandler implements org.elsys.motorcycle_security.business.logic.Device {
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -25,12 +27,12 @@ public class DeviceHandler {
     @Autowired
     private DeviceConfigurationRepository deviceConfigurationRepository;
 
+    @Override
     public void createNewDevice(DeviceDto deviceDto){
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         long violations = validator.validate(deviceDto).size();
-        if(violations>0) throw new InvalidParameterException("Input is missing or contains invalid field data "+validator.validate(deviceDto).iterator().next().getConstraintDescriptor().getMessageTemplate());
-
+        if(violations>0) throw new InvalidInputException("Invalid input");
         Device device = new Device();
         User user = userRepository.getUserAccountById(deviceDto.getUserId());
         device.setUser(user);
@@ -43,8 +45,10 @@ public class DeviceHandler {
         deviceConfigurationRepository.save(deviceConfiguration);
     }
 
+    @Override
     public DeviceInfo getDevice(String deviceId) {
         Device device = deviceRepository.getDeviceByDeviceId(deviceId);
+        if(device == null) throw new InvalidDeviceIdException("Invalid device id");
         return new DeviceInfo(device);
     }
 }

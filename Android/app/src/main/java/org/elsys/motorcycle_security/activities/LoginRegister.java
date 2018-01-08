@@ -18,7 +18,6 @@ public class LoginRegister extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login_register);
         Button RegisterButton =  findViewById(R.id.RegisterBtn);
         Button LoginButton =  findViewById(R.id.LoginBtn);
-
         RegisterButton.setOnClickListener(this);
         LoginButton.setOnClickListener(this);
     }

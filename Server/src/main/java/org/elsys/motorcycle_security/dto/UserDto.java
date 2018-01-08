@@ -6,11 +6,6 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Niko on 12/16/2017.
- */
-
-
 public class UserDto {
     @NotNull
     @Size(min = 1)

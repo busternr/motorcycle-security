@@ -1,12 +1,20 @@
 package org.elsys.motorcycle_security.controllers;
 
-import org.elsys.motorcycle_security.business.logic.DataTransmiterHandler;
-import org.elsys.motorcycle_security.business.logic.DeviceConfigurationHandler;
-import org.elsys.motorcycle_security.business.logic.DeviceHandler;
-import org.elsys.motorcycle_security.business.logic.UserHandler;
+import org.elsys.motorcycle_security.business.logic.DataTransmiter;
+import org.elsys.motorcycle_security.business.logic.DeviceConfiguration;
+import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
+import org.elsys.motorcycle_security.business.logic.exceptions.InvalidEmailException;
+import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
+import org.elsys.motorcycle_security.business.logic.handlers.DataTransmiterHandler;
+import org.elsys.motorcycle_security.business.logic.handlers.DeviceConfigurationHandler;
+import org.elsys.motorcycle_security.business.logic.handlers.DeviceHandler;
+import org.elsys.motorcycle_security.business.logic.handlers.UserHandler;
 import org.elsys.motorcycle_security.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -19,49 +27,88 @@ public class ClientController {
     @Autowired
     private DeviceHandler deviceHandler;
     @Autowired
-    private DataTransmiterHandler dataTransmiterHandler;
+    private DataTransmiter dataTransmiterHandler;
     @Autowired
-    private DeviceConfigurationHandler deviceConfigurationHandler;
+    private DeviceConfiguration deviceConfigurationHandler;
 
     @RequestMapping(value = "/client/send/parking-status", method = PUT)
-    public void updateParkingStatusByDeviceId(@RequestParam(value = "deviceId", defaultValue = "0") String deviceId, @RequestParam(value = "isParked", defaultValue = "0") boolean isParked) {
-        deviceConfigurationHandler.updateParkingStatus(deviceId, isParked);
+    public ResponseEntity updateParkingStatusByDeviceId(@RequestParam(value = "deviceId", defaultValue = "0") String deviceId, @RequestParam(value = "isParked", defaultValue = "0") boolean isParked) {
+        try {
+            deviceConfigurationHandler.updateParkingStatus(deviceId, isParked);
+        }
+        catch(InvalidDeviceIdException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/client/send/timeout", method = PUT)
-    public void updateTimeoutByDeviceId(@RequestParam(value = "deviceId", defaultValue = "0") String deviceId, @RequestParam(value = "timeout", defaultValue = "0") long timeOut) {
-        deviceConfigurationHandler.updateTimeOut(deviceId, timeOut);
+    public ResponseEntity updateTimeoutByDeviceId(@RequestParam(value = "deviceId", defaultValue = "0") String deviceId, @RequestParam(value = "timeout", defaultValue = "0") long timeOut) {
+        try {
+            deviceConfigurationHandler.updateTimeOut(deviceId, timeOut);
+        }
+        catch(InvalidDeviceIdException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/client/send/create-new-user", method = POST)
-    public void createNewUser(@RequestBody UserDto newUser) {
-        userHandler.createNewUser(newUser);
+    public ResponseEntity createNewUser(@RequestBody UserDto newUser) {
+        try {
+            userHandler.createNewUser(newUser);
+        }
+        catch(InvalidInputException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/client/send/create-new-device", method = POST)
-    public void createNewUser(@RequestBody DeviceDto newDevice) {
-        deviceHandler.createNewDevice(newDevice);
+    public ResponseEntity createNewDevice(@RequestBody DeviceDto newDevice) {
+        try {
+            deviceHandler.createNewDevice(newDevice);
+        }
+        catch(InvalidInputException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/client/{deviceId}/receive/gps-cordinates", method = GET)
     @ResponseBody
-    public DataTransmiterInfo getGpsCordinatesBydeviceId(@PathVariable(value = "deviceId") String deviceId) {
+    public ResponseEntity<DataTransmiterInfo> getGpsCordinatesBydeviceId(@PathVariable(value = "deviceId") String deviceId) {
         DataTransmiterInfo dataTransmiterInfo = dataTransmiterHandler.getGPSCordinates(deviceId);
-        return dataTransmiterInfo;
+        try {
+            return new ResponseEntity(dataTransmiterInfo,HttpStatus.OK);
+        }
+        catch(InvalidDeviceIdException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(value="/client/receive/user-account",method=GET)
     @ResponseBody
-    public UserInfo getUserAccountByUsername(@RequestHeader("email") String email) {
+    public ResponseEntity getUserAccountByUsername(@RequestHeader("email") String email) {
         UserInfo userInfo = userHandler.getUser(email);
-        return userInfo;
+        try {
+            return new ResponseEntity(userInfo,HttpStatus.OK);
+        }
+        catch(InvalidEmailException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(value="/client/{deviceId}/receive/device",method=GET)
     @ResponseBody
-    public DeviceInfo geDeviceByDeviceID(@PathVariable(value = "deviceId") String deviceId) {
+    public ResponseEntity geDeviceByDeviceID(@PathVariable(value = "deviceId") String deviceId) {
         DeviceInfo deviceInfo = deviceHandler.getDevice(deviceId);
-        return deviceInfo;
+        try {
+            return new ResponseEntity(deviceInfo,HttpStatus.OK);
+        }
+        catch(InvalidDeviceIdException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
     }
 }
 

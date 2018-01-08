@@ -1,5 +1,6 @@
-package org.elsys.motorcycle_security.business.logic;
+package org.elsys.motorcycle_security.business.logic.handlers;
 
+import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
 import org.elsys.motorcycle_security.dto.DataTransmiterInfo;
 import org.elsys.motorcycle_security.models.DataTransmiter;
 import org.elsys.motorcycle_security.models.Device;
@@ -8,27 +9,34 @@ import org.elsys.motorcycle_security.repository.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+
 
 @Component
-public class DataTransmiterHandler {
+public class DataTransmiterHandler implements org.elsys.motorcycle_security.business.logic.DataTransmiter {
     @Autowired
     private DataTransmiterRepository dataTransmiterRepository;
     @Autowired
     private DeviceRepository deviceRepository;
 
-    public void UpdateGPSCordinates(final String deviceId,Long x,Long y){
+    @Override
+    public void updateGPSCordinates(String deviceId, Long x, Long y) {
+        Device device = deviceRepository.getDeviceByDeviceId(deviceId);
+        if(device == null) throw new InvalidDeviceIdException("Invalid device id");
         DataTransmiter d = new DataTransmiter();
         d.setX(x);
         d.setY(y);
-        Long Date = System.currentTimeMillis();
-        d.setTime(Date);
-        Device device = deviceRepository.getDeviceByDeviceId(deviceId);
+        Instant instant = Instant.now();
+        Long date =instant.getEpochSecond();
+        d.setTime(date);
         d.setDevice(device);
         dataTransmiterRepository.save(d);
     }
 
+    @Override
     public DataTransmiterInfo getGPSCordinates(String deviceId) {
         DataTransmiter dataTransmiter = dataTransmiterRepository.getGpsCordinatesByDeviceId(deviceId);
+        if(dataTransmiter == null) throw new InvalidDeviceIdException("Invalid device id");
         return new DataTransmiterInfo(dataTransmiter);
     }
 }
