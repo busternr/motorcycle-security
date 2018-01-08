@@ -10,9 +10,6 @@ import org.elsys.motorcycle_security.repository.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-
-
 @Component
 public class DataTransmiterHandler implements org.elsys.motorcycle_security.business.logic.DataTransmiter {
     @Autowired
@@ -28,8 +25,9 @@ public class DataTransmiterHandler implements org.elsys.motorcycle_security.busi
         DataTransmiter d = new DataTransmiter();
         d.setX(x);
         d.setY(y);
-        Instant instant = Instant.now();
-        Long date =instant.getEpochSecond();
+//        Instant instant = Instant.now();
+//        Long date =instant.getEpochSecond();
+        Long date = System.currentTimeMillis();
         d.setTime(date);
         d.setDevice(device);
         dataTransmiterRepository.save(d);

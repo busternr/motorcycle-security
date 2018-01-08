@@ -53,6 +53,6 @@ public class DeviceController {
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(deviceConfigurationInfo,HttpStatus.OK);
     }
 }

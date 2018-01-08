@@ -58,6 +58,22 @@ public class ClientController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/client/send/parked-cordinates", method = PUT)
+    public ResponseEntity updateTimeoutByDeviceId(@RequestParam(value = "deviceId", defaultValue = "0") String deviceId,
+                                                  @RequestParam(value = "x", defaultValue = "0") long x,
+                                                  @RequestParam(value = "y", defaultValue = "0") long y) {
+        try {
+            deviceHandler.updateParkedCordinates(deviceId, x, y);
+        }
+        catch(InvalidDeviceIdException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
+        catch(InvalidInputException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/client/send/create-new-user", method = POST)
     public ResponseEntity createNewUser(@RequestBody UserDto newUser) {
         try {

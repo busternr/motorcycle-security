@@ -7,4 +7,6 @@ public interface Device {
     void createNewDevice(DeviceDto deviceDto);
 
     DeviceInfo getDevice(String deviceId);
+
+    public void updateParkedCordinates(String deviceId, long x, long y);
 }

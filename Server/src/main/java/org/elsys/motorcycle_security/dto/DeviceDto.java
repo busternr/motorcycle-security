@@ -13,11 +13,17 @@ public class DeviceDto {
     @NotNull
     long userId;
 
+    long parkedX;
+
+    long parkedY;
+
     public DeviceDto(){}
 
-    public DeviceDto(String deviceId, long userId) {
+    public DeviceDto(String deviceId, long userId, long parkedX, long parkedY) {
         this.deviceId = deviceId;
         this.userId = userId;
+        this.parkedX = parkedX;
+        this.parkedY = parkedY;
     }
 
     public String getDeviceId() {
@@ -34,5 +40,21 @@ public class DeviceDto {
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public long getParkedX() {
+        return parkedX;
+    }
+
+    public void setParkedX(long parkedX) {
+        this.parkedX = parkedX;
+    }
+
+    public long getParkedY() {
+        return parkedY;
+    }
+
+    public void setParkedY(long parkedY) {
+        this.parkedY = parkedY;
     }
 }

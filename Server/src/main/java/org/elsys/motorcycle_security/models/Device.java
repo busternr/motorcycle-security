@@ -16,8 +16,14 @@ public class Device {
     @JoinColumn(name="userid", nullable=false)
     private User user;
 
-    @Column(name="DeviceId",nullable = false)
+    @Column(name="DeviceId",nullable = false,unique=true)
     private String deviceId;
+
+    @Column(name="ParkedLatitude")
+    private long parkedX;
+
+    @Column(name="ParkedLongitude")
+    private long parkedY;
 
     @OneToMany(mappedBy="device")
     private List<DataTransmiter> transmiterData = new ArrayList<>();
@@ -47,5 +53,21 @@ public class Device {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public long getParkedX() {
+        return parkedX;
+    }
+
+    public void setParkedX(long parkedX) {
+        this.parkedX = parkedX;
+    }
+
+    public long getParkedY() {
+        return parkedY;
+    }
+
+    public void setParkedY(long parkedY) {
+        this.parkedY = parkedY;
     }
 }
