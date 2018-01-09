@@ -9,14 +9,32 @@ DFRobot_SIM808 sim808(&mySerial);//Connect RX,TX,PWR,
 float x;
 float y;
 long timeout = 60000;
-char deviceId[7] = "23323";
+char deviceId[6] = "cbr600";
 char latitude[10];
 char longtitude[10];
 //char http_get_cmd[] = "GET /device/22233/receive/device-configuration HTTP/1.0\r\n\r\n";
-//char http_post_cmd[] = "POST /device/send/gps-cordinates?deviceId=22233&x=4333332&y=223 HTTP/1.0\r\n\r\n";
+char http_post_cmd2[] = "POST /device/send/gps-cordinates?deviceId=cbr600&x=1&y=1 HTTP/1.0\r\n\r\n";
 char http_get_cmd[100] = "GET /device/";
-char http_post_cmd[100] = "POST /device/send/gps-cordinates?deviceId=";
+char http_post_cmd[] = "POST /device/send/gps-cordinates?deviceId=";
 char buffer[512];
+
+void makePostChar()
+{
+  char http_post_cmd_with_deviceId[sizeof(http_post_cmd) + sizeof(deviceId)];
+  strcat(http_post_cmd_with_deviceId, deviceId);
+  Serial.println(sizeof(http_post_cmd_with_deviceId));
+  char http_post_cmd_with_x[sizeof(http_post_cmd_with_deviceId) + 4]; //to be adjusted &x= [3] + [1]
+  strcat(http_post_cmd_with_x, "&x=");
+  strcat(http_post_cmd_with_x, "1");
+  Serial.println(sizeof(http_post_cmd_with_x));
+  char http_post_cmd_with_y[sizeof(http_post_cmd_with_x) + 4]; //to be adjusted &x= [3] + [1]
+  strcat(http_post_cmd_with_y, "&y=");
+  strcat(http_post_cmd_with_y, "1");
+  Serial.println(sizeof(http_post_cmd_with_y));
+  char http_post_cmd_with_protocol[sizeof(http_post_cmd_with_y) + sizeof(" HTTP/1.0\r\n\r\n")];
+  strcat(http_post_cmd_with_protocol, " HTTP/1.0\r\n\r\n");
+  Serial.println(http_post_cmd_with_protocol);
+}
 
 void setup()
 {
@@ -24,14 +42,29 @@ void setup()
   Serial.begin(9600);
   initializeConnection();
   checkTCPConnection();
-  getDeviceConfiguration();
+  makePostChar();
+
 }
 
 void loop()
 {
-  getGPSCordinates();
+  //getGPSCordinates();
   sendGPSCordinates();
   delay(timeout);
+}
+
+char * deblank(char *str)
+{
+  char *out = str, *put = str;
+
+  for(; *str != '\0'; ++str)
+  {
+    if(*str != ' ')
+      *put++ = *str;
+  }
+  *put = '\0';
+
+  return out;
 }
 
 void initializeConnection()

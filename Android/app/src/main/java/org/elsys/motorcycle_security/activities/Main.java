@@ -18,7 +18,6 @@ import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.Globals;
 import org.elsys.motorcycle_security.services.LocationCheckerReceiver;
-import org.elsys.motorcycle_security.models.Globals;
 
 import retrofit2.Call;
 import retrofit2.Callback;
