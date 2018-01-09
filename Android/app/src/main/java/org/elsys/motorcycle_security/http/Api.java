@@ -42,7 +42,7 @@ public interface Api {
     @GET("/device/{deviceId}/receive/device-configuration")
     Call<DeviceConfiguration> getDeviceConfiguration(@Path("deviceId") String deviceId);
 
-    String API_HOST = "http:/10.19.9.85";
+    String API_HOST = "http://130.204.140.70";
     String API_PORT = "8080";
 
     class RetrofitInstance {

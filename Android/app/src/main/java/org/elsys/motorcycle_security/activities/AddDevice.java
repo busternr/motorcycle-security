@@ -32,7 +32,7 @@ public class AddDevice extends AppCompatActivity implements View.OnClickListener
             case R.id.AddDeviceBtn: {
                 Api api = Api.RetrofitInstance.create();
                 long userId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getLong("UserId", 1);
-                Device device = new Device(deviceIdInput.getText().toString(), userId);
+                Device device = new Device(deviceIdInput.getText().toString(), userId,0 ,0);
                 api.createDevice(device).enqueue(new Callback<Device>() {
                     @Override
                     public void onResponse(Call<Device> call, Response<Device> response) {}

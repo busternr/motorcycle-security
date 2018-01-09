@@ -16,6 +16,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.util.Patterns.EMAIL_ADDRESS;
+
 public class Register extends AppCompatActivity implements View.OnClickListener {
     private EditText passwordInput;
     private EditText emailInput;
@@ -40,7 +42,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                 if(deviceIdInput.getText().toString().length() == 0) errorsText.setText("Device pin number field can't be blank");
                 else if(emailInput.getText().toString().length() == 0) errorsText.setText("Email field can't be blank");
                 else if(passwordInput.getText().toString().length() == 0) errorsText.setText("Password field can't be blank");
-                else if(emailInput.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")) errorsText.setText("Invalid email address.");
+                else if(EMAIL_ADDRESS.matcher(emailInput.toString()).matches()) errorsText.setText("Invalid email address.");
                 else if(passwordInput.getText().toString().length() < 6) errorsText.setText("Password is too short (Minumum 6 characters)");
                 else if(deviceIdInput.getText().toString().length() < 6) errorsText.setText("Invalid device pin number");
                 else {

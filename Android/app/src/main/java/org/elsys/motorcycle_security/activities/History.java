@@ -16,7 +16,7 @@ public class History extends AppCompatActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        Long Date = System.currentTimeMillis();
+        Long date = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy");
         String[] daysStr = new String[6];
         Long[] daysLong = new Long[6];
@@ -32,7 +32,7 @@ public class History extends AppCompatActivity implements View.OnClickListener {
         day5Button.setOnClickListener(this);
         for(int i=1;i<=5;i++)
         {
-            daysLong[i] = Date - 86400000*i;
+            daysLong[i] = date - 86400000*i;
             daysStr[i] = sdf.format(daysLong[i]);
         }
         day1Button.setText(daysStr[1]);

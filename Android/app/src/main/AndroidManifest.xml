@@ -9,7 +9,7 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.VIBRATE" />
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -22,6 +22,14 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <receiver
+            android:name=".services.LocationCheckerReceiver"
+            android:process=":remote"></receiver>
+
+        <service
+            android:name=".LocationChecker"
+            android:exported="false" />
+
         <activity android:name=".activities.Main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -60,6 +68,11 @@
         <activity android:name=".activities.AllDevices" />
         <activity android:name=".activities.AddDevice" />
         <activity android:name=".activities.ChangeTimeOut" />
-        <activity android:name=".activities.SetCurrentDevice"></activity>
+        <activity android:name=".activities.SetCurrentDevice" />
+
+        <service
+            android:name=".services.LocationChecker"
+            android:exported="false"></service>
     </application>
+
 </manifest>

@@ -59,8 +59,9 @@ public class CurrentDevice extends AppCompatActivity implements View.OnClickList
                 GpsCordinates gpsCordinates = response.body();
                 if(gpsCordinates == null) statusText.setText("Status:" + "No information");
                 else {
-                    Instant instant = Instant.now();
-                    Long date = instant.getEpochSecond();
+//                    Instant instant = Instant.now();
+//                    Long date = instant.getEpochSecond();
+                    Long date = System.currentTimeMillis();
                     if (date - gpsCordinates.getTime() < 600000)
                         statusText.setText("Status:" + "Turned ON");
                     else if (date - gpsCordinates.getTime() > 600000)

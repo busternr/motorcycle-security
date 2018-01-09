@@ -1,5 +1,7 @@
 package org.elsys.motorcycle_security.activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -14,6 +16,9 @@ import android.widget.Toast;
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
+import org.elsys.motorcycle_security.models.Globals;
+import org.elsys.motorcycle_security.services.LocationCheckerReceiver;
+import org.elsys.motorcycle_security.models.Globals;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,9 +53,10 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
         historyButton.setOnClickListener(this);
         settingsButton.setOnClickListener(this);
         if(isAuthorized && !justRegistered) {
-            deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
+            Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
+            Log.d("DDDDDD", Globals.deviceInUse);
             Api api = Api.RetrofitInstance.create();
-            api.getDeviceConfiguration(deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
+            api.getDeviceConfiguration(Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
                 @Override
                 public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
                     DeviceConfiguration deviceConfiguration = response.body();
@@ -60,7 +66,17 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                 public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
                 }
             });
+            scheduleLocationCheckerAlarm();
         }
+    }
+
+    //Later to be changed !!!
+    public void scheduleLocationCheckerAlarm() {
+        Intent intent = new Intent(getApplicationContext(), LocationCheckerReceiver.class);
+        final PendingIntent pIntent = PendingIntent.getBroadcast(this, LocationCheckerReceiver.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        long firstMillis = System.currentTimeMillis();
+        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, 15000, pIntent);
     }
 
     public void onClick(View v) {
