@@ -9,7 +9,7 @@ public class LocationCheckerReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent i = new Intent(context, LocationChecker.class);
+        Intent i = new Intent(context, LocationNotificator.class);
         context.startService(i);
     }
 }

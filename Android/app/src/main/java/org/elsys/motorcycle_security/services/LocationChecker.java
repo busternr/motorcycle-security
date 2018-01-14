@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.activities.CurrentLocation;
@@ -30,10 +29,20 @@ public class LocationChecker extends IntentService {
         super("LocationChecker");
     }
 
+   /* public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("Location checker", "Service running");
+        return START_STICKY;
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("Location checker", "Service destroyed");
+    }
+*/
     @Override
     protected void onHandleIntent(Intent intent) {
         // Do the task here
-        Log.d("Location checker", "Service running");
+       // Log.d("Location checker", "Service running");
         Api api = Api.RetrofitInstance.create();
         api.getDevice(Globals.deviceInUse).enqueue(new Callback<Device>() {
             @Override
@@ -48,7 +57,7 @@ public class LocationChecker extends IntentService {
             public void onFailure(Call<Device> call, Throwable t) {
             }
         });
-        api.getGPSCordinates(Globals.deviceInUse).enqueue(new Callback<GpsCordinates>() {
+        api.getGPSCordinates(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<GpsCordinates>() {
             @Override
             public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                 if (response.isSuccessful()) {

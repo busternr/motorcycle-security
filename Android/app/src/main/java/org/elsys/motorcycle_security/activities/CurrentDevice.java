@@ -10,6 +10,7 @@ import android.widget.TextView;
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
+import org.elsys.motorcycle_security.models.Globals;
 import org.elsys.motorcycle_security.models.GpsCordinates;
 
 import java.time.Instant;
@@ -53,7 +54,7 @@ public class CurrentDevice extends AppCompatActivity implements View.OnClickList
             }
         });
         api = Api.RetrofitInstance.create();
-        api.getGPSCordinates(deviceInUse).enqueue(new Callback<GpsCordinates>() {
+        api.getGPSCordinates(deviceInUse, Globals.authorization).enqueue(new Callback<GpsCordinates>() {
             @Override
             public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                 GpsCordinates gpsCordinates = response.body();

@@ -5,8 +5,6 @@ import org.elsys.motorcycle_security.business.logic.DeviceConfiguration;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidEmailException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
-import org.elsys.motorcycle_security.business.logic.handlers.DataTransmiterHandler;
-import org.elsys.motorcycle_security.business.logic.handlers.DeviceConfigurationHandler;
 import org.elsys.motorcycle_security.business.logic.handlers.DeviceHandler;
 import org.elsys.motorcycle_security.business.logic.handlers.UserHandler;
 import org.elsys.motorcycle_security.dto.*;
@@ -99,8 +97,8 @@ public class ClientController {
     @RequestMapping(value = "/client/{deviceId}/receive/gps-cordinates", method = GET)
     @ResponseBody
     public ResponseEntity<DataTransmiterInfo> getGpsCordinatesBydeviceId(@PathVariable(value = "deviceId") String deviceId) {
-        DataTransmiterInfo dataTransmiterInfo = dataTransmiterHandler.getGPSCordinates(deviceId);
         try {
+            DataTransmiterInfo dataTransmiterInfo = dataTransmiterHandler.getGPSCordinates(deviceId);
             return new ResponseEntity(dataTransmiterInfo,HttpStatus.OK);
         }
         catch(InvalidDeviceIdException exception) {
@@ -111,8 +109,8 @@ public class ClientController {
     @RequestMapping(value="/client/receive/user-account",method=GET)
     @ResponseBody
     public ResponseEntity getUserAccountByUsername(@RequestHeader("email") String email) {
-        UserInfo userInfo = userHandler.getUser(email);
         try {
+            UserInfo userInfo = userHandler.getUser(email);
             return new ResponseEntity(userInfo,HttpStatus.OK);
         }
         catch(InvalidEmailException exception) {
@@ -123,8 +121,8 @@ public class ClientController {
     @RequestMapping(value="/client/{deviceId}/receive/device",method=GET)
     @ResponseBody
     public ResponseEntity geDeviceByDeviceID(@PathVariable(value = "deviceId") String deviceId) {
-        DeviceInfo deviceInfo = deviceHandler.getDevice(deviceId);
         try {
+            DeviceInfo deviceInfo = deviceHandler.getDevice(deviceId);
             return new ResponseEntity(deviceInfo,HttpStatus.OK);
         }
         catch(InvalidDeviceIdException exception) {

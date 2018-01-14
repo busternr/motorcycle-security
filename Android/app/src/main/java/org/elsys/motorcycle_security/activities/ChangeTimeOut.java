@@ -10,6 +10,7 @@ import android.widget.EditText;
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
+import org.elsys.motorcycle_security.models.Globals;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,7 +33,7 @@ public class ChangeTimeOut extends AppCompatActivity implements View.OnClickList
             case R.id.ChangeTimeOutBtn2: {
                 String deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
                 Api api = Api.RetrofitInstance.create();
-                api.updateTimeOut(deviceInUse, Long.valueOf(timeOutInput.getText().toString())).enqueue(new Callback<DeviceConfiguration>() {
+                api.updateTimeOut(deviceInUse, Long.valueOf(timeOutInput.getText().toString()), Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
                     @Override
                     public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
                     @Override

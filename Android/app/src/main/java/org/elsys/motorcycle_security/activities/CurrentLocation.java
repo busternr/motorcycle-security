@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
+import org.elsys.motorcycle_security.models.Globals;
 import org.elsys.motorcycle_security.models.GpsCordinates;
 
 import retrofit2.Call;
@@ -45,7 +46,7 @@ public class CurrentLocation extends FragmentActivity implements OnMapReadyCallb
         Api api = Api.RetrofitInstance.create();
         for (counter = 0; counter <= numberOfUserDevices; counter++) {
             final String deviceId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Device " + counter ,"");
-            api.getGPSCordinates(deviceId).enqueue(new Callback<GpsCordinates>() {
+            api.getGPSCordinates(deviceId, Globals.authorization).enqueue(new Callback<GpsCordinates>() {
                 @Override
                 public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                     if (response.isSuccessful()) {

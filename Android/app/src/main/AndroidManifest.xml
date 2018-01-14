@@ -24,7 +24,7 @@
         android:theme="@style/AppTheme">
         <receiver
             android:name=".services.LocationCheckerReceiver"
-            android:process=":remote"></receiver>
+            android:process=":remote" />
 
         <service
             android:name=".LocationChecker"
@@ -72,7 +72,16 @@
 
         <service
             android:name=".services.LocationChecker"
-            android:exported="false"></service>
+            android:exported="false" />
+        <service
+            android:name=".services.LocationNotificator"
+            android:enabled="true"
+            android:exported="true"
+            android:stopWithTask="false" />
+        <service
+            android:name=".services.MyService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

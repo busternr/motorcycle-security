@@ -48,6 +48,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                 else {
                     Api api = Api.RetrofitInstance.create();;
                     User user = new User(emailInput.getText().toString(), passwordInput.getText().toString(), deviceIdInput.getText().toString());
+                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putLong("UserId", user.getId()).apply();
                     api.createUserAccount(user).enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
@@ -57,18 +58,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                         public void onFailure(Call<User> call, Throwable t) {
                         }
                     });
-                    /*api.getUserAccount(emailInput.getText().toString()).enqueue(new Callback<User>() {
-                        @Override
-                        public void onResponse(Call<User> call, Response<User> response) {
-                            if (response.isSuccessful()) {
-                                User user = response.body();
-                                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putLong("UserId", user.getId()).apply();
-                            }
-                        }
-                        @Override
-                        public void onFailure(Call<User> call, Throwable t) {
-                        }
-                    });*/
                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", 1).apply();
                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("justRegistered", true).apply();

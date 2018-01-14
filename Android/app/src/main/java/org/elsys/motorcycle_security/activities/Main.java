@@ -18,6 +18,7 @@ import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.Globals;
 import org.elsys.motorcycle_security.services.LocationCheckerReceiver;
+import org.elsys.motorcycle_security.services.LocationNotificator;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,7 +54,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
         settingsButton.setOnClickListener(this);
         if(isAuthorized && !justRegistered) {
             Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
-            Log.d("DDDDDD", Globals.deviceInUse);
+            scheduleLocationCheckerAlarm();
             Api api = Api.RetrofitInstance.create();
             api.getDeviceConfiguration(Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
                 @Override
@@ -65,7 +66,8 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                 public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
                 }
             });
-            scheduleLocationCheckerAlarm();
+            /*Intent intent = new Intent(this, LocationNotificator.class);
+            this.startService(intent);*/
         }
     }
 
@@ -102,7 +104,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                     isParked = false;
                 }
                 Api api = Api.RetrofitInstance.create();
-                api.updateParkingStatus(deviceInUse,isParked).enqueue(new Callback<DeviceConfiguration>() {
+                api.updateParkingStatus(deviceInUse,isParked, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
                     @Override
                     public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
                     @Override

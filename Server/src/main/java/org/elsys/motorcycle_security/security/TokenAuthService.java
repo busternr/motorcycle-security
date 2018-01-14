@@ -17,8 +17,8 @@ public class TokenAuthService {
 
   // 10 d
   static final long VALIDITY = 864_000_000;
-  static final String KEY = "The_thing_goes_skrrra";
-  static final String TOKEN_PREFIX = "Bearer";
+  static final String KEY = "Motorycle security";
+  static final String TOKEN_PREFIX = "User";
   static final String HEADER_STRING = "Authorization";
 
   static void addAuthentication(HttpServletResponse res, String username) {
@@ -32,7 +32,6 @@ public class TokenAuthService {
 
     String token = request.getHeader(HEADER_STRING);
     if (token != null) {
-      // parse the token.
       String user = Jwts.parser().setSigningKey(KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody()
           .getSubject();
 

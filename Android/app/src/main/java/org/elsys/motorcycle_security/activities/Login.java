@@ -3,7 +3,6 @@ package org.elsys.motorcycle_security.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,10 +11,13 @@ import android.widget.TextView;
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.Device;
+import org.elsys.motorcycle_security.models.Globals;
+import org.elsys.motorcycle_security.models.LoginDetails;
 import org.elsys.motorcycle_security.models.User;
 
 import java.util.List;
 
+import okhttp3.Headers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,6 +50,17 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         public void onResponse(Call<User> call, Response<User> response) {
                             if (response.isSuccessful()) {
                                 User user = response.body();
+                                Api api = Api.RetrofitInstance.create();
+                                LoginDetails loginDetails = new LoginDetails(user.getEmail(), user.getPassword());
+                                api.Login(loginDetails).enqueue(new Callback<LoginDetails>() {
+                                    @Override
+                                    public void onResponse(Call<LoginDetails> call, Response<LoginDetails> response) {
+                                        Headers headers = response.headers();
+                                        Globals.authorization = response.headers().get("authorization");
+                                    }
+                                    @Override
+                                    public void onFailure(Call<LoginDetails> call, Throwable t) {}
+                                });
                                 if (user.getEmail().equals(emailInput.getText().toString()) && user.getPassword().equals(passwordInput.getText().toString())) {
                                     List<Device> userDevices = user.getDevices();
                                     for(int counter=0;counter<userDevices.size(); counter++)

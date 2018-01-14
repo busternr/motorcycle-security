@@ -29,7 +29,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
       throws AuthenticationException, IOException, ServletException {
     AccountDto creds = new ObjectMapper().readValue(req.getInputStream(), AccountDto.class);
     return this.getAuthenticationManager().authenticate(
-        new UsernamePasswordAuthenticationToken(creds.getUsername(), creds.getPassword(), Collections.emptyList()));
+        new UsernamePasswordAuthenticationToken(creds.getEmail(), creds.getPassword(), Collections.emptyList()));
   }
 
   @Override

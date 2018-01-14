@@ -1,39 +1,28 @@
 #include <DFRobot_sim808.h>
 #include <SoftwareSerial.h>
+#include <string.h>
+#include <stdlib.h>
 
 #define PIN_TX    10
 #define PIN_RX    11
 SoftwareSerial mySerial(PIN_TX,PIN_RX);
 DFRobot_SIM808 sim808(&mySerial);//Connect RX,TX,PWR,
 
-float x;
-float y;
+int x =32;
+int y = 32;
 long timeout = 60000;
-char deviceId[6] = "cbr600";
+String deviceId = "Rs1285";
 char latitude[10];
 char longtitude[10];
-//char http_get_cmd[] = "GET /device/22233/receive/device-configuration HTTP/1.0\r\n\r\n";
-char http_post_cmd2[] = "POST /device/send/gps-cordinates?deviceId=cbr600&x=1&y=1 HTTP/1.0\r\n\r\n";
-char http_get_cmd[100] = "GET /device/";
-char http_post_cmd[] = "POST /device/send/gps-cordinates?deviceId=";
+char http_post_cmd2[] = "POST /device/send/gps-cordinates?deviceId=cbr600&x=32&y=32 HTTP/1.0\r\n\r\n";
+String http_post_cmd = "POST /device/send/gps-cordinates?deviceId=";
 char buffer[512];
 
-void makePostChar()
-{
-  char http_post_cmd_with_deviceId[sizeof(http_post_cmd) + sizeof(deviceId)];
-  strcat(http_post_cmd_with_deviceId, deviceId);
-  Serial.println(sizeof(http_post_cmd_with_deviceId));
-  char http_post_cmd_with_x[sizeof(http_post_cmd_with_deviceId) + 4]; //to be adjusted &x= [3] + [1]
-  strcat(http_post_cmd_with_x, "&x=");
-  strcat(http_post_cmd_with_x, "1");
-  Serial.println(sizeof(http_post_cmd_with_x));
-  char http_post_cmd_with_y[sizeof(http_post_cmd_with_x) + 4]; //to be adjusted &x= [3] + [1]
-  strcat(http_post_cmd_with_y, "&y=");
-  strcat(http_post_cmd_with_y, "1");
-  Serial.println(sizeof(http_post_cmd_with_y));
-  char http_post_cmd_with_protocol[sizeof(http_post_cmd_with_y) + sizeof(" HTTP/1.0\r\n\r\n")];
-  strcat(http_post_cmd_with_protocol, " HTTP/1.0\r\n\r\n");
-  Serial.println(http_post_cmd_with_protocol);
+String formatGpsCordinates()
+{ 
+  Serial.println(http_post_cmd2);
+  Serial.println(String("POST /device/send/gps-cordinates?deviceId=" + deviceId + "&x=" + x + "&y="+y+ " HTTP/1.0\r\n\r\n"));
+  return String("POST /device/send/gps-cordinates?deviceId=" + deviceId + "&x=" + x + "&y="+y+ " HTTP/1.0\r\n\r\n");
 }
 
 void setup()
@@ -42,29 +31,16 @@ void setup()
   Serial.begin(9600);
   initializeConnection();
   checkTCPConnection();
-  makePostChar();
+  String formatedUrlForGpsCordinates = formatGpsCordinates();
+  sendGPSCordinates(formatedUrlForGpsCordinates);
 
 }
 
 void loop()
 {
   //getGPSCordinates();
-  sendGPSCordinates();
+//  sendGPSCordinates();
   delay(timeout);
-}
-
-char * deblank(char *str)
-{
-  char *out = str, *put = str;
-
-  for(; *str != '\0'; ++str)
-  {
-    if(*str != ' ')
-      *put++ = *str;
-  }
-  *put = '\0';
-
-  return out;
 }
 
 void initializeConnection()
@@ -79,11 +55,11 @@ void initializeConnection()
 
 void checkTCPConnection()
 {
-  if(!sim808.connect(TCP,"130.204.140.70", 8080)) Serial.println("Connect error");
+  if(!sim808.connect(TCP,"10.19.9.85", 8080)) Serial.println("Connect error");
   else Serial.println("Connect 130.204.140.70 success");
 }
 
-void getGPSCordinates()
+/*void getGPSCordinates()
 {
   if( sim808.attachGPS()) Serial.println("Open the GPS power success");
   else Serial.println("Open the GPS power failure");
@@ -99,16 +75,9 @@ void getGPSCordinates()
   dtostrf(y, 2, 0, latitude);
   sim808.detachGPS();
   Serial.println("Close the GPS power success");
-  strcat(http_post_cmd, deviceId);
-  strcat(http_post_cmd, "&x=");
-  strcat(http_post_cmd, latitude);
-  strcat(http_post_cmd, "&y=");
-  strcat(http_post_cmd, longtitude);
-  strcat(http_post_cmd, " HTTP/1.0\r\n\r\n");
-  Serial.println(http_post_cmd);
-}
+}*/
 
-void getDeviceConfiguration()
+/*void getDeviceConfiguration()
 {
   strcat(http_get_cmd, deviceId);
   strcat(http_get_cmd, "/receive/device-configuration HTTP/1.0\r\n\r\n");
@@ -124,11 +93,17 @@ void getDeviceConfiguration()
       Serial.print(buffer);
       break;
   }
-}
+}*/
 
-void sendGPSCordinates()
+void sendGPSCordinates(String postUrlForGpsCordinates)
 {
-  sim808.send(http_post_cmd, sizeof(http_post_cmd)-1);
+  char azSUmGei[postUrlForGpsCordinates.length()];
+  postUrlForGpsCordinates.toCharArray(azSUmGei, postUrlForGpsCordinates.length());
+  Serial.println(sizeof(http_post_cmd2));
+  Serial.println(postUrlForGpsCordinates.length());
+  Serial.println(azSUmGei);
+  sim808.send(http_post_cmd2, sizeof(http_post_cmd2)-1);
+  //sim808.send(azSUmGei, sizeof(azSUmGei));
   while (true) {
       int ret = sim808.recv(buffer, sizeof(buffer)-1);
       if (ret <= 0){
