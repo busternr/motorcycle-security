@@ -35,29 +35,35 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/send/parking-status", method = PUT)
-    public ResponseEntity updateParkingStatusByDeviceId(@RequestParam(value = "deviceId", defaultValue = "0") String deviceId, @RequestParam(value = "isParked", defaultValue = "0") boolean isParked) {
+    public ResponseEntity updateParkingStatusByDeviceId(@RequestParam(value = "deviceId") String deviceId, @RequestParam(value = "isParked", defaultValue = "0") boolean isParked) {
         try {
             deviceConfigurationHandler.updateParkingStatus(deviceId, isParked);
         }
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
         }
+        catch(InvalidInputException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/client/send/timeout", method = PUT)
-    public ResponseEntity updateTimeoutByDeviceId(@RequestParam(value = "deviceId", defaultValue = "0") String deviceId, @RequestParam(value = "timeout", defaultValue = "0") long timeOut) {
+    public ResponseEntity updateTimeoutByDeviceId(@RequestParam(value = "deviceId") String deviceId, @RequestParam(value = "timeout", defaultValue = "0") long timeOut) {
         try {
             deviceConfigurationHandler.updateTimeOut(deviceId, timeOut);
         }
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
         }
+        catch(InvalidInputException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/client/send/parked-cordinates", method = PUT)
-    public ResponseEntity updateTimeoutByDeviceId(@RequestParam(value = "deviceId", defaultValue = "0") String deviceId,
+    public ResponseEntity updateTimeoutByDeviceId(@RequestParam(value = "deviceId") String deviceId,
                                                   @RequestParam(value = "x", defaultValue = "0") long x,
                                                   @RequestParam(value = "y", defaultValue = "0") long y) {
         try {

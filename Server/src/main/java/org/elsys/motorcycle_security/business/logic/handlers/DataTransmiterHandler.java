@@ -25,8 +25,6 @@ public class DataTransmiterHandler implements org.elsys.motorcycle_security.busi
         DataTransmiter d = new DataTransmiter();
         d.setX(x);
         d.setY(y);
-//        Instant instant = Instant.now();
-//        Long date =instant.getEpochSecond();
         Long date = System.currentTimeMillis();
         d.setTime(date);
         d.setDevice(device);
