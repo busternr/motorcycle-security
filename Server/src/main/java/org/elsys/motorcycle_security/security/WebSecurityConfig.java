@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .addFilterBefore(new JWTLoginFilter("/login", authenticationManager()),
                 UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-    http.authorizeRequests().antMatchers("/**").authenticated();
+    //http.authorizeRequests().antMatchers("/**").authenticated();
   }
 
   @Override

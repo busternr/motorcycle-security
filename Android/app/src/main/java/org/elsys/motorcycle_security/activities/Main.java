@@ -15,18 +15,17 @@ import android.widget.Toast;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
+import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.Globals;
+import org.elsys.motorcycle_security.models.GpsCordinates;
 import org.elsys.motorcycle_security.services.LocationCheckerReceiver;
-import org.elsys.motorcycle_security.services.LocationNotificator;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Main extends AppCompatActivity implements View.OnClickListener {
-
-    String deviceInUse;
     private boolean isParked;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +65,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                 public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
                 }
             });
-            /*Intent intent = new Intent(this, LocationNotificator.class);
+            /*Intent intent = new Intent(this, LocationChecker.class);
             this.startService(intent);*/
         }
     }
@@ -77,7 +76,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
         final PendingIntent pIntent = PendingIntent.getBroadcast(this, LocationCheckerReceiver.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         long firstMillis = System.currentTimeMillis();
         AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, 15000, pIntent);
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, 5000, pIntent);
     }
 
     public void onClick(View v) {
@@ -93,18 +92,35 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                 break;
             }
             case R.id.ParkBtn: {
+                final Api api = Api.RetrofitInstance.create();
                 if(isParked == false) {
                     Toast toast = Toast.makeText(getApplicationContext(), "Parked mode ON", Toast.LENGTH_LONG);
                     toast.show();
                     isParked = true;
+                    api.getGPSCordinates(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<GpsCordinates>() {
+                        @Override
+                        public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
+                            if (response.isSuccessful()) {
+                                final GpsCordinates gpsCordinates = response.body();
+                                api.updateParkedCordinates(Globals.deviceInUse, gpsCordinates.getX(), gpsCordinates.getY(), Globals.authorization).enqueue(new Callback<Device>() {
+                                    @Override
+                                    public void onResponse(Call<Device> call, Response<Device> response) {}
+                                    @Override
+                                    public void onFailure(Call<Device> call, Throwable t) {}
+                                });
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<GpsCordinates> call, Throwable t) {
+                        }
+                    });
                 }
                 else if(isParked == true) {
                     Toast toast = Toast.makeText(getApplicationContext(), "Parked mode OFF", Toast.LENGTH_LONG);
                     toast.show();
                     isParked = false;
                 }
-                Api api = Api.RetrofitInstance.create();
-                api.updateParkingStatus(deviceInUse,isParked, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
+                api.updateParkingStatus(Globals.deviceInUse,isParked, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
                     @Override
                     public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
                     @Override

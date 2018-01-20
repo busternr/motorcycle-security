@@ -12,11 +12,11 @@ public class DeviceInfo {
     @NotNull
     private String deviceId;
 
-    private long parkedX;
+    private double parkedX;
 
-    private long parkedY;
+    private double parkedY;
 
-    public DeviceInfo(long id, String deviceId, long parkedX, long parkedY) {
+    public DeviceInfo(long id, String deviceId, double parkedX, double parkedY) {
         this.id = id;
         this.deviceId = deviceId;
         this.parkedX = parkedX;
@@ -43,19 +43,19 @@ public class DeviceInfo {
         this.deviceId = deviceId;
     }
 
-    public long getParkedX() {
+    public double getParkedX() {
         return parkedX;
     }
 
-    public void setParkedX(long parkedX) {
+    public void setParkedX(double parkedX) {
         this.parkedX = parkedX;
     }
 
-    public long getParkedY() {
+    public double getParkedY() {
         return parkedY;
     }
 
-    public void setParkedY(long parkedY) {
+    public void setParkedY(double parkedY) {
         this.parkedY = parkedY;
     }
 }

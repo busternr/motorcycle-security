@@ -44,7 +44,7 @@ public class SetCurrentDevice extends AppCompatActivity implements View.OnClickL
                 DeviceConfiguration deviceConfiguration = response.body();
                 if(deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "ON");
                 else if(!deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "OFF");
-                timeOutText.setText("GPS Sending frequency:" + String.valueOf(deviceConfiguration.getTimeOut()) + " mileseconds");
+                timeOutText.setText("GPS Sending frequency:" + String.valueOf(deviceConfiguration.getTimeOut() / 1000) + " seconds");
             }
             @Override
             public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
@@ -53,10 +53,15 @@ public class SetCurrentDevice extends AppCompatActivity implements View.OnClickL
         api.getGPSCordinates(deviceId, Globals.authorization).enqueue(new Callback<GpsCordinates>() {
             @Override
             public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
-                GpsCordinates GpsCordinates = response.body();
-                Long Date = System.currentTimeMillis();
-                if(Date - GpsCordinates.getTime() < 600000) statusText.setText("Status:" + "Turned ON");
-                else if(Date - GpsCordinates.getTime() > 600000) statusText.setText("Status:" + "Turned OFF");
+                GpsCordinates gpsCordinates = response.body();
+                if(gpsCordinates == null) statusText.setText("Status:" + "No information");
+                else {
+                    Long date = System.currentTimeMillis();
+                    if (date - gpsCordinates.getTime() < 600000)
+                        statusText.setText("Status:" + "Turned ON");
+                    else if (date - gpsCordinates.getTime() > 600000)
+                        statusText.setText("Status:" + "Turned OFF");
+                }
             }
             @Override
             public void onFailure(Call<GpsCordinates> call, Throwable t) {
@@ -67,7 +72,7 @@ public class SetCurrentDevice extends AppCompatActivity implements View.OnClickL
     public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.SetCurrentDeviceBtn: {
-                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceId).apply();
+                Globals.deviceInUse = deviceId;
                 Intent myIntent = new Intent(v.getContext(),Settings.class);
                 startActivity(myIntent);
             }

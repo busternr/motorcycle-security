@@ -4,7 +4,7 @@ import org.elsys.motorcycle_security.dto.DataTransmiterInfo;
 
 public interface DataTransmiter{
 
-    void updateGPSCordinates(String deviceId, Long x, Long y);
+    void updateGPSCordinates(String deviceId, double x, double y);
 
     DataTransmiterInfo getGPSCordinates(String deviceId);
 }

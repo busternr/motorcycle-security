@@ -8,4 +8,6 @@ public interface DeviceConfiguration {
     void updateTimeOut(String deviceId, long timeOut);
 
     void updateParkingStatus(String deviceId, boolean isParked);
+
+    void updateStolenStatus(String deviceId, boolean isStolen);
 }

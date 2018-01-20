@@ -11,6 +11,9 @@ public class DeviceConfiguration {
     @SerializedName("parked")
     @Expose
     private boolean parked;
+    @SerializedName("stolen")
+    @Expose
+    private boolean stolen;
 
     public long getTimeOut() {
         return timeOut;
@@ -26,5 +29,13 @@ public class DeviceConfiguration {
 
     public void setParked(boolean parked) {
         this.parked = parked;
+    }
+
+    public boolean isStolen() {
+        return stolen;
+    }
+
+    public void setStolen(boolean stolen) {
+        this.stolen = stolen;
     }
 }

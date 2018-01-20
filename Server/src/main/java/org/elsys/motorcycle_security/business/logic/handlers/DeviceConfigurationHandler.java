@@ -52,5 +52,16 @@ public class DeviceConfigurationHandler implements org.elsys.motorcycle_security
         }
         else throw new InvalidInputException("Invalid input");
     }
+
+    @Override
+    public void updateStolenStatus(String deviceId, boolean isStolen) {
+        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceId);
+        if(deviceConfiguration == null) throw new InvalidDeviceIdException("Invalid device id");
+        if(isStolen == true || isStolen == false) {
+            deviceConfiguration.setStolen(isStolen);
+            deviceConfigurationRepository.save(deviceConfiguration);
+        }
+        else throw new InvalidInputException("Invalid input");
+    }
 }
 

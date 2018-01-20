@@ -36,17 +36,16 @@ public class CurrentDevice extends AppCompatActivity implements View.OnClickList
         Button timeOutButton = findViewById(R.id.ChangeTimeOutBtn);
         timeOutButton.setOnClickListener(this);
         Api api;
-        final String deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
-        deviceIdText.setText("Device pin number:" + deviceInUse);
+        deviceIdText.setText("Device pin number:" + Globals.deviceInUse);
         api = Api.RetrofitInstance.create();
-        api.getDeviceConfiguration(deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
+        api.getDeviceConfiguration(Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
             @Override
             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
                 if(response.isSuccessful()){
                     DeviceConfiguration deviceConfiguration = response.body();
                     if(deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "ON");
                     else if(!deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "OFF");
-                    timeOutText.setText("GPS Sending frequency:" + String.valueOf(deviceConfiguration.getTimeOut()) + " mileseconds");
+                    timeOutText.setText("GPS Sending frequency:" + String.valueOf(deviceConfiguration.getTimeOut() / 1000)  + " seconds");
                 }
             }
             @Override
@@ -54,14 +53,12 @@ public class CurrentDevice extends AppCompatActivity implements View.OnClickList
             }
         });
         api = Api.RetrofitInstance.create();
-        api.getGPSCordinates(deviceInUse, Globals.authorization).enqueue(new Callback<GpsCordinates>() {
+        api.getGPSCordinates(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<GpsCordinates>() {
             @Override
             public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                 GpsCordinates gpsCordinates = response.body();
                 if(gpsCordinates == null) statusText.setText("Status:" + "No information");
                 else {
-//                    Instant instant = Instant.now();
-//                    Long date = instant.getEpochSecond();
                     Long date = System.currentTimeMillis();
                     if (date - gpsCordinates.getTime() < 600000)
                         statusText.setText("Status:" + "Turned ON");

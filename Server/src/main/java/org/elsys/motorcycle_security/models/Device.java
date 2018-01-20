@@ -20,10 +20,10 @@ public class Device {
     private String deviceId;
 
     @Column(name="ParkedLatitude")
-    private long parkedX;
+    private double parkedX;
 
     @Column(name="ParkedLongitude")
-    private long parkedY;
+    private double parkedY;
 
     @OneToMany(mappedBy="device")
     private List<DataTransmiter> transmiterData = new ArrayList<>();
@@ -55,19 +55,19 @@ public class Device {
         this.deviceId = deviceId;
     }
 
-    public long getParkedX() {
+    public double getParkedX() {
         return parkedX;
     }
 
-    public void setParkedX(long parkedX) {
+    public void setParkedX(double parkedX) {
         this.parkedX = parkedX;
     }
 
-    public long getParkedY() {
+    public double getParkedY() {
         return parkedY;
     }
 
-    public void setParkedY(long parkedY) {
+    public void setParkedY(double parkedY) {
         this.parkedY = parkedY;
     }
 }

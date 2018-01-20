@@ -7,27 +7,27 @@ public class GpsCordinates {
 
     @SerializedName("x")
     @Expose
-    private long x;
+    private double x;
     @SerializedName("y")
     @Expose
-    private long y;
+    private double y;
     @SerializedName("time")
     @Expose
     private long time;
 
-    public long getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(long x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public long getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(long y) {
+    public void setY(double y) {
         this.y = y;
     }
 

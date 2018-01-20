@@ -12,6 +12,9 @@ public class DeviceConfiguration {
     @Column(name="isParked")
     private boolean isParked;
 
+    @Column(name="isStolen")
+    private boolean isStolen;
+
     @Column(name="timeout")
     private long timeOut;
 
@@ -21,6 +24,7 @@ public class DeviceConfiguration {
 
     public DeviceConfiguration() {
         this.isParked = false;
+        this.isStolen = false;
         this.timeOut = 300000;
     }
 
@@ -30,6 +34,14 @@ public class DeviceConfiguration {
 
     public void setParked(boolean parked) {
         isParked = parked;
+    }
+
+    public boolean isStolen() {
+        return isStolen;
+    }
+
+    public void setStolen(boolean stolen) {
+        isStolen = stolen;
     }
 
     public long getTimeOut() {

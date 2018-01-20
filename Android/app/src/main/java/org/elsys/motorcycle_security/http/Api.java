@@ -27,6 +27,9 @@ public interface Api {
     @PUT("/client/send/parking-status")
     Call<DeviceConfiguration> updateParkingStatus(@Query("deviceId") String deviceId, @Query("isParked") boolean isParked, @Header("authorization") String authorization);
 
+    @PUT("/client/send/parked-cordinates")
+    Call<Device> updateParkedCordinates(@Query("deviceId") String deviceId, @Query("x") double x, @Query("y") double y, @Header("authorization") String authorization);
+
     @PUT("/client/send/timeout")
     Call<DeviceConfiguration> updateTimeOut(@Query("deviceId") String deviceId, @Query("timeout") long timeOut, @Header("authorization") String authorization);
 

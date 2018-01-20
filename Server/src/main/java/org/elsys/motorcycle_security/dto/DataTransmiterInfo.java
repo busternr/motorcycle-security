@@ -8,11 +8,11 @@ import java.util.List;
 
 public class DataTransmiterInfo
 {
-    private long x;
-    private long y;
+    private double x;
+    private double y;
     private long time;
 
-    public DataTransmiterInfo(long x, long y, long time) {
+    public DataTransmiterInfo(double x, double y, long time) {
         this.x = x;
         this.y = y;
         this.time = time;
@@ -22,19 +22,19 @@ public class DataTransmiterInfo
         this(dataTransmiter.getX(), dataTransmiter.getY(), dataTransmiter.getTime());
     }
 
-    public long getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(long x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public long getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(long y) {
+    public void setY(double y) {
         this.y = y;
     }
 

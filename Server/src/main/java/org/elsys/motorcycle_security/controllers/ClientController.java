@@ -35,7 +35,7 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/send/parking-status", method = PUT)
-    public ResponseEntity updateParkingStatusByDeviceId(@RequestParam(value = "deviceId") String deviceId, @RequestParam(value = "isParked", defaultValue = "0") boolean isParked) {
+    public ResponseEntity updateParkingStatusByDeviceId(@RequestParam(value = "deviceId") String deviceId, @RequestParam(value = "isParked") boolean isParked) {
         try {
             deviceConfigurationHandler.updateParkingStatus(deviceId, isParked);
         }
@@ -71,6 +71,20 @@ public class ClientController {
         }
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
+        catch(InvalidInputException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/client/send/stolen-status", method = PUT)
+    public ResponseEntity updateTimeoutByDeviceId(@RequestParam(value = "deviceId") String deviceId, @RequestParam(value = "isStolen") boolean isStolen) {
+        try {
+            deviceConfigurationHandler.updateStolenStatus(deviceId, isStolen);
+        }
+        catch(InvalidDeviceIdException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
         }
         catch(InvalidInputException exception) {
             return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);

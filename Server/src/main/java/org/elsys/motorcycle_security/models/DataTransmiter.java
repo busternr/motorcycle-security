@@ -3,38 +3,40 @@ package org.elsys.motorcycle_security.models;
 
 import javax.persistence.*;
 
-//Select * from DataTransmiter as dataTransmiter where dataTransmiter.deviceId == deviceId order by time
 @Entity
 public class DataTransmiter {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
     @Column(name="Latitude")
-    private long x;
+    private double x;
 
     @Column(name="Longitude")
-    private long y;
+    private double y;
 
     @Column(name="Time")
     private long time;
+
+    @Column(name="Date")
+    private String date;
 
     @ManyToOne
     @JoinColumn(name="deviceId", nullable=false)
     private Device device;
 
-    public long getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(long x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public long getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(long y) {
+    public void setY(double y) {
         this.y = y;
     }
 
@@ -44,6 +46,14 @@ public class DataTransmiter {
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public Device getDevice() {

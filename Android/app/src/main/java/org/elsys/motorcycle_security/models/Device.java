@@ -19,14 +19,14 @@ public class Device {
 
     @SerializedName("parkedX")
     @Expose
-    private long parkedX;
+    private double parkedX;
 
     @SerializedName("parkedY")
     @Expose
-    private long parkedY;
+    private double parkedY;
 
     public Device() {}
-    public Device(String deviceId, long upTime, long parkedX, long parkedY) {
+    public Device(String deviceId, long upTime, double parkedX, double parkedY) {
         this.deviceId = deviceId;
         this.upTime = upTime;
         this.parkedX = parkedX;
@@ -57,19 +57,19 @@ public class Device {
         this.upTime = upTime;
     }
 
-    public long getParkedX() {
+    public double getParkedX() {
         return parkedX;
     }
 
-    public void setParkedX(long parkedX) {
+    public void setParkedX(double parkedX) {
         this.parkedX = parkedX;
     }
 
-    public long getParkedY() {
+    public double getParkedY() {
         return parkedY;
     }
 
-    public void setParkedY(long parkedY) {
+    public void setParkedY(double parkedY) {
         this.parkedY = parkedY;
     }
 }

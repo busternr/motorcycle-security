@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -50,8 +51,9 @@ public class CurrentLocation extends FragmentActivity implements OnMapReadyCallb
                 @Override
                 public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                     if (response.isSuccessful()) {
-                        GpsCordinates GpsCordinates = response.body();
-                        LatLng CurrLoc = new LatLng(GpsCordinates.getX(), GpsCordinates.getX());
+                        GpsCordinates gpsCordinates = response.body();
+                        Log.d("cords", "device:" + deviceId + " " + Double.toString(gpsCordinates.getX()) + " " + Double.toString(gpsCordinates.getY()));
+                        LatLng CurrLoc = new LatLng(gpsCordinates.getX(), gpsCordinates.getX());
                         mMap.addMarker(new MarkerOptions().position(CurrLoc).title(deviceId));
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CurrLoc, zoomlevel));
                     }
