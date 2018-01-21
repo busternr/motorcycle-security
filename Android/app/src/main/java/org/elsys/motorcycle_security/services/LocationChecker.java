@@ -41,7 +41,7 @@ public class LocationChecker extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("Location checker", "Service running");
         Api api = Api.RetrofitInstance.create();
-        api.getDevice(Globals.deviceInUse).enqueue(new Callback<Device>() {
+        api.getDevice(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<Device>() {
             @Override
             public void onResponse(Call<Device> call, Response<Device> response) {
                 if(response.isSuccessful()) {

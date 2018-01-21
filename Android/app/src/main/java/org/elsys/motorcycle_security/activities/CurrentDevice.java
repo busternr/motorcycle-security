@@ -14,6 +14,7 @@ import org.elsys.motorcycle_security.models.Globals;
 import org.elsys.motorcycle_security.models.GpsCordinates;
 
 import java.time.Instant;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,11 +60,13 @@ public class CurrentDevice extends AppCompatActivity implements View.OnClickList
                 GpsCordinates gpsCordinates = response.body();
                 if(gpsCordinates == null) statusText.setText("Status:" + "No information");
                 else {
-                    Long date = System.currentTimeMillis();
-                    if (date - gpsCordinates.getTime() < 600000)
+                    Date date = new Date();
+                    long currTimeMills = date.getTime();
+                    /*long cordsTimeMills = gpsCordinates.getDate().getTime();
+                    if (cordsTimeMills - cordsTimeMills < 600000)
                         statusText.setText("Status:" + "Turned ON");
-                    else if (date - gpsCordinates.getTime() > 600000)
-                        statusText.setText("Status:" + "Turned OFF");
+                    else if (cordsTimeMills - cordsTimeMills > 600000)
+                        statusText.setText("Status:" + "Turned OFF");*/
                 }
             }
             @Override

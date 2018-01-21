@@ -53,7 +53,6 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
         settingsButton.setOnClickListener(this);
         if(isAuthorized && !justRegistered) {
             Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
-            scheduleLocationCheckerAlarm();
             Api api = Api.RetrofitInstance.create();
             api.getDeviceConfiguration(Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
                 @Override
@@ -65,12 +64,10 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                 public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
                 }
             });
-            /*Intent intent = new Intent(this, LocationChecker.class);
-            this.startService(intent);*/
+            if(isParked) scheduleLocationCheckerAlarm();
         }
     }
 
-    //Later to be changed !!!
     public void scheduleLocationCheckerAlarm() {
         Intent intent = new Intent(getApplicationContext(), LocationCheckerReceiver.class);
         final PendingIntent pIntent = PendingIntent.getBroadcast(this, LocationCheckerReceiver.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -94,6 +91,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
             case R.id.ParkBtn: {
                 final Api api = Api.RetrofitInstance.create();
                 if(isParked == false) {
+                    scheduleLocationCheckerAlarm();
                     Toast toast = Toast.makeText(getApplicationContext(), "Parked mode ON", Toast.LENGTH_LONG);
                     toast.show();
                     isParked = true;
@@ -116,6 +114,10 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                     });
                 }
                 else if(isParked == true) {
+                    Intent intent = new Intent(this, LocationCheckerReceiver.class);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 123456, intent, 0);
+                    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                    alarmManager.cancel(pendingIntent);
                     Toast toast = Toast.makeText(getApplicationContext(), "Parked mode OFF", Toast.LENGTH_LONG);
                     toast.show();
                     isParked = false;

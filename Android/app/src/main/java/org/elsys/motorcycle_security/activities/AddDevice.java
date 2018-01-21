@@ -10,6 +10,7 @@ import android.widget.EditText;
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.Device;
+import org.elsys.motorcycle_security.models.Globals;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,7 +34,7 @@ public class AddDevice extends AppCompatActivity implements View.OnClickListener
                 Api api = Api.RetrofitInstance.create();
                 long userId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getLong("UserId", 1);
                 Device device = new Device(deviceIdInput.getText().toString(), userId,0 ,0);
-                api.createDevice(device).enqueue(new Callback<Device>() {
+                api.createDevice(device, Globals.authorization).enqueue(new Callback<Device>() {
                     @Override
                     public void onResponse(Call<Device> call, Response<Device> response) {}
                     @Override

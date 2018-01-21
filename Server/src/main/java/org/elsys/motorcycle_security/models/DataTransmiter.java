@@ -1,8 +1,5 @@
 package org.elsys.motorcycle_security.models;
 
-
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -17,8 +14,8 @@ public class DataTransmiter {
     @Column(name="Longitude")
     private double y;
 
-    @Column(name="Time")
-    private Date time;
+    @Column(name="Date")
+    private Date date;
 
     @ManyToOne
     @JoinColumn(name="deviceId", nullable=false)
@@ -40,12 +37,12 @@ public class DataTransmiter {
         this.y = y;
     }
 
-    public Date getTime() {
-        return time;
+    public Date getDate() {
+        return date;
     }
 
-    public void setTime(Date time) {
-        this.time = time;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Device getDevice() {

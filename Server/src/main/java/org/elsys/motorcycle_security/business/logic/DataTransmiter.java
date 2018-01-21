@@ -2,7 +2,7 @@ package org.elsys.motorcycle_security.business.logic;
 
 import org.elsys.motorcycle_security.dto.DataTransmiterInfo;
 
-import java.util.Date;
+import java.util.List;
 
 public interface DataTransmiter{
 
@@ -10,5 +10,5 @@ public interface DataTransmiter{
 
     DataTransmiterInfo getGPSCordinates(String deviceId);
 
-    DataTransmiterInfo getGPSCordinatesForDay(String deviceId, String start, String end);
+    List<DataTransmiterInfo> getGPSCordinatesForDay(String deviceId, String day);
 }

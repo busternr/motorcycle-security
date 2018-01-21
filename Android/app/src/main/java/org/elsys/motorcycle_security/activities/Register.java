@@ -3,6 +3,7 @@ package org.elsys.motorcycle_security.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
+import org.elsys.motorcycle_security.models.Globals;
+import org.elsys.motorcycle_security.models.LoginDetails;
 import org.elsys.motorcycle_security.models.User;
 
 import retrofit2.Call;
@@ -46,12 +49,22 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                 else if(passwordInput.getText().toString().length() < 6) errorsText.setText("Password is too short (Minumum 6 characters)");
                 else if(deviceIdInput.getText().toString().length() < 6) errorsText.setText("Invalid device pin number");
                 else {
-                    Api api = Api.RetrofitInstance.create();;
+                   final Api api = Api.RetrofitInstance.create();;
                     User user = new User(emailInput.getText().toString(), passwordInput.getText().toString(), deviceIdInput.getText().toString());
                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putLong("UserId", user.getId()).apply();
+                    final LoginDetails loginDetails = new LoginDetails(user.getEmail(), user.getPassword());
                     api.createUserAccount(user).enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
+                            api.Login(loginDetails).enqueue(new Callback<Void>()        {
+                                @Override
+                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                    Globals.authorization = response.headers().get("Authorization");
+                                }
+                                @Override
+                                public void onFailure(Call<Void> call, Throwable t) {
+                                }
+                            });
                         }
 
                         @Override

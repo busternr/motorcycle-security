@@ -18,6 +18,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -134,11 +135,11 @@ public class ClientController {
         }
     }
 
-    @RequestMapping(value = "/client/{deviceId}/receive/gps-cordinates-for-time", method = GET)
+    @RequestMapping(value = "/client/{deviceId}/receive/gps-cordinates-for-day", method = GET)
     @ResponseBody
-    public ResponseEntity<DataTransmiterInfo> getGpsCordinatesForTimeStamp(@PathVariable(value = "deviceId") String deviceId, @RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public ResponseEntity<List<DataTransmiterInfo>> getGpsCordinatesForTimeStamp(@PathVariable(value = "deviceId") String deviceId, @RequestParam(value = "day") String day) {
         try {
-            DataTransmiterInfo dataTransmiterInfo = dataTransmiterHandler.getGPSCordinatesForDay(deviceId, start, end);
+            List<DataTransmiterInfo> dataTransmiterInfo = dataTransmiterHandler.getGPSCordinatesForDay(deviceId, day);
             return new ResponseEntity(dataTransmiterInfo,HttpStatus.OK);
         }
         catch(InvalidDeviceIdException exception) {

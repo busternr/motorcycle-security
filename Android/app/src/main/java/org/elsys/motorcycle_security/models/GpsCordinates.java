@@ -3,6 +3,8 @@ package org.elsys.motorcycle_security.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 public class GpsCordinates {
 
     @SerializedName("x")
@@ -11,9 +13,9 @@ public class GpsCordinates {
     @SerializedName("y")
     @Expose
     private double y;
-    @SerializedName("time")
+    @SerializedName("date")
     @Expose
-    private long time;
+    private long date;
 
     public double getX() {
         return x;
@@ -31,11 +33,11 @@ public class GpsCordinates {
         this.y = y;
     }
 
-    public long getTime() {
-        return time;
+    public long getDate() {
+        return date;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setDate(long date) {
+        this.date = date;
     }
 }
