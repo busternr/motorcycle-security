@@ -1,7 +1,10 @@
 package org.elsys.motorcycle_security.models;
 
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class DataTransmiter {
@@ -15,10 +18,7 @@ public class DataTransmiter {
     private double y;
 
     @Column(name="Time")
-    private long time;
-
-    @Column(name="Date")
-    private String date;
+    private Date time;
 
     @ManyToOne
     @JoinColumn(name="deviceId", nullable=false)
@@ -40,20 +40,12 @@ public class DataTransmiter {
         this.y = y;
     }
 
-    public long getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(long time) {
+    public void setTime(Date time) {
         this.time = time;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public Device getDevice() {

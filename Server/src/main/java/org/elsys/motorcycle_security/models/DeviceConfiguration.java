@@ -9,10 +9,10 @@ public class DeviceConfiguration {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
-    @Column(name="isParked")
+    @Column(name="isParked",nullable=false)
     private boolean isParked;
 
-    @Column(name="isStolen")
+    @Column(name="isStolen",nullable=false)
     private boolean isStolen;
 
     @Column(name="timeout")

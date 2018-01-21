@@ -8,11 +8,16 @@ import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputExcep
 import org.elsys.motorcycle_security.business.logic.handlers.DeviceHandler;
 import org.elsys.motorcycle_security.business.logic.handlers.UserHandler;
 import org.elsys.motorcycle_security.dto.*;
+import org.elsys.motorcycle_security.repository.DataTransmiterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -28,6 +33,9 @@ public class ClientController {
     private DataTransmiter dataTransmiterHandler;
     @Autowired
     private DeviceConfiguration deviceConfigurationHandler;
+
+    @Autowired
+    private DataTransmiterRepository dataTransmiterRepository;
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public static ResponseEntity handleTypeMismatch() {
@@ -119,6 +127,18 @@ public class ClientController {
     public ResponseEntity<DataTransmiterInfo> getGpsCordinatesBydeviceId(@PathVariable(value = "deviceId") String deviceId) {
         try {
             DataTransmiterInfo dataTransmiterInfo = dataTransmiterHandler.getGPSCordinates(deviceId);
+            return new ResponseEntity(dataTransmiterInfo,HttpStatus.OK);
+        }
+        catch(InvalidDeviceIdException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/client/{deviceId}/receive/gps-cordinates-for-time", method = GET)
+    @ResponseBody
+    public ResponseEntity<DataTransmiterInfo> getGpsCordinatesForTimeStamp(@PathVariable(value = "deviceId") String deviceId, @RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+        try {
+            DataTransmiterInfo dataTransmiterInfo = dataTransmiterHandler.getGPSCordinatesForDay(deviceId, start, end);
             return new ResponseEntity(dataTransmiterInfo,HttpStatus.OK);
         }
         catch(InvalidDeviceIdException exception) {

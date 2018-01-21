@@ -1,18 +1,16 @@
 package org.elsys.motorcycle_security.dto;
 
 import org.elsys.motorcycle_security.models.DataTransmiter;
-import org.elsys.motorcycle_security.models.Device;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 public class DataTransmiterInfo
 {
     private double x;
     private double y;
-    private long time;
+    private Date time;
 
-    public DataTransmiterInfo(double x, double y, long time) {
+    public DataTransmiterInfo(double x, double y, Date time) {
         this.x = x;
         this.y = y;
         this.time = time;
@@ -38,11 +36,11 @@ public class DataTransmiterInfo
         this.y = y;
     }
 
-    public long getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(long time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 }
