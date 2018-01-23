@@ -1,23 +1,16 @@
 package org.elsys.motorcycle_security.controllers;
 
-import org.elsys.motorcycle_security.business.logic.DataTransmiter;
-import org.elsys.motorcycle_security.business.logic.DeviceConfiguration;
+import org.elsys.motorcycle_security.business.logic.*;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidEmailException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
-import org.elsys.motorcycle_security.business.logic.handlers.DeviceHandler;
-import org.elsys.motorcycle_security.business.logic.handlers.UserHandler;
 import org.elsys.motorcycle_security.dto.*;
-import org.elsys.motorcycle_security.repository.DataTransmiterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -27,16 +20,15 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 @RestController
 public class ClientController {
     @Autowired
-    private UserHandler userHandler;
+    private User userHandler;
     @Autowired
-    private DeviceHandler deviceHandler;
+    private Device deviceHandler;
     @Autowired
     private DataTransmiter dataTransmiterHandler;
     @Autowired
     private DeviceConfiguration deviceConfigurationHandler;
-
     @Autowired
-    private DataTransmiterRepository dataTransmiterRepository;
+    private DevicePin devicePinHandler;
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public static ResponseEntity handleTypeMismatch() {
@@ -161,10 +153,22 @@ public class ClientController {
 
     @RequestMapping(value="/client/{deviceId}/receive/device",method=GET)
     @ResponseBody
-    public ResponseEntity geDeviceByDeviceID(@PathVariable(value = "deviceId") String deviceId) {
+    public ResponseEntity geDeviceByDeviceId(@PathVariable(value = "deviceId") String deviceId) {
         try {
             DeviceInfo deviceInfo = deviceHandler.getDevice(deviceId);
             return new ResponseEntity(deviceInfo,HttpStatus.OK);
+        }
+        catch(InvalidDeviceIdException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value="/client/{deviceId}/receive/device-pin",method=GET)
+    @ResponseBody
+    public ResponseEntity geDevicePinByDeviceId(@PathVariable(value = "deviceId") String deviceId) {
+        try {
+            DevicePinInfo devicePinInfo = devicePinHandler.getDevicePin(deviceId);
+            return new ResponseEntity(devicePinInfo,HttpStatus.OK);
         }
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);

@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName;
 
 public class Device {
 
-    @SerializedName("id")
-    @Expose
-    private long id;
-
     @SerializedName("deviceId")
     @Expose
     private String deviceId;
+
+    @SerializedName("userId")
+    @Expose
+    private long userId;
 
     @SerializedName("upTime")
     @Expose
@@ -26,6 +26,11 @@ public class Device {
     private double parkedY;
 
     public Device() {}
+
+    public Device(String deviceId, long userId) {
+        this.deviceId = deviceId;
+        this.userId = userId;
+    }
     public Device(String deviceId, long upTime, double parkedX, double parkedY) {
         this.deviceId = deviceId;
         this.upTime = upTime;
@@ -41,12 +46,12 @@ public class Device {
         this.deviceId = deviceId;
     }
 
-    public long getId() {
-        return id;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public long getUpTime() {

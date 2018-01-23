@@ -60,11 +60,10 @@ public class SetCurrentDevice extends AppCompatActivity implements View.OnClickL
                 else {
                     Date date = new Date();
                     long currTimeMills = date.getTime();
-                   /* long cordsTimeMills = gpsCordinates.getDate().getTime();
-                    if (cordsTimeMills - cordsTimeMills < 600000)
+                    if (currTimeMills - gpsCordinates.getDate() < 600000)
                         statusText.setText("Status:" + "Turned ON");
-                    else if (cordsTimeMills - cordsTimeMills > 600000)
-                        statusText.setText("Status:" + "Turned OFF");*/
+                    else if (currTimeMills - gpsCordinates.getDate() > 600000)
+                        statusText.setText("Status:" + "Turned OFF");
                 }
             }
             @Override

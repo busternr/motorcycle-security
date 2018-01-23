@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
+import org.elsys.motorcycle_security.models.DevicePin;
 import org.elsys.motorcycle_security.models.Globals;
 import org.elsys.motorcycle_security.models.LoginDetails;
 import org.elsys.motorcycle_security.models.User;
@@ -39,46 +40,58 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         registerButton.setOnClickListener(this);
     }
 
-    public void onClick(View v) {
+    public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.RegBtn: {
                 if(deviceIdInput.getText().toString().length() == 0) errorsText.setText("Device pin number field can't be blank");
                 else if(emailInput.getText().toString().length() == 0) errorsText.setText("Email field can't be blank");
                 else if(passwordInput.getText().toString().length() == 0) errorsText.setText("Password field can't be blank");
+                else if(deviceIdInput.getText().toString().length() == 0) errorsText.setText("Device pin number field can't be blank");
                 else if(EMAIL_ADDRESS.matcher(emailInput.toString()).matches()) errorsText.setText("Invalid email address.");
                 else if(passwordInput.getText().toString().length() < 6) errorsText.setText("Password is too short (Minumum 6 characters)");
-                else if(deviceIdInput.getText().toString().length() < 6) errorsText.setText("Invalid device pin number");
                 else {
-                   final Api api = Api.RetrofitInstance.create();;
-                    User user = new User(emailInput.getText().toString(), passwordInput.getText().toString(), deviceIdInput.getText().toString());
-                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putLong("UserId", user.getId()).apply();
-                    final LoginDetails loginDetails = new LoginDetails(user.getEmail(), user.getPassword());
-                    api.createUserAccount(user).enqueue(new Callback<User>() {
+                   final Api api = Api.RetrofitInstance.create();
+                    api.getDevicePin(deviceIdInput.getText().toString()).enqueue(new Callback<DevicePin>() {
                         @Override
-                        public void onResponse(Call<User> call, Response<User> response) {
-                            api.Login(loginDetails).enqueue(new Callback<Void>()        {
-                                @Override
-                                public void onResponse(Call<Void> call, Response<Void> response) {
-                                    Globals.authorization = response.headers().get("Authorization");
+                        public void onResponse(Call<DevicePin> call, Response<DevicePin> response) {
+                            if (response.isSuccessful()) {
+                                DevicePin devicePin = response.body();
+                                if(devicePin.getPin().equals(deviceIdInput.getText().toString())) {
+                                    User user = new User(emailInput.getText().toString(), passwordInput.getText().toString(), deviceIdInput.getText().toString());
+                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", 1).apply();
+                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
+                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("justRegistered", true).apply();
+                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device 1", user.getDevices().get(0).getDeviceId()).apply();
+                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceIdInput.getText().toString()).apply();
+                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putLong("UserId", user.getId()).apply();
+                                    final LoginDetails loginDetails = new LoginDetails(user.getEmail(), user.getPassword());
+                                    api.createUserAccount(user).enqueue(new Callback<User>() {
+                                        @Override
+                                        public void onResponse(Call<User> call, Response<User> response) {
+                                            api.Login(loginDetails).enqueue(new Callback<Void>()        {
+                                                @Override
+                                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                                    Globals.authorization = response.headers().get("Authorization");
+                                                }
+                                                @Override
+                                                public void onFailure(Call<Void> call, Throwable t) {
+                                                }
+                                            });
+                                        }
+                                        @Override
+                                        public void onFailure(Call<User> call, Throwable t) {
+                                        }
+                                    });
+                                    Intent myIntent = new Intent(v.getContext(), Main.class);
+                                    startActivity(myIntent);
                                 }
-                                @Override
-                                public void onFailure(Call<Void> call, Throwable t) {
-                                }
-                            });
+                            }
+                            else errorsText.setText("Invalid device pin number");
                         }
-
                         @Override
-                        public void onFailure(Call<User> call, Throwable t) {
+                        public void onFailure(Call<DevicePin> call, Throwable t) {
                         }
                     });
-                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", 1).apply();
-                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
-                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("justRegistered", true).apply();
-                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device 1", user.getDevices().get(0).getDeviceId()).apply();
-                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceIdInput.getText().toString()).apply();
-                    Intent myIntent = new Intent(v.getContext(), Main.class);
-                    startActivity(myIntent);
-                    break;
                 }
             }
         }

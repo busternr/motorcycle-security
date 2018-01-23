@@ -1,6 +1,7 @@
 package org.elsys.motorcycle_security.activities;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
@@ -30,11 +33,6 @@ public class CurrentLocation extends FragmentActivity implements OnMapReadyCallb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_current_location);
-        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
-        if(!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Toast toast = Toast.makeText(getApplicationContext(), "Turn ON GPS.", Toast.LENGTH_LONG);
-            toast.show();
-        }
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -52,10 +50,13 @@ public class CurrentLocation extends FragmentActivity implements OnMapReadyCallb
                 public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                     if (response.isSuccessful()) {
                         GpsCordinates gpsCordinates = response.body();
-                        Log.d("cords", "device:" + deviceId + " " + Double.toString(gpsCordinates.getX()) + " " + Double.toString(gpsCordinates.getY()));
-                        LatLng CurrLoc = new LatLng(gpsCordinates.getX(), gpsCordinates.getX());
-                        mMap.addMarker(new MarkerOptions().position(CurrLoc).title(deviceId));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CurrLoc, zoomlevel));
+                        LatLng currLocation = new LatLng(gpsCordinates.getX(), gpsCordinates.getY());
+                        mMap.addMarker(new MarkerOptions().position(currLocation).title(deviceId));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLocation, zoomlevel));
+                        Polyline line = mMap.addPolyline(new PolylineOptions()
+                                .add(currLocation, new LatLng(40.7, -74.0))
+                                .width(5)
+                                .color(Color.RED));
                     }
                 }
                 @Override

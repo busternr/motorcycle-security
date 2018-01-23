@@ -2,6 +2,7 @@ package org.elsys.motorcycle_security.http;
 
 import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
+import org.elsys.motorcycle_security.models.DevicePin;
 import org.elsys.motorcycle_security.models.GpsCordinates;
 import org.elsys.motorcycle_security.models.LoginDetails;
 import org.elsys.motorcycle_security.models.User;
@@ -45,6 +46,9 @@ public interface Api {
     @GET("/client/{deviceId}/receive/device")
     Call<Device> getDevice(@Path("deviceId") String deviceId, @Header("authorization") String authorization);
 
+    @GET("/client/{deviceId}/receive/device-pin")
+    Call<DevicePin> getDevicePin(@Path("deviceId") String deviceId);
+
     @GET("/client/{deviceId}/receive/gps-cordinates")
     Call<GpsCordinates> getGPSCordinates(@Path("deviceId") String deviceId, @Header("authorization") String authorization);
 
@@ -55,8 +59,8 @@ public interface Api {
     Call<DeviceConfiguration> getDeviceConfiguration(@Path("deviceId") String deviceId);
 
     //String API_HOST = "http://10.0.2.2";  //localhost connection
-    String API_HOST = "http://10.19.9.85"; //Dreamix server
-    //String API_HOST = "http://130.204.140.70"; //home pc
+    //String API_HOST = "http://10.19.9.85"; //Dreamix server
+    String API_HOST = "http://130.204.140.70"; //home pc
     String API_PORT = "8080";
 
     class RetrofitInstance {

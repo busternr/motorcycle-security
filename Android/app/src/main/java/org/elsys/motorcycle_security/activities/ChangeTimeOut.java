@@ -32,7 +32,8 @@ public class ChangeTimeOut extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.ChangeTimeOutBtn2: {
                 Api api = Api.RetrofitInstance.create();
-                api.updateTimeOut(Globals.deviceInUse, Long.valueOf(timeOutInput.getText().toString()), Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
+                long seconds = Long.valueOf(timeOutInput.getText().toString()) * 1000;
+                api.updateTimeOut(Globals.deviceInUse, seconds, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
                     @Override
                     public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
                     @Override

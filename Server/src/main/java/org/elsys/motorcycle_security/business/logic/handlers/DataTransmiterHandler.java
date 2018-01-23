@@ -68,11 +68,9 @@ public class DataTransmiterHandler implements org.elsys.motorcycle_security.busi
                 start_ = formatter.parse(startFrom);
                 end_ = formatter.parse(endFrom);
             } catch(java.text.ParseException exception) {}
-            System.out.println("start=" + startFrom + " end=" + endFrom);
             DataTransmiter dataTransmiter = dataTransmiterRepository.getGpsCordinatesForDay(deviceId, start_, end_);
             if(dataTransmiter != null) {
                 dataTransmiters.add(new DataTransmiterInfo(dataTransmiter));
-                System.out.println("Found");
             }
         }
         if(dataTransmiters.size() == 0) throw new InvalidDeviceIdException("Invalid device id");

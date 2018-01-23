@@ -34,12 +34,6 @@ public class HistoryForDifferentDays extends FragmentActivity implements OnMapRe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_for_different_days);
-        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
-        if(!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Toast toast = Toast.makeText(getApplicationContext(), "Turn ON GPS.", Toast.LENGTH_LONG);
-            toast.show();
-        }
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -56,11 +50,11 @@ public class HistoryForDifferentDays extends FragmentActivity implements OnMapRe
             public void onResponse(Call<List<GpsCordinates>> call, Response<List<GpsCordinates>> response) {
                 if (response.isSuccessful()) {
                     List<GpsCordinates> gpsCordinates = response.body();
-                    for(int counter = 0; counter <= gpsCordinates.size(); counter++) {
-                        LatLng CurrLoc = new LatLng(gpsCordinates.get(counter).getX(), gpsCordinates.get(counter).getX());
+                    for(int counter = 0; counter < gpsCordinates.size(); counter++) {
+                        LatLng currentLocation = new LatLng(gpsCordinates.get(counter).getX(), gpsCordinates.get(counter).getY());
                         SimpleDateFormat sdf = new SimpleDateFormat("kk:mm:ss");
-                        mMap.addMarker(new MarkerOptions().position(CurrLoc).title(sdf.format(gpsCordinates.get(counter).getDate())));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CurrLoc, zoomlevel));
+                        mMap.addMarker(new MarkerOptions().position(currentLocation).title(sdf.format(gpsCordinates.get(counter).getDate())));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoomlevel));
                     }
                 }
             }

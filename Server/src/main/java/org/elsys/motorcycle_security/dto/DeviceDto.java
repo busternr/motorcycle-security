@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 public class DeviceDto {
 
     @NotNull
-    @Size(min = 6)
+    @Size(min = 6, max = 6)
     private String deviceId;
 
     @NotNull
