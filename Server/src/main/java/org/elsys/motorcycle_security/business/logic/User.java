@@ -7,4 +7,6 @@ public interface User {
     void createNewUser(UserDto userDto);
 
     UserInfo getUser(String email);
+
+    public void updatePassword(long userId, String oldPassword, String newPassword);
 }

@@ -45,13 +45,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 if(emailInput.getText().toString().length() == 0) errorsText.setText("Email field can't be blank");
                 else if(passwordInput.getText().toString().length() == 0) errorsText.setText("Password field can't be blank");
                 else {
-                    Api api = Api.RetrofitInstance.create();
+                    final Api api = Api.RetrofitInstance.create();
                     api.getUserAccount(emailInput.getText().toString(), Globals.authorization).enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
                             if (response.isSuccessful()) {
                                 User user = response.body();
-                                Api api = Api.RetrofitInstance.create();
                                 final LoginDetails loginDetails = new LoginDetails(user.getEmail(), user.getPassword());
                                 api.Login(loginDetails).enqueue(new Callback<Void>()        {
                                     @Override
@@ -72,6 +71,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                         getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceId).apply();
                                     }
                                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
+                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("User email", user.getEmail()).apply();
                                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putLong("UserId", user.getId()).apply();
                                     Intent myIntent = new Intent(v.getContext(), Main.class);
                                     startActivity(myIntent);

@@ -34,6 +34,9 @@ public interface Api {
     @PUT("/client/send/timeout")
     Call<DeviceConfiguration> updateTimeOut(@Query("deviceId") String deviceId, @Query("timeout") long timeOut, @Header("authorization") String authorization);
 
+    @PUT("/client/send/change-password")
+    Call<User> updatePassword(@Query("userId") long userId, @Header("oldPassword") String oldPassword, @Header("newPassword") String newPassword, @Header("authorization") String authorization);
+
     @POST("/client/send/create-new-user")
     Call<User> createUserAccount(@Body User user);
 

@@ -23,7 +23,7 @@ public class ChangeTimeOut extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_time_out);
-        timeOutInput = findViewById(R.id.TimeOutInput);
+        timeOutInput = findViewById(R.id.OldPassInput);
         Button timeOutButton = findViewById(R.id.ChangeTimeOutBtn2);
         timeOutButton.setOnClickListener(this);
     }

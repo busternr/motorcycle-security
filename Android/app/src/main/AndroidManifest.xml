@@ -69,6 +69,8 @@
             android:enabled="true"
             android:exported="true"
             android:stopWithTask="false" />
+
+        <activity android:name=".activities.ChangePassword"></activity>
     </application>
 
 </manifest>

@@ -48,7 +48,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                 else if(passwordInput.getText().toString().length() == 0) errorsText.setText("Password field can't be blank");
                 else if(deviceIdInput.getText().toString().length() == 0) errorsText.setText("Device pin number field can't be blank");
                 else if(EMAIL_ADDRESS.matcher(emailInput.toString()).matches()) errorsText.setText("Invalid email address.");
-                else if(passwordInput.getText().toString().length() < 6) errorsText.setText("Password is too short (Minumum 6 characters)");
+                else if(passwordInput.getText().toString().length() < 6) errorsText.setText("Password is too short (Minimum 6 characters)");
                 else {
                    final Api api = Api.RetrofitInstance.create();
                     api.getDevicePin(deviceIdInput.getText().toString()).enqueue(new Callback<DevicePin>() {
@@ -64,6 +64,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device 1", user.getDevices().get(0).getDeviceId()).apply();
                                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceIdInput.getText().toString()).apply();
                                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putLong("UserId", user.getId()).apply();
+                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("User email", user.getEmail()).apply();
                                     final LoginDetails loginDetails = new LoginDetails(user.getEmail(), user.getPassword());
                                     api.createUserAccount(user).enqueue(new Callback<User>() {
                                         @Override

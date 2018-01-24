@@ -4,6 +4,7 @@ import org.elsys.motorcycle_security.business.logic.*;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidEmailException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
+import org.elsys.motorcycle_security.business.logic.exceptions.InvalidUserIdException;
 import org.elsys.motorcycle_security.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -85,6 +86,20 @@ public class ClientController {
             deviceConfigurationHandler.updateStolenStatus(deviceId, isStolen);
         }
         catch(InvalidDeviceIdException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
+        catch(InvalidInputException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/client/send/change-password", method = PUT)
+    public ResponseEntity updateTimeoutByDeviceId(@RequestParam(value = "userId") long userId, @RequestHeader(value = "oldPassword") String oldPassword, @RequestHeader(value = "newPassword") String newPassword) {
+        try {
+            userHandler.updatePassword(userId, oldPassword, newPassword);
+        }
+        catch(InvalidUserIdException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
         }
         catch(InvalidInputException exception) {

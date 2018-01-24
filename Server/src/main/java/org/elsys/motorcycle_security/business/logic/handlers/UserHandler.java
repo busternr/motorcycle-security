@@ -2,6 +2,7 @@ package org.elsys.motorcycle_security.business.logic.handlers;
 
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidEmailException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
+import org.elsys.motorcycle_security.business.logic.exceptions.InvalidUserIdException;
 import org.elsys.motorcycle_security.dto.DeviceDto;
 import org.elsys.motorcycle_security.dto.UserDto;
 import org.elsys.motorcycle_security.dto.UserInfo;
@@ -54,5 +55,17 @@ public class UserHandler implements org.elsys.motorcycle_security.business.logic
         User user = userRepository.getUserAccountByEmail(email);
         if(user == null) throw new InvalidEmailException("Invalid email");
         return new UserInfo(user);
+    }
+
+    @Override
+    public void updatePassword(long userId, String oldPassword, String newPassword) {
+        User user = userRepository.getUserAccountById(userId);
+        if(user == null) throw new InvalidUserIdException("Invalid user id");
+        if(newPassword.length() == 0) throw new InvalidInputException("Invalid input");
+        if(oldPassword.matches(user.getPassword())) {
+            user.setPassword(newPassword);
+            userRepository.save(user);
+        }
+        else throw new InvalidInputException("Invalid old password");
     }
 }

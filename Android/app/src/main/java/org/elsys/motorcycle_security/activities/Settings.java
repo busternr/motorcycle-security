@@ -17,10 +17,12 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
         Button currentDeviceButton =  findViewById(R.id.CurrentDeviceBtn);
         Button allDevicesButton =  findViewById(R.id.AllDevicesBtn);
         Button addDeviceButton =  findViewById(R.id.AddDeviceBtn);
+        Button changePasswordButton =  findViewById(R.id.ChangePassBtn);
         Button logoutButton =  findViewById(R.id.LogoutBtn);
         currentDeviceButton.setOnClickListener(this);
         allDevicesButton.setOnClickListener(this);
         addDeviceButton.setOnClickListener(this);
+        changePasswordButton.setOnClickListener(this);
         logoutButton.setOnClickListener(this);
     }
 
@@ -42,6 +44,12 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
             case R.id.AddDeviceBtn:
             {
                 Intent myIntent = new Intent(v.getContext(),AddDevice.class);
+                startActivity(myIntent);
+                break;
+            }
+            case R.id.ChangePassBtn:
+            {
+                Intent myIntent = new Intent(v.getContext(),ChangePassword.class);
                 startActivity(myIntent);
                 break;
             }

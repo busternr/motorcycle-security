@@ -47,7 +47,7 @@ public class DataTransmiterHandler implements org.elsys.motorcycle_security.busi
         return new DataTransmiterInfo(dataTransmiter);
     }
 
-    @Override
+   @Override
     public List<DataTransmiterInfo> getGPSCordinatesForDay(String deviceId, String day) {
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         String startFrom;
