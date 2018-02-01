@@ -30,9 +30,10 @@ public class DeviceController {
     @RequestMapping(value="/device/send/gps-cordinates",method=POST)
     public ResponseEntity sendGpsCordinates(@RequestParam(value="deviceId") String deviceId,
                                             @RequestParam(value="x", defaultValue="0") double x,
-                                            @RequestParam(value="y", defaultValue="0") double y) {
+                                            @RequestParam(value="y", defaultValue="0") double y,
+                                            @RequestParam(value="speed", defaultValue="0") double speed) {
         try {
-            dataTransmiterHandler.updateGPSCordinates(deviceId, x, y);
+            dataTransmiterHandler.updateGPSCordinates(deviceId, x, y, speed);
         }
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);

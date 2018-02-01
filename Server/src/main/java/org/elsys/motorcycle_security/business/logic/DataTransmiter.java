@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface DataTransmiter{
 
-    void updateGPSCordinates(String deviceId, double x, double y);
+    void updateGPSCordinates(String deviceId, double x, double y, double speed);
 
     DataTransmiterInfo getGPSCordinates(String deviceId);
 

@@ -66,11 +66,11 @@
 
         <service
             android:name=".services.LocationChecker"
+            android:launchMode="singleTop"
             android:enabled="true"
             android:exported="true"
             android:stopWithTask="false" />
-
-        <activity android:name=".activities.ChangePassword"></activity>
+        <activity android:name=".activities.ChangePassword" />
     </application>
 
 </manifest>

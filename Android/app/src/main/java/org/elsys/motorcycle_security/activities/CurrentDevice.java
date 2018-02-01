@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
+import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.Globals;
 import org.elsys.motorcycle_security.models.GpsCordinates;
@@ -24,6 +25,7 @@ public class CurrentDevice extends AppCompatActivity implements View.OnClickList
     private TextView deviceIdText;
     private TextView parkingStatusText;
     private TextView timeOutText;
+    private TextView stolenText;
     private TextView statusText;
 
     @Override
@@ -33,19 +35,21 @@ public class CurrentDevice extends AppCompatActivity implements View.OnClickList
         deviceIdText = findViewById(R.id.DeviceIdText);
         parkingStatusText = findViewById(R.id.ParkingStatusText);
         timeOutText = findViewById(R.id.TimeOutText);
+        stolenText = findViewById(R.id.StolenText);
         statusText = findViewById(R.id.StatusText);
         Button timeOutButton = findViewById(R.id.ChangeTimeOutBtn);
         timeOutButton.setOnClickListener(this);
-        Api api;
         deviceIdText.setText("Device pin number:" + Globals.deviceInUse);
-        api = Api.RetrofitInstance.create();
-        api.getDeviceConfiguration(Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
+        final Api api = Api.RetrofitInstance.create();
+        api.getDeviceConfiguration(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
             @Override
             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
                 if(response.isSuccessful()){
                     DeviceConfiguration deviceConfiguration = response.body();
                     if(deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "ON");
-                    else if(!deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "OFF");
+                    if(!deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "OFF");
+                    if(deviceConfiguration.isStolen()) stolenText.setText("Stolen:" + "Yes");
+                    if(!deviceConfiguration.isStolen()) stolenText.setText("Stolen:" + "No");
                     timeOutText.setText("GPS Sending frequency:" + String.valueOf(deviceConfiguration.getTimeOut() / 1000)  + " seconds");
                 }
             }
@@ -53,7 +57,6 @@ public class CurrentDevice extends AppCompatActivity implements View.OnClickList
             public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
             }
         });
-        api = Api.RetrofitInstance.create();
         api.getGPSCordinates(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<GpsCordinates>() {
             @Override
             public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {

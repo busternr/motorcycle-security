@@ -13,9 +13,9 @@ import android.util.Log;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.activities.CurrentLocation;
-import org.elsys.motorcycle_security.activities.Main;
 import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.Device;
+import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.Globals;
 import org.elsys.motorcycle_security.models.GpsCordinates;
 
@@ -40,7 +40,7 @@ public class LocationChecker extends Service {
 
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("Location checker", "Service running");
-        Api api = Api.RetrofitInstance.create();
+        final Api api = Api.RetrofitInstance.create();
         api.getDevice(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<Device>() {
             @Override
             public void onResponse(Call<Device> call, Response<Device> response) {
@@ -62,9 +62,20 @@ public class LocationChecker extends Service {
                     GpsCordinates gpsCordinates = response.body();
                     currentX = gpsCordinates.getX();
                     currentY = gpsCordinates.getY();
-                    //Later to be changed !!!
                     if(parkedX != currentX && parkedY != currentY) {
                         Log.d("Location checker", "Notify");
+                        api.updateStolenStatus(Globals.deviceInUse,true, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
+                            @Override
+                            public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
+                            @Override
+                            public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
+                        });
+                        api.updateTimeOut(Globals.deviceInUse,10000, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
+                            @Override
+                            public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
+                            @Override
+                            public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
+                        });
                         sendNotification();
                     }
                 }

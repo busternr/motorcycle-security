@@ -34,6 +34,9 @@ public interface Api {
     @PUT("/client/send/timeout")
     Call<DeviceConfiguration> updateTimeOut(@Query("deviceId") String deviceId, @Query("timeout") long timeOut, @Header("authorization") String authorization);
 
+    @PUT("/client/send/stolen-status")
+    Call<DeviceConfiguration> updateStolenStatus(@Query("deviceId") String deviceId, @Query("isStolen") boolean isStolen, @Header("authorization") String authorization);
+
     @PUT("/client/send/change-password")
     Call<User> updatePassword(@Query("userId") long userId, @Header("oldPassword") String oldPassword, @Header("newPassword") String newPassword, @Header("authorization") String authorization);
 
@@ -59,7 +62,7 @@ public interface Api {
     Call<List<GpsCordinates>> getGPSCordinatesForDay(@Path("deviceId") String deviceId, @Query("day") String day, @Header("authorization") String authorization);
 
     @GET("/device/{deviceId}/receive/device-configuration")
-    Call<DeviceConfiguration> getDeviceConfiguration(@Path("deviceId") String deviceId);
+    Call<DeviceConfiguration> getDeviceConfiguration(@Path("deviceId") String deviceId, @Header("authorization") String authorization);
 
     //String API_HOST = "http://10.0.2.2";  //localhost connection
     //String API_HOST = "http://10.19.9.85"; //Dreamix server

@@ -36,35 +36,43 @@ public class AddDevice extends AppCompatActivity implements View.OnClickListener
     public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.AddDeviceBtn: {
-               final Api api = Api.RetrofitInstance.create();
-                api.getDevicePin(deviceIdInput.getText().toString()).enqueue(new Callback<DevicePin>() {
-                    @Override
-                    public void onResponse(Call<DevicePin> call, Response<DevicePin> response) {
-                        if (response.isSuccessful()) {
-                            DevicePin devicePin = response.body();
-                            if (devicePin.getPin().equals(deviceIdInput.getText().toString())) {
-                                long userId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getLong("UserId", 1);
-                                Device device = new Device(deviceIdInput.getText().toString(), userId);
-                                api.createDevice(device, Globals.authorization).enqueue(new Callback<Device>() {
-                                    @Override
-                                    public void onResponse(Call<Device> call, Response<Device> response) {}
-                                    @Override
-                                    public void onFailure(Call<Device> call, Throwable t) {}
-                                });
-                                int devices = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getInt("Number of devices", 1);
-                                devices++;
-                                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", devices).apply();
-                                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device " + devices, device.getDeviceId()).apply();
-                                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", device.getDeviceId()).apply();
-                                Intent myIntent = new Intent(v.getContext(),Settings.class);
-                                startActivity(myIntent);
-                            }
+                if (deviceIdInput.getText().toString().length() == 0)
+                    errorsText.setText("Device pin field can't be blank");
+                else {
+                    final Api api = Api.RetrofitInstance.create();
+                    api.getDevicePin(deviceIdInput.getText().toString()).enqueue(new Callback<DevicePin>() {
+                        @Override
+                        public void onResponse(Call<DevicePin> call, Response<DevicePin> response) {
+                            if (response.isSuccessful()) {
+                                DevicePin devicePin = response.body();
+                                if (devicePin.getPin().equals(deviceIdInput.getText().toString())) {
+                                    long userId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getLong("UserId", 1);
+                                    Device device = new Device(deviceIdInput.getText().toString(), userId);
+                                    api.createDevice(device, Globals.authorization).enqueue(new Callback<Device>() {
+                                        @Override
+                                        public void onResponse(Call<Device> call, Response<Device> response) {
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<Device> call, Throwable t) {
+                                        }
+                                    });
+                                    int devices = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getInt("Number of devices", 1);
+                                    devices++;
+                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", devices).apply();
+                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device " + devices, device.getDeviceId()).apply();
+                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", device.getDeviceId()).apply();
+                                    Intent myIntent = new Intent(v.getContext(), Settings.class);
+                                    startActivity(myIntent);
+                                }
+                            } else errorsText.setText("Invalid device pin number");
                         }
-                        else  errorsText.setText("Invalid device pin number");
-                    }
-                    @Override
-                    public void onFailure(Call<DevicePin> call, Throwable t) {}
-                });
+
+                        @Override
+                        public void onFailure(Call<DevicePin> call, Throwable t) {
+                        }
+                    });
+                }
             }
         }
     }

@@ -13,6 +13,9 @@ public class GpsCordinates {
     @SerializedName("y")
     @Expose
     private double y;
+    @SerializedName("speed")
+    @Expose
+    private double speed;
     @SerializedName("date")
     @Expose
     private long date;
@@ -31,6 +34,14 @@ public class GpsCordinates {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
     }
 
     public long getDate() {

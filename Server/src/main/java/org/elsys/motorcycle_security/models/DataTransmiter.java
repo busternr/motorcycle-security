@@ -14,6 +14,9 @@ public class DataTransmiter {
     @Column(name="Longitude")
     private double y;
 
+    @Column(name="Speed")
+    private double speed;
+
     @Column(name="Date")
     private Date date;
 
@@ -35,6 +38,14 @@ public class DataTransmiter {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
     }
 
     public Date getDate() {

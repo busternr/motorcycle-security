@@ -54,11 +54,12 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
         if(isAuthorized && !justRegistered) {
             Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
             Api api = Api.RetrofitInstance.create();
-            api.getDeviceConfiguration(Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
+            api.getDeviceConfiguration(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
                 @Override
                 public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
                     DeviceConfiguration deviceConfiguration = response.body();
                     isParked = deviceConfiguration.isParked();
+                    Globals.isStolen = deviceConfiguration.isStolen();
                 }
                 @Override
                 public void onFailure(Call<DeviceConfiguration> call, Throwable t) {

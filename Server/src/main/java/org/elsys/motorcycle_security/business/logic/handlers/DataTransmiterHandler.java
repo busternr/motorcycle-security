@@ -26,15 +26,15 @@ public class DataTransmiterHandler implements org.elsys.motorcycle_security.busi
     private DeviceRepository deviceRepository;
 
     @Override
-    public void updateGPSCordinates(String deviceId, double x, double y) {
+    public void updateGPSCordinates(String deviceId, double x, double y, double speed) {
         Device device = deviceRepository.getDeviceByDeviceId(deviceId);
         if(device == null) throw new InvalidDeviceIdException("Invalid device id");
         if(x == 0 || y == 0) throw new InvalidInputException("Invalid input");
         DataTransmiter d = new DataTransmiter();
         d.setX(x);
         d.setY(y);
+        d.setSpeed(speed);
         Date date = new Date();
-        ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
         d.setDate(date);
         d.setDevice(device);
         dataTransmiterRepository.save(d);

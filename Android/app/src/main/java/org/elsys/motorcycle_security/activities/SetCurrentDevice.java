@@ -23,6 +23,7 @@ public class SetCurrentDevice extends AppCompatActivity implements View.OnClickL
     private TextView deviceIdText;
     private TextView parkingStatusText;
     private TextView timeOutText;
+    private TextView stolenText;
     private TextView statusText;
     String deviceId;
 
@@ -34,18 +35,21 @@ public class SetCurrentDevice extends AppCompatActivity implements View.OnClickL
         deviceIdText = findViewById(R.id.DeviceIdText2);
         parkingStatusText = findViewById(R.id.ParkingStatusText2);
         timeOutText = findViewById(R.id.TimeOutText2);
+        stolenText = findViewById(R.id.StolenText2);
         statusText = findViewById(R.id.StatusText2);
         Button setCurrentDeviceButton = findViewById(R.id.SetCurrentDeviceBtn);
         setCurrentDeviceButton.setOnClickListener(this);
         deviceIdText.setText("Device pin number:" + deviceId);
         Api api;
         api = Api.RetrofitInstance.create();
-        api.getDeviceConfiguration(deviceId).enqueue(new Callback<DeviceConfiguration>() {
+        api.getDeviceConfiguration(deviceId, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
             @Override
             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
                 DeviceConfiguration deviceConfiguration = response.body();
                 if(deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "ON");
-                else if(!deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "OFF");
+                if(!deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "OFF");
+                if(deviceConfiguration.isStolen()) stolenText.setText("Stolen:" + "Yes");
+                if(!deviceConfiguration.isStolen()) stolenText.setText("Stolen:" + "No");
                 timeOutText.setText("GPS Sending frequency:" + String.valueOf(deviceConfiguration.getTimeOut() / 1000) + " seconds");
             }
             @Override
