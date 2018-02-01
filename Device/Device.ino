@@ -47,12 +47,14 @@ void setup()
 
 void loop()
 {
+  Serial.print("Delaying ");
+  Serial.println(timeout);
+  delay(timeout);
   if(timesLooped %5 == 0 && timesLooped != 0) getConfiguration(formatedGetConfigurationString);
   getGPSCordinates();
   String formatedPostGpsString = formatPostGpsString(deviceId);
   sendGPSCordinates(formatedPostGpsString);
   timesLooped++;
-  delay(timeout);
 }
 
 void initializeConnection()
@@ -88,6 +90,12 @@ void initializeTCPConnection()
   Serial.println("TCP connection success");
 }
 
+void closeConnection()
+{
+  sim808.close();
+  sim808.disconnect();
+}
+
 void getGPSCordinates()
 {
   if( sim808.attachGPS()) Serial.println("Open the GPS power success");
@@ -115,7 +123,6 @@ void getGPSCordinates()
 
 void getConfiguration(String ConfGetUrl)
 {
-  //TODO Parse json information and store it into variables: timeout
   char buffer[512];
   boolean sendFailed = true;
   String timeoutString;
@@ -170,12 +177,4 @@ void sendGPSCordinates(String GPSPostUrl)
         break;
     }
   }
-}
-
-void closeConnection()
-{
-  sim808.close();
-  sim808.disconnect();
-}
-
-     
+}    
