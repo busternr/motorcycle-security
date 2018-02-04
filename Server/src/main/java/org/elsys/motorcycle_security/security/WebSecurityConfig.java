@@ -26,11 +26,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests().antMatchers("/client/send/create-new-user").permitAll();
+    http.authorizeRequests().antMatchers("/client/**/receive/device-pin").permitAll();
+    http.authorizeRequests().antMatchers("/client/receive/user-account").permitAll();
         http.csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll().and()
         .addFilterBefore(new JWTLoginFilter("/login", authenticationManager()),
                 UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-    //http.authorizeRequests().antMatchers("/**").authenticated();
+    http.authorizeRequests().antMatchers("/**").authenticated();
   }
 
   @Override

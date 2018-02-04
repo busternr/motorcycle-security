@@ -1,13 +1,15 @@
 package org.elsys.motorcycle_security.activities;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,30 +21,35 @@ import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.Globals;
 import org.elsys.motorcycle_security.models.GpsCordinates;
-import org.elsys.motorcycle_security.services.LocationCheckerReceiver;
+import org.elsys.motorcycle_security.services.LocationCheckerJob;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.app.job.JobInfo.BACKOFF_POLICY_LINEAR;
+
 public class Main extends AppCompatActivity implements View.OnClickListener {
     private boolean isParked;
+    private JobScheduler jobScheduler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        jobScheduler = (JobScheduler) getSystemService(
+                Context.JOB_SCHEDULER_SERVICE);
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         if(!(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED)) {
             Toast toast = Toast.makeText(getApplicationContext(), "No internet connection.", Toast.LENGTH_LONG);
             toast.show();
         }
-        boolean isAuthorized = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isAuthorized", false);
-        boolean justRegistered = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("justRegistered", false);
+        final boolean isAuthorized = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isAuthorized", false);
         if (!isAuthorized) {
             Intent myIntent = new Intent(this,LoginRegister.class);
             startActivity(myIntent);
         }
+        else if(isAuthorized) setGlobals();
         Button locationButton =  findViewById(R.id.LocBtn);
         Button parkButton =  findViewById(R.id.ParkBtn);
         Button historyButton =  findViewById(R.id.HistoryBtn);
@@ -51,30 +58,50 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
         parkButton.setOnClickListener(this);
         historyButton.setOnClickListener(this);
         settingsButton.setOnClickListener(this);
-        if(isAuthorized && !justRegistered) {
-            Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
-            Api api = Api.RetrofitInstance.create();
-            api.getDeviceConfiguration(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
-                @Override
-                public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
-                    DeviceConfiguration deviceConfiguration = response.body();
-                    isParked = deviceConfiguration.isParked();
-                    Globals.isStolen = deviceConfiguration.isStolen();
-                }
-                @Override
-                public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
-                }
-            });
-            if(isParked) scheduleLocationCheckerAlarm();
+    }
+    private void scheduleJob() {
+        final ComponentName name = new ComponentName(this, LocationCheckerJob.class);
+        JobInfo jobInfo =null;
+        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.N){
+            jobInfo= new JobInfo.Builder(1, name)
+                    .setMinimumLatency(1000*60)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setPersisted(true)
+                    .setBackoffCriteria(1000, BACKOFF_POLICY_LINEAR )
+                    .build();
+        }else{
+            jobInfo= new JobInfo.Builder(1, name)
+                    .setPeriodic(1000*60)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setPersisted(true)
+                    .build();
+        }
+        final int result = jobScheduler.schedule(jobInfo);
+        if (result == JobScheduler.RESULT_SUCCESS) {
+            Log.d("JobSchedule", "Scheduled job successfully!");
         }
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
 
-    public void scheduleLocationCheckerAlarm() {
-        Intent intent = new Intent(getApplicationContext(), LocationCheckerReceiver.class);
-        final PendingIntent pIntent = PendingIntent.getBroadcast(this, LocationCheckerReceiver.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long firstMillis = System.currentTimeMillis();
-        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, 5000, pIntent);
+    private void setGlobals() {
+        Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
+        Globals.authorization = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", "");
+        Api api = Api.RetrofitInstance.create();
+        api.getDeviceConfiguration(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
+            @Override
+            public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
+                DeviceConfiguration deviceConfiguration = response.body();
+                isParked = deviceConfiguration.isParked();
+                if(isParked) scheduleJob();
+                Globals.isStolen = deviceConfiguration.isStolen();
+            }
+            @Override
+            public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
+            }
+        });
     }
 
     public void onClick(View v) {
@@ -92,10 +119,10 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
             case R.id.ParkBtn: {
                 final Api api = Api.RetrofitInstance.create();
                 if(isParked == false) {
-                    scheduleLocationCheckerAlarm();
                     Toast toast = Toast.makeText(getApplicationContext(), "Parked mode ON", Toast.LENGTH_LONG);
                     toast.show();
                     isParked = true;
+                    scheduleJob();
                     api.getGPSCordinates(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<GpsCordinates>() {
                         @Override
                         public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
@@ -115,13 +142,10 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                     });
                 }
                 else if(isParked == true) {
-                    Intent intent = new Intent(this, LocationCheckerReceiver.class);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 123456, intent, 0);
-                    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                    alarmManager.cancel(pendingIntent);
                     Toast toast = Toast.makeText(getApplicationContext(), "Parked mode OFF", Toast.LENGTH_LONG);
                     toast.show();
                     isParked = false;
+                    jobScheduler.cancelAll();
                 }
                 api.updateParkingStatus(Globals.deviceInUse,isParked, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
                     @Override

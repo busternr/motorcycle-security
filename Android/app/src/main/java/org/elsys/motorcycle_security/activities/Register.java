@@ -60,7 +60,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                                     User user = new User(emailInput.getText().toString(), passwordInput.getText().toString(), deviceIdInput.getText().toString());
                                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", 1).apply();
                                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
-                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("justRegistered", true).apply();
                                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device 1", user.getDevices().get(0).getDeviceId()).apply();
                                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceIdInput.getText().toString()).apply();
                                     getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putLong("UserId", user.getId()).apply();
@@ -72,7 +71,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                                             api.Login(loginDetails).enqueue(new Callback<Void>()        {
                                                 @Override
                                                 public void onResponse(Call<Void> call, Response<Void> response) {
-                                                    Globals.authorization = response.headers().get("Authorization");
+                                                    String token = response.headers().get("Authorization");
+                                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Authorization", token).apply();
                                                 }
                                                 @Override
                                                 public void onFailure(Call<Void> call, Throwable t) {

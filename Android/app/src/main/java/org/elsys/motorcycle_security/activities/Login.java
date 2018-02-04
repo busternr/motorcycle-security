@@ -46,21 +46,22 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 else if(passwordInput.getText().toString().length() == 0) errorsText.setText("Password field can't be blank");
                 else {
                     final Api api = Api.RetrofitInstance.create();
-                    api.getUserAccount(emailInput.getText().toString(), Globals.authorization).enqueue(new Callback<User>() {
+                    final LoginDetails loginDetails = new LoginDetails(emailInput.getText().toString(), passwordInput.getText().toString());
+                    api.Login(loginDetails).enqueue(new Callback<Void>()        {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            String token = response.headers().get("authorization");
+                            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Authorization", token).apply();;
+                        }
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                        }
+                    });
+                    api.getUserAccount(emailInput.getText().toString()).enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
                             if (response.isSuccessful()) {
                                 User user = response.body();
-                                final LoginDetails loginDetails = new LoginDetails(user.getEmail(), user.getPassword());
-                                api.Login(loginDetails).enqueue(new Callback<Void>()        {
-                                    @Override
-                                    public void onResponse(Call<Void> call, Response<Void> response) {
-                                        Globals.authorization = response.headers().get("Authorization");
-                                    }
-                                    @Override
-                                    public void onFailure(Call<Void> call, Throwable t) {
-                                    }
-                                });
                                 if (user.getEmail().equals(emailInput.getText().toString()) && user.getPassword().equals(passwordInput.getText().toString())) {
                                     List<Device> userDevices = user.getDevices();
                                     for(int counter=0;counter<userDevices.size(); counter++)
