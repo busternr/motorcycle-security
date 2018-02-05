@@ -32,6 +32,7 @@ import static android.app.job.JobInfo.BACKOFF_POLICY_LINEAR;
 public class Main extends AppCompatActivity implements View.OnClickListener {
     private boolean isParked;
     private JobScheduler jobScheduler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +60,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
         historyButton.setOnClickListener(this);
         settingsButton.setOnClickListener(this);
     }
+
     private void scheduleJob() {
         final ComponentName name = new ComponentName(this, LocationCheckerJob.class);
         JobInfo jobInfo =null;
@@ -80,10 +82,6 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
         if (result == JobScheduler.RESULT_SUCCESS) {
             Log.d("JobSchedule", "Scheduled job successfully!");
         }
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 
     private void setGlobals() {

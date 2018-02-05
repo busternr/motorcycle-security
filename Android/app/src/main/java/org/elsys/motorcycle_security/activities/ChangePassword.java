@@ -45,7 +45,7 @@ public class ChangePassword extends AppCompatActivity implements View.OnClickLis
                     final long userId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getLong("UserId", 1);
                     String userEmail = Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("User email", "");
                     final Api api = Api.RetrofitInstance.create();
-                    api.getUserAccount(userEmail).enqueue(new Callback<User>() {
+                    api.getUserAccount(userEmail, Globals.authorization).enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
                             if (response.isSuccessful()) {

@@ -6,7 +6,6 @@ import org.elsys.motorcycle_security.business.logic.exceptions.InvalidEmailExcep
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidUserIdException;
 import org.elsys.motorcycle_security.dto.*;
-import org.slf4j.event.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +32,7 @@ public class ClientController {
     @Autowired
     private DevicePin devicePinHandler;
 
-    private static final Logger log= Logger.getLogger(ClientController.class.getName());
+    //private static final Logger log= Logger.getLogger(ClientController.class.getName());
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public static ResponseEntity handleTypeMismatch() {
@@ -137,8 +136,6 @@ public class ClientController {
     @RequestMapping(value = "/client/{deviceId}/receive/gps-cordinates", method = GET)
     @ResponseBody
     public ResponseEntity<DataTransmiterInfo> getGpsCordinatesBydeviceId(@PathVariable(value = "deviceId") String deviceId) {
-        log.info("getGpsCordinatesBydeviceId requested");
-
         try {
             DataTransmiterInfo dataTransmiterInfo = dataTransmiterHandler.getGPSCordinates(deviceId);
             return new ResponseEntity(dataTransmiterInfo,HttpStatus.OK);

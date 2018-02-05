@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
@@ -50,42 +51,36 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     api.Login(loginDetails).enqueue(new Callback<Void>()        {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
-                            String token = response.headers().get("authorization");
-                            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Authorization", token).apply();;
-                        }
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                        }
-                    });
-                    api.getUserAccount(emailInput.getText().toString()).enqueue(new Callback<User>() {
-                        @Override
-                        public void onResponse(Call<User> call, Response<User> response) {
-                            if (response.isSuccessful()) {
-                                User user = response.body();
-                                if (user.getEmail().equals(emailInput.getText().toString()) && user.getPassword().equals(passwordInput.getText().toString())) {
-                                    List<Device> userDevices = user.getDevices();
-                                    for(int counter=0;counter<userDevices.size(); counter++)
-                                    {
-                                        String deviceId = user.getDevices().get(counter).getDeviceId();
-                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device " + counter, deviceId).apply();
-                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", counter).apply();
-                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceId).apply();
+                            if(response.isSuccessful()) {
+                                String token = response.headers().get("authorization");
+                                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Authorization", token).apply();
+                            }
+                            else errorsText.setText("Email or password doesn't match.");
+                            api.getUserAccount(emailInput.getText().toString(), getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", "")).enqueue(new Callback<User>() {
+                                @Override
+                                public void onResponse(Call<User> call, Response<User> response) {
+                                    if (response.isSuccessful()) {
+                                        User user = response.body();
+                                        List<Device> userDevices = user.getDevices();
+                                        for (int counter = 0; counter < userDevices.size(); counter++) {
+                                            String deviceId = user.getDevices().get(counter).getDeviceId();
+                                            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device " + counter, deviceId).apply();
+                                            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", counter).apply();
+                                            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceId).apply();
+                                        }
+                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
+                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("User email", user.getEmail()).apply();
+                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putLong("UserId", user.getId()).apply();
+                                        Intent myIntent = new Intent(v.getContext(), Main.class);
+                                        startActivity(myIntent);
                                     }
-                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
-                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("User email", user.getEmail()).apply();
-                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putLong("UserId", user.getId()).apply();
-                                    Intent myIntent = new Intent(v.getContext(), Main.class);
-                                    startActivity(myIntent);
                                 }
-                                else errorsText.setText("Email or password doesn't match.");
-                            }
-                            else {
-                            }
+                                @Override
+                                public void onFailure(Call<User> call, Throwable t) {}
+                            });
                         }
                         @Override
-                        public void onFailure(Call<User> call, Throwable t) {
-                            errorsText.setText("Email or password doesn't match.");
-                        }
+                        public void onFailure(Call<Void> call, Throwable t) {}
                     });
                 }
             }

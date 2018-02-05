@@ -47,7 +47,7 @@ public interface Api {
     Call<Device> createDevice(@Body Device device, @Header("authorization") String authorization);
 
     @GET("/client/receive/user-account")
-    Call<User> getUserAccount(@Header("email") String email);
+    Call<User> getUserAccount(@Header("email") String email, @Header("authorization") String authorization);
 
     @GET("/client/{deviceId}/receive/device")
     Call<Device> getDevice(@Path("deviceId") String deviceId, @Header("authorization") String authorization);
