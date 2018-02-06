@@ -49,8 +49,14 @@ public interface Api {
     @GET("/client/receive/user-account")
     Call<User> getUserAccount(@Header("email") String email, @Header("authorization") String authorization);
 
+    @GET("/client/receive/user-account-only-email")
+    Call<User> getUserAccountOnlyEmail(@Header("email") String email);
+
     @GET("/client/{deviceId}/receive/device")
     Call<Device> getDevice(@Path("deviceId") String deviceId, @Header("authorization") String authorization);
+
+    @GET("/client/{deviceId}/receive/device-only-deviceid")
+    Call<Device> getDeviceOnlyDeviceId(@Path("deviceId") String deviceId);
 
     @GET("/client/{deviceId}/receive/device-pin")
     Call<DevicePin> getDevicePin(@Path("deviceId") String deviceId);

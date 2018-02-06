@@ -63,25 +63,23 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
 
     private void scheduleJob() {
         final ComponentName name = new ComponentName(this, LocationCheckerJob.class);
-        JobInfo jobInfo =null;
-        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.N){
+        JobInfo jobInfo = null;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             jobInfo= new JobInfo.Builder(1, name)
-                    .setMinimumLatency(1000*60)
+                    .setMinimumLatency(1000*5)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .setPersisted(true)
                     .setBackoffCriteria(1000, BACKOFF_POLICY_LINEAR )
                     .build();
-        }else{
+        }
+        else {
             jobInfo= new JobInfo.Builder(1, name)
-                    .setPeriodic(1000*60)
+                    .setPeriodic(1000*5)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .setPersisted(true)
                     .build();
         }
-        final int result = jobScheduler.schedule(jobInfo);
-        if (result == JobScheduler.RESULT_SUCCESS) {
-            Log.d("JobSchedule", "Scheduled job successfully!");
-        }
+        jobScheduler.schedule(jobInfo);
     }
 
     private void setGlobals() {

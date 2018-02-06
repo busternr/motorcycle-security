@@ -32,6 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests().antMatchers("/client/send/create-new-user").permitAll();
     http.authorizeRequests().antMatchers("/client/**/receive/device-pin").permitAll();
+    http.authorizeRequests().antMatchers("/client/**/receive/device-only-deviceid").permitAll();
+    http.authorizeRequests().antMatchers("/client/receive/user-account-only-email").permitAll();
     http.authorizeRequests().antMatchers("/device/**").permitAll();
         http.csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll().and()
         .addFilterBefore(new JWTLoginFilter("/login", authenticationManager()),

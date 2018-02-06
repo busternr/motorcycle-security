@@ -48,7 +48,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 else {
                     final Api api = Api.RetrofitInstance.create();
                     final LoginDetails loginDetails = new LoginDetails(emailInput.getText().toString(), passwordInput.getText().toString());
-                    api.Login(loginDetails).enqueue(new Callback<Void>()        {
+                    api.Login(loginDetails).enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             if(response.isSuccessful()) {

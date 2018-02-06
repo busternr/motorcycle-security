@@ -8,5 +8,5 @@ public interface Device {
 
     DeviceInfo getDevice(String deviceId);
 
-    public void updateParkedCordinates(String deviceId, long x, long y);
+    void updateParkedCordinates(String deviceId, double x, double y);
 }

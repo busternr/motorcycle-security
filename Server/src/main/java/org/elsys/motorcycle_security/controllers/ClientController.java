@@ -6,6 +6,8 @@ import org.elsys.motorcycle_security.business.logic.exceptions.InvalidEmailExcep
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidUserIdException;
 import org.elsys.motorcycle_security.dto.*;
+import org.elsys.motorcycle_security.repository.DeviceRepository;
+import org.elsys.motorcycle_security.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,10 @@ public class ClientController {
     private DeviceConfiguration deviceConfigurationHandler;
     @Autowired
     private DevicePin devicePinHandler;
+    @Autowired
+    private DeviceRepository deviceRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     //private static final Logger log= Logger.getLogger(ClientController.class.getName());
 
@@ -169,11 +175,39 @@ public class ClientController {
         }
     }
 
+    @RequestMapping(value="/client/receive/user-account-only-email",method=GET)
+    @ResponseBody
+    public ResponseEntity getUserAccountByUsernameEmailOnly(@RequestHeader("email") String email) {
+        try {
+            UserInfo userInfo = new UserInfo();
+            userInfo.setEmail(userRepository.getUserAccountByEmailOnlyEmail(email));
+            if(userInfo.getEmail() == null) throw new InvalidEmailException("Invalid email");
+            return new ResponseEntity(userInfo,HttpStatus.OK);
+        }
+        catch(InvalidEmailException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @RequestMapping(value="/client/{deviceId}/receive/device",method=GET)
     @ResponseBody
     public ResponseEntity geDeviceByDeviceId(@PathVariable(value = "deviceId") String deviceId) {
         try {
             DeviceInfo deviceInfo = deviceHandler.getDevice(deviceId);
+            return new ResponseEntity(deviceInfo,HttpStatus.OK);
+        }
+        catch(InvalidDeviceIdException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value="/client/{deviceId}/receive/device-only-deviceid",method=GET)
+    @ResponseBody
+    public ResponseEntity getDeviceOnlyDeviceId(@PathVariable(value = "deviceId") String deviceId) {
+        try {
+            DeviceInfo deviceInfo = new DeviceInfo();
+            deviceInfo.setDeviceId(deviceRepository.getDeviceOnlyDeviceId(deviceId));
+            if(deviceInfo.getDeviceId() == null) throw new InvalidDeviceIdException("Invalid device id");
             return new ResponseEntity(deviceInfo,HttpStatus.OK);
         }
         catch(InvalidDeviceIdException exception) {

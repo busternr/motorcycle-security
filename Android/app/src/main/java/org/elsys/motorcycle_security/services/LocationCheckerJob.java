@@ -17,6 +17,9 @@ import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.GpsCordinates;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,7 +60,16 @@ public class LocationCheckerJob extends JobService {
                     GpsCordinates gpsCordinates = response.body();
                     currentX = gpsCordinates.getX();
                     currentY = gpsCordinates.getY();
-                    if(parkedX != currentX && parkedY != currentY) {
+                    DecimalFormat df = new DecimalFormat("#.###");
+                    df.setRoundingMode(RoundingMode.CEILING);
+                    String.valueOf(df.format(currentX));
+                    String.valueOf(df.format(currentY));
+                    Log.d("X", Double.toString(currentX));
+                    Log.d("Y", Double.toString(currentY));
+                    Log.d("YEA BOIIII", "AM CHECKING THIS SHIET");
+                    //Rounding GPS coordinates, because GPS module is not very accurate
+                    if(parkedX != currentX || parkedX != currentX + 0.002 || parkedX != currentX - 0.002 && parkedY != currentY || parkedY != currentY + 0.002 || parkedY != currentY - 000.2) {
+                        Log.d("YEA BOIIII", "NIGGA STOLE YOUR BIKE");
                         Log.d("Job", "Notify");
                         api.updateStolenStatus(deviceId,true,authorization).enqueue(new Callback<DeviceConfiguration>() {
                             @Override

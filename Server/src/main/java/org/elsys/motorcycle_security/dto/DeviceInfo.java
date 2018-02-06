@@ -16,6 +16,8 @@ public class DeviceInfo {
 
     private double parkedY;
 
+    public DeviceInfo() { }
+
     public DeviceInfo(long id, String deviceId, double parkedX, double parkedY) {
         this.id = id;
         this.deviceId = deviceId;
