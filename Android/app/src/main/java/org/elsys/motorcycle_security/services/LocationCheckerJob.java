@@ -17,6 +17,7 @@ import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.GpsCordinates;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
@@ -58,18 +59,37 @@ public class LocationCheckerJob extends JobService {
             public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                 if (response.isSuccessful()) {
                     GpsCordinates gpsCordinates = response.body();
+                    boolean moving = false;
                     currentX = gpsCordinates.getX();
                     currentY = gpsCordinates.getY();
-                    DecimalFormat df = new DecimalFormat("#.###");
-                    df.setRoundingMode(RoundingMode.CEILING);
-                    String.valueOf(df.format(currentX));
-                    String.valueOf(df.format(currentY));
+                    BigDecimal bdX = new BigDecimal(currentX).setScale(4, RoundingMode.HALF_EVEN);
+                    BigDecimal bdY = new BigDecimal(currentY).setScale(4, RoundingMode.HALF_EVEN);
+                    BigDecimal bdpX = new BigDecimal(parkedX).setScale(4, RoundingMode.HALF_EVEN);
+                    BigDecimal bdpY = new BigDecimal(parkedY).setScale(4, RoundingMode.HALF_EVEN);
+                    parkedX = bdpX.doubleValue();
+                    parkedY = bdpY.doubleValue();
+                    currentX = bdX.doubleValue();
+                    currentY = bdY.doubleValue();
                     Log.d("X", Double.toString(currentX));
                     Log.d("Y", Double.toString(currentY));
-                    Log.d("YEA BOIIII", "AM CHECKING THIS SHIET");
-                    //Rounding GPS coordinates, because GPS module is not very accurate
-                    if(parkedX != currentX || parkedX != currentX + 0.002 || parkedX != currentX - 0.002 && parkedY != currentY || parkedY != currentY + 0.002 || parkedY != currentY - 000.2) {
-                        Log.d("YEA BOIIII", "NIGGA STOLE YOUR BIKE");
+                    Log.d("pX", Double.toString(parkedX));
+                    Log.d("pY", Double.toString(parkedY));
+                    for(int adder = 0 ; adder != 5; adder++) {
+                        double adder2 = adder;
+                        if(adder != 0)  adder2 = adder2/ 10000;
+                        if(parkedX != currentX + adder2 || parkedX != currentX - adder2) {
+                            System.out.println("BREAKING FOR X");
+                            moving = true;
+                            break;
+                        }
+                        if(parkedY != currentY + adder2 || parkedY != currentY - adder2) {
+                            System.out.println(" BREAKING FOR Y");
+                            moving = true;
+                            break;
+                        }
+                    }
+                    if(parkedX == 0 || parkedY == 0) moving = false //Against failed server response
+                    if(moving) {
                         Log.d("Job", "Notify");
                         api.updateStolenStatus(deviceId,true,authorization).enqueue(new Callback<DeviceConfiguration>() {
                             @Override
@@ -85,6 +105,7 @@ public class LocationCheckerJob extends JobService {
                         });
                         sendNotification();
                     }
+                    else System.out.println("BIKE's safe man dont kill the nigga");
                 }
             }
             @Override

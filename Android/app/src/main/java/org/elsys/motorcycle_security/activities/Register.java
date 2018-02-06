@@ -83,18 +83,18 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                                                                 public void onFailure(Call<User> call, Throwable t) {
                                                                 }
                                                             });
-                                                           LoginDetails loginDetails = new LoginDetails(emailInput.getText().toString(), passwordInput.getText().toString());
+                                                           final LoginDetails loginDetails = new LoginDetails(emailInput.getText().toString(), passwordInput.getText().toString());
+                                                           Log.d("NIGGER COD LOOGER.d", loginDetails.getEmail() + " " + loginDetails.getPassword());
                                                            api.Login(loginDetails).enqueue(new Callback<Void>() {
                                                                 @Override
                                                                 public void onResponse(Call<Void> call, Response<Void> response) {
-                                                                    if(response.isSuccessful()) {
-                                                                        String token = response.headers().get("authorization");
-                                                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Authorization", token).apply();
-                                                                    }
+                                                                    String token = response.headers().get("authorization");
+                                                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Authorization", token).apply();
+                                                                    Log.d("RIIIIIIIIIIIIIIII", token);
                                                                 }
-
                                                                 @Override
                                                                 public void onFailure(Call<Void> call, Throwable t) {
+                                                                    Log.d("DADADDA", t.getMessage().toString());
                                                                 }
                                                             });
                                                             Intent myIntent = new Intent(v.getContext(), Main.class);

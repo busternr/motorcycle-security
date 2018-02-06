@@ -75,8 +75,8 @@ public class ClientController {
 
     @RequestMapping(value = "/client/send/parked-cordinates", method = PUT)
     public ResponseEntity updateTimeoutByDeviceId(@RequestParam(value = "deviceId") String deviceId,
-                                                  @RequestParam(value = "x", defaultValue = "0") long x,
-                                                  @RequestParam(value = "y", defaultValue = "0") long y) {
+                                                  @RequestParam(value = "x", defaultValue = "0") double x,
+                                                  @RequestParam(value = "y", defaultValue = "0") double y) {
         try {
             deviceHandler.updateParkedCordinates(deviceId, x, y);
         }
