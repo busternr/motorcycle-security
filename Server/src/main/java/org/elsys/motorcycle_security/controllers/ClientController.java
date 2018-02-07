@@ -4,7 +4,6 @@ import org.elsys.motorcycle_security.business.logic.*;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidEmailException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
-import org.elsys.motorcycle_security.business.logic.exceptions.InvalidUserIdException;
 import org.elsys.motorcycle_security.dto.*;
 import org.elsys.motorcycle_security.repository.DeviceRepository;
 import org.elsys.motorcycle_security.repository.UserRepository;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -104,11 +102,11 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/send/change-password", method = PUT)
-    public ResponseEntity updateTimeoutByDeviceId(@RequestParam(value = "userId") long userId, @RequestHeader(value = "oldPassword") String oldPassword, @RequestHeader(value = "newPassword") String newPassword) {
+    public ResponseEntity updateTimeoutByDeviceId(@RequestHeader(value = "email") String email, @RequestHeader(value = "newPassword") String newPassword) {
         try {
-            userHandler.updatePassword(userId, oldPassword, newPassword);
+            userHandler.updatePassword(email, newPassword);
         }
-        catch(InvalidUserIdException exception) {
+        catch(InvalidEmailException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
         }
         catch(InvalidInputException exception) {

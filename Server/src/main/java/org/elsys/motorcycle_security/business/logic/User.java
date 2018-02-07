@@ -8,5 +8,5 @@ public interface User {
 
     UserInfo getUser(String email);
 
-    public void updatePassword(long userId, String oldPassword, String newPassword);
+    public void updatePassword(String email, String newPassword);
 }

@@ -38,7 +38,7 @@ public interface Api {
     Call<DeviceConfiguration> updateStolenStatus(@Query("deviceId") String deviceId, @Query("isStolen") boolean isStolen, @Header("authorization") String authorization);
 
     @PUT("/client/send/change-password")
-    Call<User> updatePassword(@Query("userId") long userId, @Header("oldPassword") String oldPassword, @Header("newPassword") String newPassword, @Header("authorization") String authorization);
+    Call<User> updatePassword(@Header("email") String oldPassword, @Header("newPassword") String newPassword, @Header("authorization") String authorization);
 
     @POST("/client/send/create-new-user")
     Call<User> createUserAccount(@Body User user);

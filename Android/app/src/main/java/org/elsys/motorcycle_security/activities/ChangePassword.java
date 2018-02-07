@@ -19,16 +19,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ChangePassword extends AppCompatActivity implements View.OnClickListener {
-    private EditText oldPasswordInput;
     private EditText newPasswordInput;
+    private EditText emailInput;
     private TextView errorsText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
-        oldPasswordInput = findViewById(R.id.OldPassInput);
         newPasswordInput = findViewById(R.id.NewPassInput);
+        emailInput = findViewById(R.id.EmailInput);
         errorsText = findViewById(R.id.ErrorsChangePassText);
         Button changePasswordButton = findViewById(R.id.ChangePassBtn);
         changePasswordButton.setOnClickListener(this);
@@ -37,21 +37,18 @@ public class ChangePassword extends AppCompatActivity implements View.OnClickLis
     public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.ChangePassBtn: {
-                if (oldPasswordInput.getText().toString().length() == 0) errorsText.setText("Old password field can't be blank");
-                else if (newPasswordInput.getText().toString().length() == 0) errorsText.setText("New password field can't be blank");
-                else if (oldPasswordInput.getText().toString().length() < 6) errorsText.setText("Old password is too short (Minimum 6 characters)");
+                if (newPasswordInput.getText().toString().length() == 0) errorsText.setText("New password field can't be blank");
+                else if (emailInput.getText().toString().length() == 0) errorsText.setText("Email field can't be blank");
                 else if (newPasswordInput.getText().toString().length() < 6) errorsText.setText("New password is too short (Minimum 6 characters)");
                 else {
-                    final long userId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getLong("UserId", 1);
-                    String userEmail = Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("User email", "");
                     final Api api = Api.RetrofitInstance.create();
-                    api.getUserAccount(userEmail, Globals.authorization).enqueue(new Callback<User>() {
+                    api.getUserAccount(emailInput.getText().toString(), Globals.authorization).enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
                             if (response.isSuccessful()) {
                                 User user = response.body();
-                                if (user.getPassword().equals(oldPasswordInput.getText().toString())) {
-                                    api.updatePassword(userId, oldPasswordInput.getText().toString(), newPasswordInput.getText().toString(), Globals.authorization).enqueue(new Callback<User>() {
+                                if (user.getEmail().equals(emailInput.getText().toString())) {
+                                    api.updatePassword(emailInput.getText().toString(), newPasswordInput.getText().toString(), Globals.authorization).enqueue(new Callback<User>() {
                                         @Override
                                         public void onResponse(Call<User> call, Response<User> response) {
                                         }
@@ -65,7 +62,7 @@ public class ChangePassword extends AppCompatActivity implements View.OnClickLis
                                     Intent myIntent = new Intent(v.getContext(), Main.class);
                                     startActivity(myIntent);
                                 }
-                                else errorsText.setText("Wrong old password");
+                                else errorsText.setText("Wrong email.");
                             }
                         }
                         @Override

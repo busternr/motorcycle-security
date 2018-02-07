@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
@@ -22,6 +23,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.util.Patterns.EMAIL_ADDRESS;
+import static java.lang.Thread.sleep;
 
 public class Register extends AppCompatActivity implements View.OnClickListener {
     private EditText passwordInput;
@@ -73,8 +75,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                                                             getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
                                                             getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device 1", user.getDevices().get(0).getDeviceId()).apply();
                                                             getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceIdInput.getText().toString()).apply();
-                                                            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putLong("UserId", user.getId()).apply();
-                                                            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("User email", user.getEmail()).apply();
                                                             api.createUserAccount(user).enqueue(new Callback<User>() {
                                                                 @Override
                                                                 public void onResponse(Call<User> call, Response<User> response) {
@@ -83,21 +83,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                                                                 public void onFailure(Call<User> call, Throwable t) {
                                                                 }
                                                             });
-                                                           final LoginDetails loginDetails = new LoginDetails(emailInput.getText().toString(), passwordInput.getText().toString());
-                                                           Log.d("NIGGER COD LOOGER.d", loginDetails.getEmail() + " " + loginDetails.getPassword());
-                                                           api.Login(loginDetails).enqueue(new Callback<Void>() {
-                                                                @Override
-                                                                public void onResponse(Call<Void> call, Response<Void> response) {
-                                                                    String token = response.headers().get("authorization");
-                                                                    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Authorization", token).apply();
-                                                                    Log.d("RIIIIIIIIIIIIIIII", token);
-                                                                }
-                                                                @Override
-                                                                public void onFailure(Call<Void> call, Throwable t) {
-                                                                    Log.d("DADADDA", t.getMessage().toString());
-                                                                }
-                                                            });
-                                                            Intent myIntent = new Intent(v.getContext(), Main.class);
+                                                            Toast toast = Toast.makeText(getApplicationContext(), "Successfully  registered.", Toast.LENGTH_LONG);
+                                                            toast.show();
+                                                            Intent myIntent = new Intent(v.getContext(), Login.class);
                                                             startActivity(myIntent);
                                                         }
                                                         else errorsText.setText("Email is already in use");

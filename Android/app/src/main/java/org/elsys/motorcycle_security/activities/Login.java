@@ -69,8 +69,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                             getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceId).apply();
                                         }
                                         getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
-                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("User email", user.getEmail()).apply();
-                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putLong("UserId", user.getId()).apply();
                                         Intent myIntent = new Intent(v.getContext(), Main.class);
                                         startActivity(myIntent);
                                     }

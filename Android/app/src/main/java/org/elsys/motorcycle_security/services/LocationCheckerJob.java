@@ -70,25 +70,19 @@ public class LocationCheckerJob extends JobService {
                     parkedY = bdpY.doubleValue();
                     currentX = bdX.doubleValue();
                     currentY = bdY.doubleValue();
-                    Log.d("X", Double.toString(currentX));
-                    Log.d("Y", Double.toString(currentY));
-                    Log.d("pX", Double.toString(parkedX));
-                    Log.d("pY", Double.toString(parkedY));
                     for(int adder = 0 ; adder != 5; adder++) {
                         double adder2 = adder;
                         if(adder != 0)  adder2 = adder2/ 10000;
                         if(parkedX != currentX + adder2 || parkedX != currentX - adder2) {
-                            System.out.println("BREAKING FOR X");
                             moving = true;
                             break;
                         }
                         if(parkedY != currentY + adder2 || parkedY != currentY - adder2) {
-                            System.out.println(" BREAKING FOR Y");
                             moving = true;
                             break;
                         }
                     }
-                    if(parkedX == 0 || parkedY == 0) moving = false //Against failed server response
+                    if(parkedX == 0 || parkedY == 0) moving = false; //Against failed server response
                     if(moving) {
                         Log.d("Job", "Notify");
                         api.updateStolenStatus(deviceId,true,authorization).enqueue(new Callback<DeviceConfiguration>() {
