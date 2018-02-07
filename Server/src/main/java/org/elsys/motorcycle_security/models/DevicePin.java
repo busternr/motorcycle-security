@@ -3,7 +3,7 @@ package org.elsys.motorcycle_security.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "DevicePins", uniqueConstraints={@UniqueConstraint(columnNames={"pin"})})
+@Table(name = "DevicePins", uniqueConstraints={@UniqueConstraint(columnNames={"pin"}), @UniqueConstraint(columnNames={"token"})})
 public class DevicePin {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -12,12 +12,34 @@ public class DevicePin {
     @Column(name="Pin",unique=true)
     private String pin;
 
+    @Column(name="token",unique=true)
+    private String token;
+
+    @Column(name="tokenUsed")
+    private boolean tokenUsed;
+
     public String getPin() {
         return pin;
     }
 
     public long getId() {
         return id;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public boolean isTokenUsed() {
+        return tokenUsed;
+    }
+
+    public void setTokenUsed(boolean tokenUsed) {
+        this.tokenUsed = tokenUsed;
     }
 
     public void setId(long id) {

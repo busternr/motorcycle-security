@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -223,6 +224,19 @@ public class ClientController {
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @RequestMapping(value="/client/{deviceId}/receive/device-configuration", method=GET)
+    @ResponseBody
+    public ResponseEntity getDeviceConfigurationByDeviceId(@PathVariable (value="deviceId") String deviceId) {
+        DeviceConfigurationInfo deviceConfigurationInfo;
+        try {
+            deviceConfigurationInfo = deviceConfigurationHandler.getDeviceConfiguration(deviceId);
+        }
+        catch(InvalidDeviceIdException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(deviceConfigurationInfo,HttpStatus.OK);
     }
 }
 
