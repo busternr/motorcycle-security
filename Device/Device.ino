@@ -7,33 +7,11 @@
 #define MAX_RETRIES 100
 SoftwareSerial mySerial(PIN_TX,PIN_RX);
 DFRobot_SIM808 sim808(&mySerial);//Connect RX,TX,PWR,
-const String deviceId = "cbr600";
-String formatedGetConfigurationString;
-char lat[120];
-char lon[120];
-float x;
-float y;
-float speedInKm;
-boolean isParked;
-boolean isStolen;
+const String deviceId = "cbr602";
+String token;
 long int timeout;
 int timesLooped = 0;
-
-String formatPostGpsString(String deviceId)
-{ 
-  return String("POST /device/send/gps-cordinates?deviceId=" + deviceId + "&x=" + lat + "&y="+ lon + "&speed=" + speedInKm + " HTTP/1.0\r\n\r\n");
-}
-
-String formatGetConfigurationString(String deviceId)
-{ 
-  return String("GET /device/" + deviceId + "/receive/device-configuration  HTTP/1.0\r\n\r\n");
-}
-
-void formatTimeoutString(String timeoutString)
-{ 
-  timeoutString = timeoutString.substring(timeoutString.indexOf(":") + 1, timeoutString.length());
-  timeout = timeoutString.toInt();
-}
+boolean firstTime=true;
 
 void setup()
 {
@@ -43,23 +21,21 @@ void setup()
 
 void loop()
 {
-  digitalWrite(2, HIGH);
   initializeConnection();
   initializeTCPConnection();
-  if(timesLooped == 0)
+  /*if(firstTime)
   {
-    formatedGetConfigurationString = formatGetConfigurationString(deviceId);
-    getConfiguration(formatedGetConfigurationString);
-  }
-  else if(timesLooped %5 == 0 && timesLooped != 0) getConfiguration(formatedGetConfigurationString);
+    getToken(formatGetTokenString("GET /device/" + deviceId + "/receive/device-token  HTTP/1.0\r\n\r\n"));
+    firstTime=false;
+  }*/
+  if(timesLooped == 0) getConfiguration("GET /device/" + deviceId + "/receive/device-configuration  HTTP/1.0\r\n\r\n");
+  else if(timesLooped %5 == 0 && timesLooped != 0) getConfiguration("GET /device/" + deviceId + "/receive/device-configuration  HTTP/1.0\r\n\r\n");
   else
   {
     Serial.print("Delaying ");
     Serial.println(timeout);
     delay(timeout);
-    getGPSCordinates();
-    String formatedPostGpsString = formatPostGpsString(deviceId);
-    sendGPSCordinates(formatedPostGpsString);
+    getAndPostGPSCoordinates();
   }
   timesLooped++;
   closeConnection();
@@ -93,9 +69,14 @@ void closeConnection()
   sim808.disconnect();
 }
 
-void getGPSCordinates()
+void getAndPostGPSCoordinates()
 {
   int currentRetries = 0;
+  char lat[120];
+  char lon[120];
+  float x;
+  float y;
+  float speedInKm;
   if( sim808.attachGPS()) Serial.println("Open the GPS power success");
   else Serial.println("Open the GPS power failure");
   while(1)
@@ -118,6 +99,47 @@ void getGPSCordinates()
   }
   sim808.detachGPS();
   Serial.println("Close the GPS power success");
+  sendGPSCoordinates("POST /device/send/gps-cordinates?deviceId=" + deviceId + "&x=" + lat + "&y="+ lon + "&speed=" + speedInKm + " HTTP/1.0\r\n\r\n");
+}
+
+void getToken(String ConfGetUrl)
+{
+  boolean done = false;
+  int currentRetries = 0;
+  char buffer[512];
+  String tokenString;
+  char requestString[ConfGetUrl.length()+1];
+  ConfGetUrl.toCharArray(requestString, ConfGetUrl.length()+1);
+  while(done == false)
+  {
+    Serial.println("Executing");
+    Serial.println(requestString);
+    sim808.send(requestString, sizeof(requestString)-1);
+    while (true)
+    {
+        int ret = sim808.recv(buffer, sizeof(buffer)-1);
+        if (ret <= 0) Serial.println("fetch over..."); 
+        if (++currentRetries >= MAX_RETRIES) break;
+        buffer[ret] = '\0';
+        Serial.print(buffer);
+        done = true;
+        break;
+    }
+    Serial.println("");
+    for(int counter = 0; counter <= sizeof(buffer) - 1; counter++)
+    {
+      if(buffer[counter] == 'e' && buffer[counter + 1] == 'n' && buffer[counter + 2] == ':') 
+      {
+        while(buffer[counter] != '\n')
+        {
+          tokenString += buffer[counter];
+          counter++;
+        }
+        token = tokenString.substring(tokenString.indexOf(":") + 2, tokenString.length());
+        break;
+      }
+    }
+  }
 }
 
 void getConfiguration(String ConfGetUrl)
@@ -153,14 +175,15 @@ void getConfiguration(String ConfGetUrl)
           timeoutString += buffer[counter];
           counter++;
         }
-        formatTimeoutString(timeoutString);
+        timeoutString = timeoutString.substring(timeoutString.indexOf(":") + 1, timeoutString.length());
+        timeout = timeoutString.toInt();
         break;
       }
     }
   }
 }
 
-void sendGPSCordinates(String GPSPostUrl)
+void sendGPSCoordinates(String GPSPostUrl)
 {
   boolean done = false;
   int currentRetries = 0;
