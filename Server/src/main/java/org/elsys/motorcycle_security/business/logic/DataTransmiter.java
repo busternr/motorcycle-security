@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface DataTransmiter{
 
-    void updateGPSCordinates(String deviceId, double x, double y, double speed);
+    void updateGPSCoordinates(String deviceId, double x, double y, double speed);
 
-    DataTransmiterInfo getGPSCordinates(String deviceId);
+    DataTransmiterInfo getGPSCoordinates(String deviceId);
 
-    List<DataTransmiterInfo> getGPSCordinatesForDay(String deviceId, String day);
+    List<DataTransmiterInfo> getGPSCoordinatesForDay(String deviceId, String day);
 }

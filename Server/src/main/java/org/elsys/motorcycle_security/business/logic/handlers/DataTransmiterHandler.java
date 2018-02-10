@@ -26,7 +26,7 @@ public class DataTransmiterHandler implements org.elsys.motorcycle_security.busi
     private DeviceRepository deviceRepository;
 
     @Override
-    public void updateGPSCordinates(String deviceId, double x, double y, double speed) {
+    public void updateGPSCoordinates(String deviceId, double x, double y, double speed) {
         Device device = deviceRepository.getDeviceByDeviceId(deviceId);
         if(device == null) throw new InvalidDeviceIdException("Invalid device id");
         if(x == 0 || y == 0) throw new InvalidInputException("Invalid input");
@@ -41,14 +41,14 @@ public class DataTransmiterHandler implements org.elsys.motorcycle_security.busi
     }
 
     @Override
-    public DataTransmiterInfo getGPSCordinates(String deviceId) {
-        DataTransmiter dataTransmiter = dataTransmiterRepository.getGpsCordinatesByDeviceId(deviceId);
+    public DataTransmiterInfo getGPSCoordinates(String deviceId) {
+        DataTransmiter dataTransmiter = dataTransmiterRepository.getGpsCoordinatesByDeviceId(deviceId);
         if(dataTransmiter == null) throw new InvalidDeviceIdException("Invalid device id");
         return new DataTransmiterInfo(dataTransmiter);
     }
 
    @Override
-    public List<DataTransmiterInfo> getGPSCordinatesForDay(String deviceId, String day) {
+    public List<DataTransmiterInfo> getGPSCoordinatesForDay(String deviceId, String day) {
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         String startFrom;
         String endFrom;
@@ -68,7 +68,7 @@ public class DataTransmiterHandler implements org.elsys.motorcycle_security.busi
                 start_ = formatter.parse(startFrom);
                 end_ = formatter.parse(endFrom);
             } catch(java.text.ParseException exception) {}
-            DataTransmiter dataTransmiter = dataTransmiterRepository.getGpsCordinatesForDay(deviceId, start_, end_);
+            DataTransmiter dataTransmiter = dataTransmiterRepository.getGpsCoordinatesForDay(deviceId, start_, end_);
             if(dataTransmiter != null) {
                 dataTransmiters.add(new DataTransmiterInfo(dataTransmiter));
             }

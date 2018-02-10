@@ -13,8 +13,8 @@ import java.util.List;
 @Repository
 public interface DataTransmiterRepository extends CrudRepository<DataTransmiter,Long> {
     @Query("select MAX(dataTrans) from DataTransmiter dataTrans where dataTrans.device.deviceId=:deviceId")
-    DataTransmiter getGpsCordinatesByDeviceId(@Param("deviceId") String deviceId);
+    DataTransmiter getGpsCoordinatesByDeviceId(@Param("deviceId") String deviceId);
 
     @Query("SELECT MIN(dataTrans) FROM DataTransmiter dataTrans WHERE dataTrans.device.deviceId=:deviceId and dataTrans.date BETWEEN :start AND :endd")
-    DataTransmiter getGpsCordinatesForDay(@Param("deviceId") String deviceId, @Param("start") Date start, @Param("endd") Date endd);
+    DataTransmiter getGpsCoordinatesForDay(@Param("deviceId") String deviceId, @Param("start") Date start, @Param("endd") Date endd);
 }

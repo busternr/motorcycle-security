@@ -44,7 +44,7 @@ public class DeviceConfigurationHandler implements org.elsys.motorcycle_security
         if(isParked == true || isParked == false) {
             deviceConfiguration.setParked(isParked);
             deviceConfigurationRepository.save(deviceConfiguration);
-            DataTransmiter dataTransmiter = dataTransmiterRepository.getGpsCordinatesByDeviceId(deviceId);
+            DataTransmiter dataTransmiter = dataTransmiterRepository.getGpsCoordinatesByDeviceId(deviceId);
             Device device = deviceRepository.getDeviceByDeviceId(deviceId);
             device.setParkedX(dataTransmiter.getX());
             device.setParkedY(dataTransmiter.getY());

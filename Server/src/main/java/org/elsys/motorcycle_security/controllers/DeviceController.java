@@ -35,14 +35,14 @@ public class DeviceController {
         return new ResponseEntity(new ErrorDto("Invalid input"), HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value="/device/send/gps-cordinates",method=POST)
-    public ResponseEntity sendGpsCordinates(@RequestHeader(value = "device-token") String token,
+    @RequestMapping(value="/device/send/gps-coordinates",method=POST)
+    public ResponseEntity sendGpsCoordinates(@RequestHeader(value = "device-token") String token,
                                             @RequestParam(value="deviceId") String deviceId,
                                             @RequestParam(value="x", defaultValue="0") double x,
                                             @RequestParam(value="y", defaultValue="0") double y,
                                             @RequestParam(value="speed", defaultValue="0") double speed) {
         try {
-            dataTransmiterHandler.updateGPSCordinates(deviceId, x, y, speed);
+            dataTransmiterHandler.updateGPSCoordinates(deviceId, x, y, speed);
             DevicePin devicePin = devicePinRepository.getPinByDeviceId(deviceId);
             if(!token.matches(devicePin.getToken())) throw new InvalidDeviceTokenException("Invalid device token");
         }

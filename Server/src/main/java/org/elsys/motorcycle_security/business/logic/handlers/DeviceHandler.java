@@ -53,7 +53,7 @@ public class DeviceHandler implements org.elsys.motorcycle_security.business.log
     }
 
     @Override
-    public void updateParkedCordinates(String deviceId, double x, double y) {
+    public void updateParkedCoordinates(String deviceId, double x, double y) {
         Device device = deviceRepository.getDeviceByDeviceId(deviceId);
         if(device == null) throw new InvalidDeviceIdException("Invalid device id");
         if(x == 0 || y == 0) throw new InvalidInputException("Invalid input");

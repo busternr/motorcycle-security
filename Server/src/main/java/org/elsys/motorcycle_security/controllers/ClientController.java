@@ -72,12 +72,12 @@ public class ClientController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/client/send/parked-cordinates", method = PUT)
-    public ResponseEntity updateTimeoutByDeviceId(@RequestParam(value = "deviceId") String deviceId,
+    @RequestMapping(value = "/client/send/parked-coordinates", method = PUT)
+    public ResponseEntity updateParkedCoordinates(@RequestParam(value = "deviceId") String deviceId,
                                                   @RequestParam(value = "x", defaultValue = "0") double x,
                                                   @RequestParam(value = "y", defaultValue = "0") double y) {
         try {
-            deviceHandler.updateParkedCordinates(deviceId, x, y);
+            deviceHandler.updateParkedCoordinates(deviceId, x, y);
         }
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
@@ -138,11 +138,11 @@ public class ClientController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/client/{deviceId}/receive/gps-cordinates", method = GET)
+    @RequestMapping(value = "/client/{deviceId}/receive/gps-coordinates", method = GET)
     @ResponseBody
-    public ResponseEntity<DataTransmiterInfo> getGpsCordinatesBydeviceId(@PathVariable(value = "deviceId") String deviceId) {
+    public ResponseEntity<DataTransmiterInfo> getGpsCoordinatesBydeviceId(@PathVariable(value = "deviceId") String deviceId) {
         try {
-            DataTransmiterInfo dataTransmiterInfo = dataTransmiterHandler.getGPSCordinates(deviceId);
+            DataTransmiterInfo dataTransmiterInfo = dataTransmiterHandler.getGPSCoordinates(deviceId);
             return new ResponseEntity(dataTransmiterInfo,HttpStatus.OK);
         }
         catch(InvalidDeviceIdException exception) {
@@ -150,11 +150,11 @@ public class ClientController {
         }
     }
 
-    @RequestMapping(value = "/client/{deviceId}/receive/gps-cordinates-for-day", method = GET)
+    @RequestMapping(value = "/client/{deviceId}/receive/gps-coordinates-for-day", method = GET)
     @ResponseBody
-    public ResponseEntity<List<DataTransmiterInfo>> getGpsCordinatesForTimeStamp(@PathVariable(value = "deviceId") String deviceId, @RequestParam(value = "day") String day) {
+    public ResponseEntity<List<DataTransmiterInfo>> getGpsCoordinatesForTimeStamp(@PathVariable(value = "deviceId") String deviceId, @RequestParam(value = "day") String day) {
         try {
-            List<DataTransmiterInfo> dataTransmiterInfo = dataTransmiterHandler.getGPSCordinatesForDay(deviceId, day);
+            List<DataTransmiterInfo> dataTransmiterInfo = dataTransmiterHandler.getGPSCoordinatesForDay(deviceId, day);
             return new ResponseEntity(dataTransmiterInfo,HttpStatus.OK);
         }
         catch(InvalidDeviceIdException exception) {
