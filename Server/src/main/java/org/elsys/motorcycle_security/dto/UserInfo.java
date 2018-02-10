@@ -11,7 +11,8 @@ public class UserInfo {
     private String email;
     private List<DeviceInfo> devices = new ArrayList<>();
 
-    public UserInfo() { }
+    public UserInfo() {
+    }
 
     public UserInfo(long id, String email) {
         this.id = id;

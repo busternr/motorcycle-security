@@ -25,7 +25,15 @@ public class DeviceConfiguration {
     public DeviceConfiguration() {
         this.isParked = false;
         this.isStolen = false;
-        this.timeOut = 300000;
+        this.timeOut = 150000;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public boolean isParked() {

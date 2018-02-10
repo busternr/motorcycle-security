@@ -5,5 +5,6 @@ public class InvalidDeviceTokenException extends AbstractRestException {
         super(errorMessage);
     }
 
-    public InvalidDeviceTokenException(){}
+    public InvalidDeviceTokenException(){
+    }
 }

@@ -5,5 +5,6 @@ public class InvalidInputException extends AbstractRestException {
         super(errorMessage);
     }
 
-    public InvalidInputException(){}
+    public InvalidInputException(){
+    }
 }

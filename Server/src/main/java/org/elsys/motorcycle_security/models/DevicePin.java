@@ -18,12 +18,20 @@ public class DevicePin {
     @Column(name="tokenUsed")
     private boolean tokenUsed;
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getPin() {
         return pin;
     }
 
-    public long getId() {
-        return id;
+    public void setPin(String pin) {
+        this.pin = pin;
     }
 
     public String getToken() {
@@ -40,13 +48,5 @@ public class DevicePin {
 
     public void setTokenUsed(boolean tokenUsed) {
         this.tokenUsed = tokenUsed;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setPin(String pin) {
-        this.pin = pin;
     }
 }

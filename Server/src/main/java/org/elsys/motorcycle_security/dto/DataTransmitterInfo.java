@@ -1,25 +1,25 @@
 package org.elsys.motorcycle_security.dto;
 
-import org.elsys.motorcycle_security.models.DataTransmiter;
+import org.elsys.motorcycle_security.models.DataTransmitter;
 
 import java.util.Date;
 
-public class DataTransmiterInfo
+public class DataTransmitterInfo
 {
     private double x;
     private double y;
     private double speed;
     private Date date;
 
-    public DataTransmiterInfo(double x, double y, double speed, Date date) {
+    public DataTransmitterInfo(double x, double y, double speed, Date date) {
         this.x = x;
         this.y = y;
         this.speed = speed;
         this.date = date;
     }
 
-    public DataTransmiterInfo(DataTransmiter dataTransmiter) {
-        this(dataTransmiter.getX(), dataTransmiter.getY(), dataTransmiter.getSpeed(), dataTransmiter.getDate());
+    public DataTransmitterInfo(DataTransmitter dataTransmitter) {
+        this(dataTransmitter.getX(), dataTransmitter.getY(), dataTransmitter.getSpeed(), dataTransmitter.getDate());
     }
 
     public double getX() {

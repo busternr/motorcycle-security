@@ -1,12 +1,12 @@
 package org.elsys.motorcycle_security.controllers;
 
-import org.elsys.motorcycle_security.business.logic.DataTransmiter;
+import org.elsys.motorcycle_security.business.logic.DataTransmitter;
 import org.elsys.motorcycle_security.business.logic.DeviceConfiguration;
 import org.elsys.motorcycle_security.business.logic.exceptions.AlreadyUsedTokenException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceTokenException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
-import org.elsys.motorcycle_security.dto.DataTransmiterDto;
+import org.elsys.motorcycle_security.dto.DataTransmitterDto;
 import org.elsys.motorcycle_security.dto.DeviceConfigurationInfo;
 import org.elsys.motorcycle_security.dto.ErrorDto;
 import org.elsys.motorcycle_security.models.DevicePin;
@@ -26,7 +26,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RestController
 public class DeviceController {
     @Autowired
-    private DataTransmiter dataTransmiterHandler;
+    private DataTransmitter dataTransmitterHandler;
     @Autowired
     private DeviceConfiguration deviceConfigurationHandler;
     @Autowired
@@ -43,10 +43,10 @@ public class DeviceController {
     }
 
     @RequestMapping(value="/device/send/gps-coordinates",method=POST)
-    public ResponseEntity sendGpsCoordinates(@RequestHeader(value = "device-token") String token, @RequestBody DataTransmiterDto dataTransmiterDto) {
+    public ResponseEntity sendGpsCoordinates(@RequestHeader(value = "device-token") String token, @RequestBody DataTransmitterDto dataTransmitterDto) {
         try {
-            dataTransmiterHandler.updateGPSCoordinates(dataTransmiterDto);
-            DevicePin devicePin = devicePinRepository.getPinByDeviceId(dataTransmiterDto.getDeviceId());
+            dataTransmitterHandler.updateGPSCoordinates(dataTransmitterDto);
+            DevicePin devicePin = devicePinRepository.getPinByDeviceId(dataTransmitterDto.getDeviceId());
             if(!token.matches(devicePin.getToken())) throw new InvalidDeviceTokenException("Invalid device token");
         }
         catch(InvalidDeviceTokenException exception) {

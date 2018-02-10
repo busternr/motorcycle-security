@@ -2,22 +2,23 @@ package org.elsys.motorcycle_security.dto;
 
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 public class DeviceDto {
 
     @NotNull
-    @Size(min = 6, max = 6)
     private String deviceId;
 
     @NotNull
     long userId;
 
+    @NotNull
     double parkedX;
 
+    @NotNull
     double parkedY;
 
-    public DeviceDto(){}
+    public DeviceDto() {
+    }
 
     public DeviceDto(String deviceId, long userId, double parkedX, double parkedY) {
         this.deviceId = deviceId;

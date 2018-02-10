@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class DataTransmiter {
+public class DataTransmitter {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
@@ -23,6 +23,14 @@ public class DataTransmiter {
     @ManyToOne
     @JoinColumn(name="deviceId", nullable=false)
     private Device device;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public double getX() {
         return x;

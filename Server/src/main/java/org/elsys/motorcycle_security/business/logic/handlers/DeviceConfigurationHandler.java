@@ -4,10 +4,10 @@ import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdEx
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
 import org.elsys.motorcycle_security.dto.DeviceConfigurationDto;
 import org.elsys.motorcycle_security.dto.DeviceConfigurationInfo;
-import org.elsys.motorcycle_security.models.DataTransmiter;
+import org.elsys.motorcycle_security.models.DataTransmitter;
 import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
-import org.elsys.motorcycle_security.repository.DataTransmiterRepository;
+import org.elsys.motorcycle_security.repository.DataTransmitterRepository;
 import org.elsys.motorcycle_security.repository.DeviceConfigurationRepository;
 import org.elsys.motorcycle_security.repository.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class DeviceConfigurationHandler implements org.elsys.motorcycle_security
     @Autowired
     private DeviceConfigurationRepository deviceConfigurationRepository;
     @Autowired
-    private DataTransmiterRepository dataTransmiterRepository;
+    private DataTransmitterRepository dataTransmitterRepository;
     @Autowired
     private DeviceRepository deviceRepository;
 
@@ -44,10 +44,10 @@ public class DeviceConfigurationHandler implements org.elsys.motorcycle_security
         if(deviceConfiguration == null) throw new InvalidDeviceIdException("Invalid device id");
         deviceConfiguration.setParked(deviceConfigurationDto.isParked());
         deviceConfigurationRepository.save(deviceConfiguration);
-        DataTransmiter dataTransmiter = dataTransmiterRepository.getGpsCoordinatesByDeviceId(deviceConfigurationDto.getDeviceId());
+        DataTransmitter dataTransmitter = dataTransmitterRepository.getGpsCoordinatesByDeviceId(deviceConfigurationDto.getDeviceId());
         Device device = deviceRepository.getDeviceByDeviceId(deviceConfigurationDto.getDeviceId());
-        device.setParkedX(dataTransmiter.getX());
-        device.setParkedY(dataTransmiter.getY());
+        device.setParkedX(dataTransmitter.getX());
+        device.setParkedY(dataTransmitter.getY());
         deviceRepository.save(device);
     }
 

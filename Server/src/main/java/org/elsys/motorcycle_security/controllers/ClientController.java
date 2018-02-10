@@ -14,7 +14,6 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -28,7 +27,7 @@ public class ClientController {
     @Autowired
     private Device deviceHandler;
     @Autowired
-    private DataTransmiter dataTransmiterHandler;
+    private DataTransmitter dataTransmitterHandler;
     @Autowired
     private DeviceConfiguration deviceConfigurationHandler;
     @Autowired
@@ -38,7 +37,6 @@ public class ClientController {
     @Autowired
     private UserRepository userRepository;
 
-    //private static final Logger log= Logger.getLogger(ClientController.class.getName());
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public static ResponseEntity handleTypeMismatchException() {
@@ -144,10 +142,10 @@ public class ClientController {
 
     @RequestMapping(value = "/client/{deviceId}/receive/gps-coordinates", method = GET)
     @ResponseBody
-    public ResponseEntity<DataTransmiterInfo> getGpsCoordinatesBydeviceId(@PathVariable(value = "deviceId") String deviceId) {
+    public ResponseEntity<DataTransmitterInfo> getGpsCoordinatesBydeviceId(@PathVariable(value = "deviceId") String deviceId) {
         try {
-            DataTransmiterInfo dataTransmiterInfo = dataTransmiterHandler.getGPSCoordinates(deviceId);
-            return new ResponseEntity(dataTransmiterInfo,HttpStatus.OK);
+            DataTransmitterInfo dataTransmitterInfo = dataTransmitterHandler.getGPSCoordinates(deviceId);
+            return new ResponseEntity(dataTransmitterInfo,HttpStatus.OK);
         }
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
@@ -156,10 +154,10 @@ public class ClientController {
 
     @RequestMapping(value = "/client/{deviceId}/receive/gps-coordinates-for-day", method = GET)
     @ResponseBody
-    public ResponseEntity<List<DataTransmiterInfo>> getGpsCoordinatesForTimeStamp(@PathVariable(value = "deviceId") String deviceId, @RequestParam(value = "day") String day) {
+    public ResponseEntity<List<DataTransmitterInfo>> getGpsCoordinatesForTimeStamp(@PathVariable(value = "deviceId") String deviceId, @RequestParam(value = "day") String day) {
         try {
-            List<DataTransmiterInfo> dataTransmiterInfo = dataTransmiterHandler.getGPSCoordinatesForDay(deviceId, day);
-            return new ResponseEntity(dataTransmiterInfo,HttpStatus.OK);
+            List<DataTransmitterInfo> dataTransmitterInfo = dataTransmitterHandler.getGPSCoordinatesForDay(deviceId, day);
+            return new ResponseEntity(dataTransmitterInfo,HttpStatus.OK);
         }
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);

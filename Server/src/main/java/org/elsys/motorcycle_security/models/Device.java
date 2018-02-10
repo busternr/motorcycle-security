@@ -26,7 +26,7 @@ public class Device {
     private double parkedY;
 
     @OneToMany(mappedBy="device")
-    private List<DataTransmiter> transmiterData = new ArrayList<>();
+    private List<DataTransmitter> transmiterData = new ArrayList<>();
 
     @OneToOne(mappedBy="device")
     private DeviceConfiguration deviceConfiguration;
@@ -69,5 +69,21 @@ public class Device {
 
     public void setParkedY(double parkedY) {
         this.parkedY = parkedY;
+    }
+
+    public List<DataTransmitter> getTransmiterData() {
+        return transmiterData;
+    }
+
+    public void setTransmiterData(List<DataTransmitter> transmiterData) {
+        this.transmiterData = transmiterData;
+    }
+
+    public DeviceConfiguration getDeviceConfiguration() {
+        return deviceConfiguration;
+    }
+
+    public void setDeviceConfiguration(DeviceConfiguration deviceConfiguration) {
+        this.deviceConfiguration = deviceConfiguration;
     }
 }
