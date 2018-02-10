@@ -1,35 +1,50 @@
 #include <DFRobot_sim808.h>
 #include <SoftwareSerial.h>
+#include <EEPROM.h>
 #include <string.h>
 #include <stdlib.h>
+
 #define PIN_TX    10
 #define PIN_RX    11
 #define MAX_RETRIES 100
+
 SoftwareSerial mySerial(PIN_TX,PIN_RX);
-DFRobot_SIM808 sim808(&mySerial);//Connect RX,TX,PWR,
-const String deviceId = "cbr602";
+DFRobot_SIM808 sim808(&mySerial);
+
+const String deviceId = "cbr6000";
 String token;
 long int timeout;
 int timesLooped = 0;
-boolean firstTime=true;
 
 void setup()
 {
   mySerial.begin(9600);
   Serial.begin(9600);
+  char tokenToRead[165];
+  if(EEPROM.get(1, tokenToRead) != 'null')
+  {
+    EEPROM.get(1, tokenToRead);
+    String str(tokenToRead);
+    token = str;
+  }
 }
 
 void loop()
 {
   initializeConnection();
   initializeTCPConnection();
-  /*if(firstTime)
+  if(token.length() == 0)
   {
-    getToken(formatGetTokenString("GET /device/" + deviceId + "/receive/device-token  HTTP/1.0\r\n\r\n"));
-    firstTime=false;
-  }*/
-  if(timesLooped == 0) getConfiguration("GET /device/" + deviceId + "/receive/device-configuration  HTTP/1.0\r\n\r\n");
-  else if(timesLooped %5 == 0 && timesLooped != 0) getConfiguration("GET /device/" + deviceId + "/receive/device-configuration  HTTP/1.0\r\n\r\n");
+    char tokenToWrite[165];
+    token.toCharArray(tokenToWrite, token.length()+1);
+    getToken("GET /device/" + deviceId + "/receive/device-token  HTTP/1.0\r\n\r\n");
+    token.toCharArray(tokenToWrite, token.length()+1);
+    EEPROM.put(1, tokenToWrite);
+    timesLooped--; //Just so we don't skip to execute our getConfiguration function.
+    closeConnection();
+  }
+  else if(timesLooped == 0) getConfiguration("GET /device/" + deviceId + "/receive/device-configuration  HTTP/1.0\r\ndevice-token: " + token + "\n\r\r\n");
+  else if(timesLooped %5 == 0 && timesLooped != 0) getConfiguration("GET /device/" + deviceId + "/receive/device-configuration  HTTP/1.0\r\ndevice-token: " + token + "\n\r\r\n");
   else
   {
     Serial.print("Delaying ");
@@ -41,13 +56,23 @@ void loop()
   closeConnection();
 }
 
+void resetDevice()
+{
+  closeConnection();
+  timesLooped = 0;
+}
+
 void initializeConnection()
 {
   int currentRetries = 0;
   while(!sim808.init())
   {
       Serial.print("Sim808 init error\r\n");
-      if (++currentRetries >= MAX_RETRIES) break;
+      if(++currentRetries >= MAX_RETRIES)
+      {
+        resetDevice(); 
+        break;
+      }
   }
   Serial.print("Sim808 init success\r\n");
 }
@@ -58,7 +83,11 @@ void initializeTCPConnection()
   while(!sim808.connect(TCP,"130.204.140.70", 8080))
   {
     Serial.println("TCP connection error");
-    if (++currentRetries >= MAX_RETRIES) break;
+    if(++currentRetries >= MAX_RETRIES)
+    {
+      resetDevice(); 
+      break;
+    }
   }
   Serial.println("TCP connection success");
 }
@@ -71,7 +100,6 @@ void closeConnection()
 
 void getAndPostGPSCoordinates()
 {
-  int currentRetries = 0;
   char lat[120];
   char lon[120];
   float x;
@@ -99,7 +127,7 @@ void getAndPostGPSCoordinates()
   }
   sim808.detachGPS();
   Serial.println("Close the GPS power success");
-  sendGPSCoordinates("POST /device/send/gps-cordinates?deviceId=" + deviceId + "&x=" + lat + "&y="+ lon + "&speed=" + speedInKm + " HTTP/1.0\r\n\r\n");
+  sendGPSCoordinates("POST /device/send/gps-cordinates?deviceId=" + deviceId + "&x=" + lat + "&y="+ lon + "&speed=" + speedInKm + " HTTP/1.0\r\ndevice-token: " + token + "\n\r\r\n");
 }
 
 void getToken(String ConfGetUrl)
@@ -119,7 +147,11 @@ void getToken(String ConfGetUrl)
     {
         int ret = sim808.recv(buffer, sizeof(buffer)-1);
         if (ret <= 0) Serial.println("fetch over..."); 
-        if (++currentRetries >= MAX_RETRIES) break;
+        if(++currentRetries >= MAX_RETRIES)
+        {
+          resetDevice(); 
+          break;
+        }
         buffer[ret] = '\0';
         Serial.print(buffer);
         done = true;
@@ -139,6 +171,7 @@ void getToken(String ConfGetUrl)
         break;
       }
     }
+    Serial.println("");
   }
 }
 
@@ -159,7 +192,11 @@ void getConfiguration(String ConfGetUrl)
     {
         int ret = sim808.recv(buffer, sizeof(buffer)-1);
         if (ret <= 0) Serial.println("fetch over..."); 
-        if (++currentRetries >= MAX_RETRIES) break;
+        if(++currentRetries >= MAX_RETRIES)
+        {
+          resetDevice(); 
+          break;
+        }
         buffer[ret] = '\0';
         Serial.print(buffer);
         done = true;
@@ -180,6 +217,7 @@ void getConfiguration(String ConfGetUrl)
         break;
       }
     }
+    Serial.println("");
   }
 }
 
@@ -199,7 +237,11 @@ void sendGPSCoordinates(String GPSPostUrl)
     {
         int ret = sim808.recv(buffer, sizeof(buffer)-1);
         if (ret <= 0) Serial.println("fetch over...");
-        if (++currentRetries >= MAX_RETRIES) break;
+        if(++currentRetries >= MAX_RETRIES)
+        {
+          resetDevice(); 
+          break;
+        }
         buffer[ret] = '\0';
         Serial.print(buffer);
         done = true;
