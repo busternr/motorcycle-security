@@ -10,6 +10,7 @@ import org.elsys.motorcycle_security.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -40,14 +41,19 @@ public class ClientController {
     //private static final Logger log= Logger.getLogger(ClientController.class.getName());
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public static ResponseEntity handleTypeMismatch() {
+    public static ResponseEntity handleTypeMismatchException() {
+        return new ResponseEntity(new ErrorDto("Invalid input"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public static ResponseEntity handleNotReadableException() {
         return new ResponseEntity(new ErrorDto("Invalid input"), HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value = "/client/send/parking-status", method = PUT)
-    public ResponseEntity updateParkingStatusByDeviceId(@RequestParam(value = "deviceId") String deviceId, @RequestParam(value = "isParked") boolean isParked) {
+    public ResponseEntity updateParkingStatusByDeviceId(@RequestBody DeviceConfigurationDto deviceConfigurationDto) {
         try {
-            deviceConfigurationHandler.updateParkingStatus(deviceId, isParked);
+            deviceConfigurationHandler.updateParkingStatus(deviceConfigurationDto);
         }
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
@@ -59,9 +65,9 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/send/timeout", method = PUT)
-    public ResponseEntity updateTimeoutByDeviceId(@RequestParam(value = "deviceId") String deviceId, @RequestParam(value = "timeout", defaultValue = "0") long timeOut) {
+    public ResponseEntity updateTimeoutByDeviceId(@RequestBody DeviceConfigurationDto deviceConfigurationDto) {
         try {
-            deviceConfigurationHandler.updateTimeOut(deviceId, timeOut);
+            deviceConfigurationHandler.updateTimeOut(deviceConfigurationDto);
         }
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
@@ -73,11 +79,9 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/send/parked-coordinates", method = PUT)
-    public ResponseEntity updateParkedCoordinates(@RequestParam(value = "deviceId") String deviceId,
-                                                  @RequestParam(value = "x", defaultValue = "0") double x,
-                                                  @RequestParam(value = "y", defaultValue = "0") double y) {
+    public ResponseEntity updateParkedCoordinates(@RequestBody DeviceDto deviceDto) {
         try {
-            deviceHandler.updateParkedCoordinates(deviceId, x, y);
+            deviceHandler.updateParkedCoordinates(deviceDto);
         }
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
@@ -89,9 +93,9 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/send/stolen-status", method = PUT)
-    public ResponseEntity updateTimeoutByDeviceId(@RequestParam(value = "deviceId") String deviceId, @RequestParam(value = "isStolen") boolean isStolen) {
+    public ResponseEntity updateStolenStatusByDeviceId(@RequestBody DeviceConfigurationDto deviceConfigurationDto) {
         try {
-            deviceConfigurationHandler.updateStolenStatus(deviceId, isStolen);
+            deviceConfigurationHandler.updateStolenStatus(deviceConfigurationDto);
         }
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
@@ -117,9 +121,9 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/send/create-new-user", method = POST)
-    public ResponseEntity createNewUser(@RequestBody UserDto newUser) {
+    public ResponseEntity createNewUser(@RequestBody UserDto userDto) {
         try {
-            userHandler.createNewUser(newUser);
+            userHandler.createNewUser(userDto);
         }
         catch(InvalidInputException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
@@ -128,9 +132,9 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/send/create-new-device", method = POST)
-    public ResponseEntity createNewDevice(@RequestBody DeviceDto newDevice) {
+    public ResponseEntity createNewDevice(@RequestBody DeviceDto deviceDto) {
         try {
-            deviceHandler.createNewDevice(newDevice);
+            deviceHandler.createNewDevice(deviceDto);
         }
         catch(InvalidInputException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);

@@ -2,6 +2,7 @@ package org.elsys.motorcycle_security.business.logic.handlers;
 
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
+import org.elsys.motorcycle_security.dto.DataTransmiterDto;
 import org.elsys.motorcycle_security.dto.DataTransmiterInfo;
 import org.elsys.motorcycle_security.models.DataTransmiter;
 import org.elsys.motorcycle_security.models.Device;
@@ -10,10 +11,12 @@ import org.elsys.motorcycle_security.repository.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import javax.xml.crypto.Data;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,18 +29,17 @@ public class DataTransmiterHandler implements org.elsys.motorcycle_security.busi
     private DeviceRepository deviceRepository;
 
     @Override
-    public void updateGPSCoordinates(String deviceId, double x, double y, double speed) {
-        Device device = deviceRepository.getDeviceByDeviceId(deviceId);
+    public void updateGPSCoordinates(DataTransmiterDto dataTransmiterDto) {
+        Device device = deviceRepository.getDeviceByDeviceId(dataTransmiterDto.getDeviceId());
         if(device == null) throw new InvalidDeviceIdException("Invalid device id");
-        if(x == 0 || y == 0) throw new InvalidInputException("Invalid input");
-        DataTransmiter d = new DataTransmiter();
-        d.setX(x);
-        d.setY(y);
-        d.setSpeed(speed);
+        DataTransmiter dataTransmiter = new DataTransmiter();
+        dataTransmiter.setDevice(device);
+        dataTransmiter.setX(dataTransmiterDto.getX());
+        dataTransmiter.setY(dataTransmiterDto.getY());
+        dataTransmiter.setSpeed(dataTransmiterDto.getSpeed());
         Date date = new Date();
-        d.setDate(date);
-        d.setDevice(device);
-        dataTransmiterRepository.save(d);
+        dataTransmiter.setDate(date);
+        dataTransmiterRepository.save(dataTransmiter);
     }
 
     @Override

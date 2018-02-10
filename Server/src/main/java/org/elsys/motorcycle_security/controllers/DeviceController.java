@@ -6,6 +6,7 @@ import org.elsys.motorcycle_security.business.logic.exceptions.AlreadyUsedTokenE
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceTokenException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
+import org.elsys.motorcycle_security.dto.DataTransmiterDto;
 import org.elsys.motorcycle_security.dto.DeviceConfigurationInfo;
 import org.elsys.motorcycle_security.dto.ErrorDto;
 import org.elsys.motorcycle_security.models.DevicePin;
@@ -13,6 +14,7 @@ import org.elsys.motorcycle_security.repository.DevicePinRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -31,19 +33,20 @@ public class DeviceController {
     private DevicePinRepository devicePinRepository;
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public static ResponseEntity handleTypeMismatch() {
+    public static ResponseEntity handleTypeMismatchException() {
+        return new ResponseEntity(new ErrorDto("Invalid input"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public static ResponseEntity handleNotReadableException() {
         return new ResponseEntity(new ErrorDto("Invalid input"), HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value="/device/send/gps-coordinates",method=POST)
-    public ResponseEntity sendGpsCoordinates(@RequestHeader(value = "device-token") String token,
-                                            @RequestParam(value="deviceId") String deviceId,
-                                            @RequestParam(value="x", defaultValue="0") double x,
-                                            @RequestParam(value="y", defaultValue="0") double y,
-                                            @RequestParam(value="speed", defaultValue="0") double speed) {
+    public ResponseEntity sendGpsCoordinates(@RequestHeader(value = "device-token") String token, @RequestBody DataTransmiterDto dataTransmiterDto) {
         try {
-            dataTransmiterHandler.updateGPSCoordinates(deviceId, x, y, speed);
-            DevicePin devicePin = devicePinRepository.getPinByDeviceId(deviceId);
+            dataTransmiterHandler.updateGPSCoordinates(dataTransmiterDto);
+            DevicePin devicePin = devicePinRepository.getPinByDeviceId(dataTransmiterDto.getDeviceId());
             if(!token.matches(devicePin.getToken())) throw new InvalidDeviceTokenException("Invalid device token");
         }
         catch(InvalidDeviceTokenException exception) {
@@ -82,8 +85,8 @@ public class DeviceController {
             DevicePin devicePin = devicePinRepository.getPinByDeviceId(deviceId);
             if(devicePin == null) throw new InvalidDeviceIdException("Invalid device id");
             if(devicePin.isTokenUsed()) throw new AlreadyUsedTokenException("Token is already used");
-            //devicePin.setTokenUsed(true);
-            //devicePinRepository.save(devicePin);
+            devicePin.setTokenUsed(true);
+            devicePinRepository.save(devicePin);
             response.addHeader("device-token", devicePin.getToken());
 
         }

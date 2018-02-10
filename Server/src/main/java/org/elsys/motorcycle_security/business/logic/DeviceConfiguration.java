@@ -1,13 +1,14 @@
 package org.elsys.motorcycle_security.business.logic;
 
+import org.elsys.motorcycle_security.dto.DeviceConfigurationDto;
 import org.elsys.motorcycle_security.dto.DeviceConfigurationInfo;
 
 public interface DeviceConfiguration {
     DeviceConfigurationInfo getDeviceConfiguration(String deviceId);
 
-    void updateTimeOut(String deviceId, long timeOut);
+    void updateTimeOut(DeviceConfigurationDto deviceConfigurationDto);
 
-    void updateParkingStatus(String deviceId, boolean isParked);
+    void updateParkingStatus(DeviceConfigurationDto deviceConfigurationDt);
 
-    void updateStolenStatus(String deviceId, boolean isStolen);
+    void updateStolenStatus(DeviceConfigurationDto deviceConfigurationDt);
 }

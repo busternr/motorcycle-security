@@ -2,6 +2,7 @@ package org.elsys.motorcycle_security.business.logic.handlers;
 
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
+import org.elsys.motorcycle_security.dto.DeviceConfigurationDto;
 import org.elsys.motorcycle_security.dto.DeviceConfigurationInfo;
 import org.elsys.motorcycle_security.models.DataTransmiter;
 import org.elsys.motorcycle_security.models.Device;
@@ -29,39 +30,33 @@ public class DeviceConfigurationHandler implements org.elsys.motorcycle_security
     }
 
     @Override
-    public void updateTimeOut(String deviceId, long timeOut) {
-        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceId);
+    public void updateTimeOut(DeviceConfigurationDto deviceConfigurationDto) {
+        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceConfigurationDto.getDeviceId());
         if(deviceConfiguration == null) throw new InvalidDeviceIdException("Invalid device id");
-        if(timeOut == 0) throw new InvalidInputException("Invalid input");
-        deviceConfiguration.setTimeOut(timeOut);
+        if(deviceConfigurationDto.getTimeOut() == 0) throw new InvalidInputException("Invalid input");
+        deviceConfiguration.setTimeOut(deviceConfigurationDto.getTimeOut());
         deviceConfigurationRepository.save(deviceConfiguration);
     }
 
     @Override
-    public void updateParkingStatus(String deviceId, boolean isParked) {
-        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceId);
+    public void updateParkingStatus(DeviceConfigurationDto deviceConfigurationDto) {
+        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceConfigurationDto.getDeviceId());
         if(deviceConfiguration == null) throw new InvalidDeviceIdException("Invalid device id");
-        if(isParked == true || isParked == false) {
-            deviceConfiguration.setParked(isParked);
-            deviceConfigurationRepository.save(deviceConfiguration);
-            DataTransmiter dataTransmiter = dataTransmiterRepository.getGpsCoordinatesByDeviceId(deviceId);
-            Device device = deviceRepository.getDeviceByDeviceId(deviceId);
-            device.setParkedX(dataTransmiter.getX());
-            device.setParkedY(dataTransmiter.getY());
-            deviceRepository.save(device);
-        }
-        else throw new InvalidInputException("Invalid input");
+        deviceConfiguration.setParked(deviceConfigurationDto.isParked());
+        deviceConfigurationRepository.save(deviceConfiguration);
+        DataTransmiter dataTransmiter = dataTransmiterRepository.getGpsCoordinatesByDeviceId(deviceConfigurationDto.getDeviceId());
+        Device device = deviceRepository.getDeviceByDeviceId(deviceConfigurationDto.getDeviceId());
+        device.setParkedX(dataTransmiter.getX());
+        device.setParkedY(dataTransmiter.getY());
+        deviceRepository.save(device);
     }
 
     @Override
-    public void updateStolenStatus(String deviceId, boolean isStolen) {
-        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceId);
+    public void updateStolenStatus(DeviceConfigurationDto deviceConfigurationDto) {
+        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceConfigurationDto.getDeviceId());
         if(deviceConfiguration == null) throw new InvalidDeviceIdException("Invalid device id");
-        if(isStolen == true || isStolen == false) {
-            deviceConfiguration.setStolen(isStolen);
-            deviceConfigurationRepository.save(deviceConfiguration);
-        }
-        else throw new InvalidInputException("Invalid input");
+        deviceConfiguration.setStolen(deviceConfigurationDto.isStolen());
+        deviceConfigurationRepository.save(deviceConfiguration);
     }
 }
 
