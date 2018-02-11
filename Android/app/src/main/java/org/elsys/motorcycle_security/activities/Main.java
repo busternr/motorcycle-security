@@ -86,7 +86,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
         Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
         Globals.authorization = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", "");
         Api api = Api.RetrofitInstance.create();
-        api.getDeviceConfiguration(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
+        api.getDeviceConfiguration(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
             @Override
             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
                 DeviceConfiguration deviceConfiguration = response.body();
@@ -119,12 +119,16 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                     toast.show();
                     isParked = true;
                     scheduleJob();
-                    api.getGPSCordinates(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<GpsCordinates>() {
+                    api.getGPSCordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GpsCordinates>() {
                         @Override
                         public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                             if (response.isSuccessful()) {
                                 final GpsCordinates gpsCordinates = response.body();
-                                api.updateParkedCordinates(Globals.deviceInUse, gpsCordinates.getX(), gpsCordinates.getY(), Globals.authorization).enqueue(new Callback<Device>() {
+                                Device device = new Device();
+                                device.setDeviceId(Globals.deviceInUse);
+                                device.setParkedX(gpsCordinates.getX());
+                                device.setParkedY(gpsCordinates.getY());
+                                api.updateParkedCordinates(Globals.authorization, device).enqueue(new Callback<Device>() {
                                     @Override
                                     public void onResponse(Call<Device> call, Response<Device> response) {}
                                     @Override
@@ -143,7 +147,10 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                     isParked = false;
                     jobScheduler.cancelAll();
                 }
-                api.updateParkingStatus(Globals.deviceInUse,isParked, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
+                DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+                deviceConfiguration.setDeviceId(Globals.deviceInUse);
+                deviceConfiguration.setParked(isParked);
+                api.updateParkingStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
                     @Override
                     public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
                     @Override

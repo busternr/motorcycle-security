@@ -42,7 +42,10 @@ public class ChangeTimeOut extends AppCompatActivity implements View.OnClickList
                     else {
                         Api api = Api.RetrofitInstance.create();
                         long seconds = Long.valueOf(timeOutInput.getText().toString()) * 1000;
-                        api.updateTimeOut(Globals.deviceInUse, seconds, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
+                        DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+                        deviceConfiguration.setDeviceId(Globals.deviceInUse);
+                        deviceConfiguration.setTimeOut(seconds);
+                        api.updateTimeOut(Globals.authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
                             @Override
                             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
                             }

@@ -46,7 +46,10 @@ public class CurrentLocation extends FragmentActivity implements OnMapReadyCallb
         notStolenButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Api api = Api.RetrofitInstance.create();
-                api.updateStolenStatus(Globals.deviceInUse,false, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
+                DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+                deviceConfiguration.setDeviceId(Globals.deviceInUse);
+                deviceConfiguration.setStolen(false);
+                api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
                     @Override
                     public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
                     @Override
@@ -81,7 +84,7 @@ public class CurrentLocation extends FragmentActivity implements OnMapReadyCallb
         final Api api = Api.RetrofitInstance.create();
         for (counter = 0; counter <= numberOfUserDevices; counter++) {
             final String deviceId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Device " + counter ,"");
-            api.getGPSCordinates(deviceId, Globals.authorization).enqueue(new Callback<GpsCordinates>() {
+            api.getGPSCordinates(Globals.authorization, deviceId).enqueue(new Callback<GpsCordinates>() {
                 @Override
                 public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                     if (response.isSuccessful()) {
@@ -97,7 +100,7 @@ public class CurrentLocation extends FragmentActivity implements OnMapReadyCallb
                 }
             });
         }
-        api.getDeviceConfiguration(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
+        api.getDeviceConfiguration(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
             @Override
             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
                 if (response.isSuccessful()) {
@@ -117,13 +120,13 @@ public class CurrentLocation extends FragmentActivity implements OnMapReadyCallb
     void updatePos() {
         final float zoomlevel = 18;
         final Api api = Api.RetrofitInstance.create();
-        api.getGPSCordinates(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<GpsCordinates>() {
+        api.getGPSCordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GpsCordinates>() {
             @Override
             public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                 if (response.isSuccessful()) {
                     if(countOfRequests >= 10) {
                         countOfRequests = 0;
-                        api.getDeviceConfiguration(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
+                        api.getDeviceConfiguration(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
                             @Override
                             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
                                 if (response.isSuccessful()) {
@@ -137,13 +140,19 @@ public class CurrentLocation extends FragmentActivity implements OnMapReadyCallb
                         });
                     }
                     if(Globals.isStolen == false) {
-                        api.updateStolenStatus(Globals.deviceInUse,false, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
+                        DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+                        deviceConfiguration.setDeviceId(Globals.deviceInUse);
+                        deviceConfiguration.setStolen(false);
+                        api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
                             @Override
                             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
                             @Override
                             public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
                         });
-                        api.updateTimeOut(Globals.deviceInUse,300000, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
+                        DeviceConfiguration deviceConfiguration2 = new DeviceConfiguration();
+                        deviceConfiguration2.setDeviceId(Globals.deviceInUse);
+                        deviceConfiguration2.setTimeOut(150000);
+                        api.updateTimeOut(Globals.authorization, deviceConfiguration2).enqueue(new Callback<DeviceConfiguration>() {
                             @Override
                             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
                             @Override

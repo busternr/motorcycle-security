@@ -45,7 +45,7 @@ public class HistoryForDifferentDays extends FragmentActivity implements OnMapRe
         final float zoomlevel = 18;
         final String day = getIntent().getStringExtra("Day");
         Api api = Api.RetrofitInstance.create();
-        api.getGPSCordinatesForDay(Globals.deviceInUse, day, Globals.authorization).enqueue(new Callback<List<GpsCordinates>>() {
+        api.getGPSCordinatesForDay(Globals.authorization, Globals.deviceInUse, day).enqueue(new Callback<List<GpsCordinates>>() {
             @Override
             public void onResponse(Call<List<GpsCordinates>> call, Response<List<GpsCordinates>> response) {
                 if (response.isSuccessful()) {

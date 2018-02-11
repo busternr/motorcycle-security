@@ -42,7 +42,7 @@ public class SetCurrentDevice extends AppCompatActivity implements View.OnClickL
         deviceIdText.setText("Device pin number:" + deviceId);
         Api api;
         api = Api.RetrofitInstance.create();
-        api.getDeviceConfiguration(deviceId, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
+        api.getDeviceConfiguration(Globals.authorization, deviceId).enqueue(new Callback<DeviceConfiguration>() {
             @Override
             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
                 DeviceConfiguration deviceConfiguration = response.body();
@@ -56,7 +56,7 @@ public class SetCurrentDevice extends AppCompatActivity implements View.OnClickL
             public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
         });
         api = Api.RetrofitInstance.create();
-        api.getGPSCordinates(deviceId, Globals.authorization).enqueue(new Callback<GpsCordinates>() {
+        api.getGPSCordinates(Globals.authorization, deviceId).enqueue(new Callback<GpsCordinates>() {
             @Override
             public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                 GpsCordinates gpsCordinates = response.body();

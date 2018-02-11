@@ -42,7 +42,7 @@ public class ChangePassword extends AppCompatActivity implements View.OnClickLis
                 else if (newPasswordInput.getText().toString().length() < 6) errorsText.setText("New password is too short (Minimum 6 characters)");
                 else {
                     final Api api = Api.RetrofitInstance.create();
-                    api.getUserAccount(emailInput.getText().toString(), Globals.authorization).enqueue(new Callback<User>() {
+                    api.getUserAccount(Globals.authorization, emailInput.getText().toString()).enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
                             if (response.isSuccessful()) {

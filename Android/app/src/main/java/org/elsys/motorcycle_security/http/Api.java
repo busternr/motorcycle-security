@@ -26,16 +26,16 @@ public interface Api {
     Call<Void> Login(@Body LoginDetails loginDetails);
 
     @PUT("/client/send/parking-status")
-    Call<DeviceConfiguration> updateParkingStatus(@Query("deviceId") String deviceId, @Query("isParked") boolean isParked, @Header("authorization") String authorization);
+    Call<DeviceConfiguration> updateParkingStatus(@Header("authorization") String authorization, @Body DeviceConfiguration deviceConfiguration);
 
     @PUT("/client/send/parked-cordinates")
-    Call<Device> updateParkedCordinates(@Query("deviceId") String deviceId, @Query("x") double x, @Query("y") double y, @Header("authorization") String authorization);
+    Call<Device> updateParkedCordinates(@Header("authorization") String authorization, @Body Device device);
 
     @PUT("/client/send/timeout")
-    Call<DeviceConfiguration> updateTimeOut(@Query("deviceId") String deviceId, @Query("timeout") long timeOut, @Header("authorization") String authorization);
+    Call<DeviceConfiguration> updateTimeOut(@Header("authorization") String authorization, @Body DeviceConfiguration deviceConfiguration);
 
     @PUT("/client/send/stolen-status")
-    Call<DeviceConfiguration> updateStolenStatus(@Query("deviceId") String deviceId, @Query("isStolen") boolean isStolen, @Header("authorization") String authorization);
+    Call<DeviceConfiguration> updateStolenStatus(@Header("authorization") String authorization, @Body DeviceConfiguration deviceConfiguration);
 
     @PUT("/client/send/change-password")
     Call<User> updatePassword(@Header("email") String oldPassword, @Header("newPassword") String newPassword, @Header("authorization") String authorization);
@@ -44,16 +44,16 @@ public interface Api {
     Call<User> createUserAccount(@Body User user);
 
     @POST("/client/send/create-new-device")
-    Call<Device> createDevice(@Body Device device, @Header("authorization") String authorization);
+    Call<Device> createDevice(@Header("authorization") String authorization, @Body Device device);
 
     @GET("/client/receive/user-account")
-    Call<User> getUserAccount(@Header("email") String email, @Header("authorization") String authorization);
+    Call<User> getUserAccount(@Header("authorization") String authorization, @Header("email") String email);
 
     @GET("/client/receive/user-account-only-email")
     Call<User> getUserAccountOnlyEmail(@Header("email") String email);
 
     @GET("/client/{deviceId}/receive/device")
-    Call<Device> getDevice(@Path("deviceId") String deviceId, @Header("authorization") String authorization);
+    Call<Device> getDevice(@Header("authorization") String authorization, @Path("deviceId") String deviceId);
 
     @GET("/client/{deviceId}/receive/device-only-deviceid")
     Call<Device> getDeviceOnlyDeviceId(@Path("deviceId") String deviceId);
@@ -62,13 +62,13 @@ public interface Api {
     Call<DevicePin> getDevicePin(@Path("deviceId") String deviceId);
 
     @GET("/client/{deviceId}/receive/gps-cordinates")
-    Call<GpsCordinates> getGPSCordinates(@Path("deviceId") String deviceId, @Header("authorization") String authorization);
+    Call<GpsCordinates> getGPSCordinates(@Header("authorization") String authorization, @Path("deviceId") String deviceId);
 
     @GET("/client/{deviceId}/receive/gps-cordinates-for-day")
-    Call<List<GpsCordinates>> getGPSCordinatesForDay(@Path("deviceId") String deviceId, @Query("day") String day, @Header("authorization") String authorization);
+    Call<List<GpsCordinates>> getGPSCordinatesForDay(@Header("authorization") String authorization, @Path("deviceId") String deviceId, @Query("day") String day);
 
-    @GET("/device/{deviceId}/receive/device-configuration")
-    Call<DeviceConfiguration> getDeviceConfiguration(@Path("deviceId") String deviceId, @Header("authorization") String authorization);
+    @GET("/client/{deviceId}/receive/device-configuration")
+    Call<DeviceConfiguration> getDeviceConfiguration(@Header("authorization") String authorization, @Path("deviceId") String deviceId);
 
     //String API_HOST = "http://10.0.2.2";  //localhost connection
     //String API_HOST = "http://10.19.9.85"; //Dreamix server

@@ -41,7 +41,7 @@ public class CurrentDevice extends AppCompatActivity implements View.OnClickList
         timeOutButton.setOnClickListener(this);
         deviceIdText.setText("Device pin number:" + Globals.deviceInUse);
         final Api api = Api.RetrofitInstance.create();
-        api.getDeviceConfiguration(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<DeviceConfiguration>() {
+        api.getDeviceConfiguration(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
             @Override
             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
                 if(response.isSuccessful()){
@@ -57,7 +57,7 @@ public class CurrentDevice extends AppCompatActivity implements View.OnClickList
             public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
             }
         });
-        api.getGPSCordinates(Globals.deviceInUse, Globals.authorization).enqueue(new Callback<GpsCordinates>() {
+        api.getGPSCordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GpsCordinates>() {
             @Override
             public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                 GpsCordinates gpsCordinates = response.body();

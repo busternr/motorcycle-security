@@ -56,7 +56,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                 getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Authorization", token).apply();
                             }
                             else errorsText.setText("Email or password doesn't match.");
-                            api.getUserAccount(emailInput.getText().toString(), getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", "")).enqueue(new Callback<User>() {
+                            api.getUserAccount(getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", ""), emailInput.getText().toString()).enqueue(new Callback<User>() {
                                 @Override
                                 public void onResponse(Call<User> call, Response<User> response) {
                                     if (response.isSuccessful()) {

@@ -48,7 +48,7 @@ public class AddDevice extends AppCompatActivity implements View.OnClickListener
                                 if (devicePin.getPin().equals(deviceIdInput.getText().toString())) {
                                     long userId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getLong("UserId", 1);
                                     Device device = new Device(deviceIdInput.getText().toString(), userId);
-                                    api.createDevice(device, Globals.authorization).enqueue(new Callback<Device>() {
+                                    api.createDevice(Globals.authorization, device).enqueue(new Callback<Device>() {
                                         @Override
                                         public void onResponse(Call<Device> call, Response<Device> response) {
                                         }
