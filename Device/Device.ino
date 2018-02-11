@@ -11,7 +11,7 @@
 SoftwareSerial mySerial(PIN_TX,PIN_RX);
 DFRobot_SIM808 sim808(&mySerial);
 
-const String deviceId = "cbr6000";
+const String deviceId = "cbr600";
 String token;
 long int timeout;
 int timesLooped = 0;
@@ -127,7 +127,9 @@ void getAndPostGPSCoordinates()
   }
   sim808.detachGPS();
   Serial.println("Close the GPS power success");
-  sendGPSCoordinates("POST /device/send/gps-cordinates?deviceId=" + deviceId + "&x=" + lat + "&y="+ lon + "&speed=" + speedInKm + " HTTP/1.0\r\ndevice-token: " + token + "\n\r\r\n");
+  String body = "{\n  \"deviceId\":\"" + deviceId + "\",\n  \"x\":" + lat + ",\n  \"y\":" + lon + ",\n  \"speed\":" + speedInKm + "\n}";
+  int contentLength = body.length() + 1;
+  sendGPSCoordinates("POST /device/send/gps-coordinates HTTP/1.0\ndevice-token: " + token + "\nContent-Length: " + contentLength + "\nContent-Type: application/json\n\n" + body);
 }
 
 void getToken(String ConfGetUrl)
