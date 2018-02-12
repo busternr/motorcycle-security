@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.elsys.motorcycle_security.MainMenu;
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.Device;
@@ -69,7 +70,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                             getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceId).apply();
                                         }
                                         getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
-                                        Intent myIntent = new Intent(v.getContext(), Main.class);
+                                        Intent myIntent = new Intent(v.getContext(), MainMenu.class);
                                         startActivity(myIntent);
                                     }
                                 }

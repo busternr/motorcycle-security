@@ -54,7 +54,7 @@ public class LocationCheckerJob extends JobService {
             public void onFailure(Call<Device> call, Throwable t) {
             }
         });
-        api.getGPSCordinates(deviceId, authorization).enqueue(new Callback<GpsCordinates>() {
+        api.getGPSCoordinates(deviceId, authorization).enqueue(new Callback<GpsCordinates>() {
             @Override
             public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                 if (response.isSuccessful()) {

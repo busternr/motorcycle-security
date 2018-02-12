@@ -57,7 +57,7 @@ public class CurrentDevice extends AppCompatActivity implements View.OnClickList
             public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
             }
         });
-        api.getGPSCordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GpsCordinates>() {
+        api.getGPSCoordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GpsCordinates>() {
             @Override
             public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                 GpsCordinates gpsCordinates = response.body();

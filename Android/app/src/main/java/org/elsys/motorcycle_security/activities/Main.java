@@ -119,7 +119,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                     toast.show();
                     isParked = true;
                     scheduleJob();
-                    api.getGPSCordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GpsCordinates>() {
+                    api.getGPSCoordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GpsCordinates>() {
                         @Override
                         public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                             if (response.isSuccessful()) {

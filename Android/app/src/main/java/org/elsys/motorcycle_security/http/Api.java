@@ -61,8 +61,8 @@ public interface Api {
     @GET("/client/{deviceId}/receive/device-pin")
     Call<DevicePin> getDevicePin(@Path("deviceId") String deviceId);
 
-    @GET("/client/{deviceId}/receive/gps-cordinates")
-    Call<GpsCordinates> getGPSCordinates(@Header("authorization") String authorization, @Path("deviceId") String deviceId);
+    @GET("/client/{deviceId}/receive/gps-coordinates")
+    Call<GpsCordinates> getGPSCoordinates(@Header("authorization") String authorization, @Path("deviceId") String deviceId);
 
     @GET("/client/{deviceId}/receive/gps-cordinates-for-day")
     Call<List<GpsCordinates>> getGPSCordinatesForDay(@Header("authorization") String authorization, @Path("deviceId") String deviceId, @Query("day") String day);

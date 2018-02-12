@@ -84,7 +84,7 @@ public class CurrentLocation extends FragmentActivity implements OnMapReadyCallb
         final Api api = Api.RetrofitInstance.create();
         for (counter = 0; counter <= numberOfUserDevices; counter++) {
             final String deviceId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Device " + counter ,"");
-            api.getGPSCordinates(Globals.authorization, deviceId).enqueue(new Callback<GpsCordinates>() {
+            api.getGPSCoordinates(Globals.authorization, deviceId).enqueue(new Callback<GpsCordinates>() {
                 @Override
                 public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                     if (response.isSuccessful()) {
@@ -120,7 +120,7 @@ public class CurrentLocation extends FragmentActivity implements OnMapReadyCallb
     void updatePos() {
         final float zoomlevel = 18;
         final Api api = Api.RetrofitInstance.create();
-        api.getGPSCordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GpsCordinates>() {
+        api.getGPSCoordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GpsCordinates>() {
             @Override
             public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                 if (response.isSuccessful()) {

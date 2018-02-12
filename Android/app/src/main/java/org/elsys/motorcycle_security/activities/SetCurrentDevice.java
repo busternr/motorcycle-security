@@ -56,7 +56,7 @@ public class SetCurrentDevice extends AppCompatActivity implements View.OnClickL
             public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
         });
         api = Api.RetrofitInstance.create();
-        api.getGPSCordinates(Globals.authorization, deviceId).enqueue(new Callback<GpsCordinates>() {
+        api.getGPSCoordinates(Globals.authorization, deviceId).enqueue(new Callback<GpsCordinates>() {
             @Override
             public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
                 GpsCordinates gpsCordinates = response.body();
