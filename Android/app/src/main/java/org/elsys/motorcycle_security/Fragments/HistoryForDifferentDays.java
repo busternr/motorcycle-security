@@ -1,16 +1,15 @@
-package org.elsys.motorcycle_security.activities;
+package org.elsys.motorcycle_security.Fragments;
 
-import android.content.Context;
-import android.location.LocationManager;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -26,24 +25,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HistoryForDifferentDays extends FragmentActivity implements OnMapReadyCallback {
+public class HistoryForDifferentDays extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private String day;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_history_for_different_days);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        day = getArguments().getString("day");
+        return inflater.inflate(R.layout.fragment_history_for_different_days, container, false);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         final float zoomlevel = 18;
-        final String day = getIntent().getStringExtra("Day");
         Api api = Api.RetrofitInstance.create();
         api.getGPSCordinatesForDay(Globals.authorization, Globals.deviceInUse, day).enqueue(new Callback<List<GpsCordinates>>() {
             @Override

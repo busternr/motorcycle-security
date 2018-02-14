@@ -1,109 +1,147 @@
 package org.elsys.motorcycle_security.Fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import org.elsys.motorcycle_security.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link AllDevices.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link AllDevices#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class AllDevices extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
+public class AllDevices extends Fragment implements View.OnClickListener {
+    String[] device = new String[6];
 
     public AllDevices() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AllDevices.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AllDevices newInstance(String param1, String param2) {
-        AllDevices fragment = new AllDevices();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_all_devices, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("PREFERENCE", Context.MODE_PRIVATE);
+        Button device1Button =  getActivity().findViewById(R.id.Device1Btn);
+        Button device2Button =  getActivity().findViewById(R.id.Device2Btn);
+        Button device3Button =  getActivity().findViewById(R.id.Device3Btn);
+        Button device4Button =  getActivity().findViewById(R.id.Device4Btn);
+        Button device5Button =  getActivity().findViewById(R.id.Device5Btn);
+        device1Button.setOnClickListener(this);
+        device2Button.setOnClickListener(this);
+        device3Button.setOnClickListener(this);
+        device4Button.setOnClickListener(this);
+        device5Button.setOnClickListener(this);
+        int devices = sharedPreferences.getInt("Number of devices", 0);
+        device1Button.setVisibility(View.GONE);
+        device2Button.setVisibility(View.GONE);
+        device3Button.setVisibility(View.GONE);
+        device4Button.setVisibility(View.GONE);
+        device5Button.setVisibility(View.GONE);
+        for(int i=0;i<=devices;i++)
+        {
+            device[i] = sharedPreferences.getString("Device " + i, "");
+            Log.d("DEEEEEEEEEEEEEEEEV ", device[i]);
+        }
+        if(device[0] != null) {
+            device1Button.setVisibility(View.VISIBLE);
+            device1Button.setText(device[0]);
+        }
+        if(device[1] != null) {
+            device2Button.setVisibility(View.VISIBLE);
+            device2Button.setText(device[1]);
+        }
+        if(device[2] != null) {
+            device3Button.setVisibility(View.VISIBLE);
+            device3Button.setText(device[2]);
+        }
+        if(device[3] != null) {
+            device4Button.setVisibility(View.VISIBLE);
+            device4Button.setText(device[3]);
+        }
+        if(device[4] != null) {
+            device5Button.setVisibility(View.VISIBLE);
+            device5Button.setText(device[4]);
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Fragment fragment = null;
+        switch (v.getId()) {
+            case R.id.Device1Btn:
+            {
+                fragment = new SetCurrentDevice();
+                Bundle bundle=new Bundle();
+                bundle.putString("deviceId", device[0]);
+                fragment.setArguments(bundle);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();
+                break;
+            }
+            case R.id.Device2Btn:
+            {
+                fragment = new SetCurrentDevice();
+                Bundle bundle=new Bundle();
+                bundle.putString("deviceId", device[1]);
+                fragment.setArguments(bundle);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();
+                break;
+            }
+            case R.id.Device3Btn:
+            {
+                fragment = new SetCurrentDevice();
+                Bundle bundle=new Bundle();
+                bundle.putString("deviceId", device[2]);
+                fragment.setArguments(bundle);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();
+                break;
+            }
+            case R.id.Device4Btn:
+            {
+                fragment = new SetCurrentDevice();
+                Bundle bundle=new Bundle();
+                bundle.putString("deviceId", device[3]);
+                fragment.setArguments(bundle);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();
+                break;
+            }
+            case R.id.Device5Btn:
+            {
+                fragment = new SetCurrentDevice();
+                Bundle bundle=new Bundle();
+                bundle.putString("deviceId", device[4]);
+                fragment.setArguments(bundle);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();
+                break;
+            }
+        }
     }
 }

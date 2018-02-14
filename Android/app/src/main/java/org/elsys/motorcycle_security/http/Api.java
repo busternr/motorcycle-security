@@ -25,7 +25,7 @@ public interface Api {
     @PUT("/login")
     Call<Void> Login(@Body LoginDetails loginDetails);
 
-    @PUT("/client/send/parking-status")
+    @PUT("/client/send/park-status")
     Call<DeviceConfiguration> updateParkingStatus(@Header("authorization") String authorization, @Body DeviceConfiguration deviceConfiguration);
 
     @PUT("/client/send/parked-cordinates")

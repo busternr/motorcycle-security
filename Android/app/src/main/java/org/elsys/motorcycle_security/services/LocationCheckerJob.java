@@ -11,7 +11,7 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import org.elsys.motorcycle_security.R;
-import org.elsys.motorcycle_security.activities.CurrentLocation;
+import org.elsys.motorcycle_security.activities.Main;
 import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
@@ -19,7 +19,6 @@ import org.elsys.motorcycle_security.models.GpsCordinates;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -128,7 +127,7 @@ public class LocationCheckerJob extends JobService {
     }
 
     protected void sendNotification() {
-        Intent intent = new Intent(this, CurrentLocation.class);
+        Intent intent = new Intent(this, Main.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         Notification notification = new Notification();
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);

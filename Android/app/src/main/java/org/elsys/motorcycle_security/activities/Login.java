@@ -3,24 +3,19 @@ package org.elsys.motorcycle_security.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.elsys.motorcycle_security.MainMenu;
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.Device;
-import org.elsys.motorcycle_security.models.Globals;
 import org.elsys.motorcycle_security.models.LoginDetails;
 import org.elsys.motorcycle_security.models.User;
 
 import java.util.List;
 
-import okhttp3.Headers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -70,7 +65,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                             getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceId).apply();
                                         }
                                         getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
-                                        Intent myIntent = new Intent(v.getContext(), MainMenu.class);
+                                        Intent myIntent = new Intent(v.getContext(), Main.class);
                                         startActivity(myIntent);
                                     }
                                 }

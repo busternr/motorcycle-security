@@ -1,13 +1,17 @@
-package org.elsys.motorcycle_security.activities;
+package org.elsys.motorcycle_security.Fragments;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
 import org.elsys.motorcycle_security.R;
+import org.elsys.motorcycle_security.activities.Main;
 import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.Globals;
@@ -19,7 +23,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SetCurrentDevice extends AppCompatActivity implements View.OnClickListener {
+
+public class SetCurrentDevice extends Fragment implements View.OnClickListener {
     private TextView deviceIdText;
     private TextView parkingStatusText;
     private TextView timeOutText;
@@ -27,17 +32,29 @@ public class SetCurrentDevice extends AppCompatActivity implements View.OnClickL
     private TextView statusText;
     String deviceId;
 
+    public SetCurrentDevice() {
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_set_current_device);
-        deviceId = getIntent().getStringExtra("DeviceId");
-        deviceIdText = findViewById(R.id.DeviceIdText2);
-        parkingStatusText = findViewById(R.id.ParkingStatusText2);
-        timeOutText = findViewById(R.id.TimeOutText2);
-        stolenText = findViewById(R.id.StolenText2);
-        statusText = findViewById(R.id.StatusText2);
-        Button setCurrentDeviceButton = findViewById(R.id.SetCurrentDeviceBtn);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_set_current_device, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        deviceId = getArguments().getString("deviceId");
+        deviceIdText = getActivity().findViewById(R.id.DeviceIdText2);
+        parkingStatusText = getActivity().findViewById(R.id.ParkingStatusText2);
+        timeOutText = getActivity().findViewById(R.id.TimeOutText2);
+        stolenText = getActivity().findViewById(R.id.StolenText2);
+        statusText = getActivity().findViewById(R.id.StatusText2);
+        Button setCurrentDeviceButton = getActivity().findViewById(R.id.SetCurrentDeviceBtn);
         setCurrentDeviceButton.setOnClickListener(this);
         deviceIdText.setText("Device pin number:" + deviceId);
         Api api;
@@ -76,11 +93,15 @@ public class SetCurrentDevice extends AppCompatActivity implements View.OnClickL
         });
     }
 
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
+    }
+
     public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.SetCurrentDeviceBtn: {
                 Globals.deviceInUse = deviceId;
-                Intent myIntent = new Intent(v.getContext(),Settings.class);
+                Intent myIntent = new Intent(v.getContext(), Main.class);
                 startActivity(myIntent);
             }
         }

@@ -1,109 +1,97 @@
 package org.elsys.motorcycle_security.Fragments;
 
-import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.elsys.motorcycle_security.R;
+import org.elsys.motorcycle_security.activities.Main;
+import org.elsys.motorcycle_security.http.Api;
+import org.elsys.motorcycle_security.models.Globals;
+import org.elsys.motorcycle_security.models.User;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ChangePassword.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ChangePassword#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ChangePassword extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
+public class ChangePassword extends Fragment implements View.OnClickListener {
+    private EditText newPasswordInput;
+    private EditText emailInput;
+    private TextView errorsText;
 
     public ChangePassword() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ChangePassword.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ChangePassword newInstance(String param1, String param2) {
-        ChangePassword fragment = new ChangePassword();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_change_password, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        newPasswordInput = getActivity().findViewById(R.id.NewPassInput);
+        emailInput = getActivity().findViewById(R.id.EmailInput);
+        errorsText = getActivity().findViewById(R.id.ErrorsChangePassText);
+        Button changePasswordButton = getActivity().findViewById(R.id.ChangePassBtn);
+        changePasswordButton.setOnClickListener(this);
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    public void onClick(final View v) {
+        switch (v.getId()) {
+            case R.id.ChangePassBtn: {
+                if (newPasswordInput.getText().toString().length() == 0) errorsText.setText("New password field can't be blank");
+                else if (emailInput.getText().toString().length() == 0) errorsText.setText("Email field can't be blank");
+                else if (newPasswordInput.getText().toString().length() < 6) errorsText.setText("New password is too short (Minimum 6 characters)");
+                else {
+                    final Api api = Api.RetrofitInstance.create();
+                    api.getUserAccount(Globals.authorization, emailInput.getText().toString()).enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                            if (response.isSuccessful()) {
+                                User user = response.body();
+                                if (user.getEmail().equals(emailInput.getText().toString())) {
+                                    api.updatePassword(emailInput.getText().toString(), newPasswordInput.getText().toString(), Globals.authorization).enqueue(new Callback<User>() {
+                                        @Override
+                                        public void onResponse(Call<User> call, Response<User> response) {
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<User> call, Throwable t) {
+                                        }
+                                    });
+                                    Toast toast = Toast.makeText(getActivity(), "Password change successful", Toast.LENGTH_LONG);
+                                    toast.show();
+                                    Intent myIntent = new Intent(v.getContext(), Main.class);
+                                    startActivity(myIntent);
+                                }
+                                else errorsText.setText("Wrong email.");
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+                        }
+                    });
+                }
+            }
+        }
+    }
 }
+

@@ -1,46 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
-    tools:context="org.elsys.motorcycle_security.activities.Main"
-    tools:layout_editor_absoluteY="81dp">
+    android:background="@drawable/background">
 
     <Button
-        android:id="@+id/AddDeviceBtn"
+        android:id="@+id/ChangeTimeOutBtn2"
         android:layout_width="178dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="27dp"
-        android:layout_marginTop="32dp"
-        android:text="Add device"
+        android:layout_height="98dp"
+        android:text="Change gps sending frequency"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/DeviceIdInput"
+        app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.078" />
 
     <EditText
-        android:id="@+id/DeviceIdInput"
+        android:id="@+id/TimeOutInput"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="11dp"
-        android:hint="Device pin number"
+        android:layout_marginTop="27dp"
+        android:hint="seconds"
         android:imeActionId="6"
-        android:imeActionLabel="@string/action_sign_in_short"
         android:imeOptions="actionUnspecified"
-        android:inputType="text|textShortMessage"
+        android:inputType="number|numberSigned"
         android:maxLines="1"
         android:singleLine="true"
         android:textColor="@android:color/white"
-        app:layout_constraintBottom_toTopOf="@+id/ErrorsAddDevText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AddDeviceBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/ChangeTimeOutBtn2" />
 
     <TextView
-        android:id="@+id/ErrorsAddDevText"
+        android:id="@+id/ErrorsChangeTimeoutText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="278dp"
@@ -50,6 +44,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/DeviceIdInput" />
+        app:layout_constraintTop_toBottomOf="@+id/TimeOutInput" />
 
 </android.support.constraint.ConstraintLayout>
