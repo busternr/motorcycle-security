@@ -46,11 +46,10 @@
             android:label="@string/title_activity_login" />
         <activity
             android:name=".activities.Main"
-            android:label="@string/title_activity_main_menu"
+            android:label="Motorcycle security"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

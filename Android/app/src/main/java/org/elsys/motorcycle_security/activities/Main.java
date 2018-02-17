@@ -87,6 +87,39 @@ public class Main extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        final boolean isAuthorized = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isAuthorized", false);
+        if(isAuthorized) {
+            setGlobals();
+            currentDeviceText.setText("Current device: " + Globals.deviceInUse);
+            if(isParked) parkingStatusText.setText("Status: " + "Parked");
+            if(!isParked) parkingStatusText.setText("Status: " + "NOT parked");
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+            notStolenButton =  findViewById(R.id.NotStolenBtn);
+            notStolenButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Api api = Api.RetrofitInstance.create();
+                    DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+                    deviceConfiguration.setDeviceId(Globals.deviceInUse);
+                    deviceConfiguration.setStolen(false);
+                    api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
+                        @Override
+                        public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
+                        @Override
+                        public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
+                    });
+                    Intent myIntent = new Intent(v.getContext(),Main.class);
+                    startActivity(myIntent);
+                }
+            });
+            notStolenButton.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
@@ -180,31 +213,10 @@ public class Main extends AppCompatActivity
                     @Override
                     public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
                     @Override
-                    public void onFailure(Call<DeviceConfiguration> call, Throwable t) { Log.d("ERRRRRRRR", t.getMessage().toString());}
+                    public void onFailure(Call<DeviceConfiguration> call, Throwable t) { }
                 });
             }
         });
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        notStolenButton =  findViewById(R.id.NotStolenBtn);
-        notStolenButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Api api = Api.RetrofitInstance.create();
-                DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
-                deviceConfiguration.setDeviceId(Globals.deviceInUse);
-                deviceConfiguration.setStolen(false);
-                api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
-                    @Override
-                    public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
-                    @Override
-                    public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
-                });
-                Intent myIntent = new Intent(v.getContext(),Main.class);
-                startActivity(myIntent);
-            }
-        });
-        notStolenButton.setVisibility(View.GONE);
     }
 
     final Handler handler = new Handler();
@@ -237,13 +249,11 @@ public class Main extends AppCompatActivity
                         LatLng currLocation = new LatLng(gpsCordinates.getX(), gpsCordinates.getY());
                         if(deviceId.matches(Globals.deviceInUse)) deviceInUseMarker = mMap.addMarker(new MarkerOptions().position(currLocation).title(deviceId));
                         else mMap.addMarker(new MarkerOptions().position(currLocation).title(deviceId));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLocation, zoomlevel));
-                        Log.d("ADDING POINT FOR ", deviceId + " X=" + Double.toString(gpsCordinates.getX()) + " Y=" + Double.toString(gpsCordinates.getY()));
+                        if(deviceId.equals(Globals.deviceInUse)) mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLocation, zoomlevel));
                     }
                 }
                 @Override
                 public void onFailure(Call<GpsCordinates> call, Throwable t) {
-                    Log.d("ERR", t.getMessage().toString());
                 }
             });
         }

@@ -1,6 +1,8 @@
 package org.elsys.motorcycle_security.Fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,6 +24,8 @@ import java.util.Date;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class SetCurrentDevice extends Fragment implements View.OnClickListener {
@@ -100,7 +104,9 @@ public class SetCurrentDevice extends Fragment implements View.OnClickListener {
     public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.SetCurrentDeviceBtn: {
+                SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("PREFERENCE", Context.MODE_PRIVATE);
                 Globals.deviceInUse = deviceId;
+                sharedPreferences.edit().putString("Current device in use", deviceId).apply();
                 Intent myIntent = new Intent(v.getContext(), Main.class);
                 startActivity(myIntent);
             }

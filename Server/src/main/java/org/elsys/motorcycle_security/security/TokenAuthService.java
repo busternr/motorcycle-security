@@ -14,7 +14,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class TokenAuthService {
-  static final long VALIDITY = 32140800l; //1 y
+  static final long VALIDITY = 31456952000l; //1 y
   static final String KEY = "Motorycle security";
   static final String TOKEN_PREFIX = "User";
   static final String HEADER_STRING = "Authorization";
