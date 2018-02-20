@@ -1,80 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background">
+    tools:layout_editor_absoluteY="81dp">
 
-    <Button
+    <com.beardedhen.androidbootstrap.BootstrapButton
         android:id="@+id/ChangeTimeOutBtn"
-        android:layout_width="178dp"
-        android:layout_height="98dp"
-        android:text="Change gps sending frequency"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="43dp"
+        android:layout_marginBottom="129dp"
+        android:layout_marginEnd="4dp"
+        android:text="Change GPS frequency"
+        app:bootstrapBrand="primary"
+        app:bootstrapSize="lg"
+        app:buttonMode="regular"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/card_view"
+        app:layout_constraintTop_toBottomOf="@+id/card_view"
+        app:roundedCorners="true"
+        app:showOutline="false" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="35dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="158dp"
+        app:cardCornerRadius="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/ChangeTimeOutBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.078" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/DeviceIdText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="36dp"
-        android:text="Device pin number:"
-        android:textColor="@color/common_google_signin_btn_text_dark_default"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ChangeTimeOutBtn" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/ParkingStatusText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="9dp"
-        android:text="Vehicle is parked:"
-        android:textColor="@color/common_google_signin_btn_text_dark_default"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/DeviceIdText" />
+            <TextView
+                android:id="@+id/DeviceIdText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="35dp"
+                android:text="Device:"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="16sp" />
 
-    <TextView
-        android:id="@+id/TimeOutText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="12dp"
-        android:text="GPS Sending frequency:"
-        android:textColor="@color/common_google_signin_btn_text_dark_default"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ParkingStatusText" />
+            <TextView
+                android:id="@+id/ParkingStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="60dp"
+                android:text="Is parked:"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="16sp"
+                tools:layout_editor_absoluteX="73dp"
+                tools:layout_editor_absoluteY="184dp" />
 
-    <TextView
-        android:id="@+id/StolenText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="44dp"
-        android:text="Stolen: No"
-        android:textColor="@color/common_google_signin_btn_text_dark_default"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ParkingStatusText" />
+            <TextView
+                android:id="@+id/TimeOutText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="85dp"
+                android:text="GPS frequency:"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="16sp"
+                tools:layout_editor_absoluteX="73dp"
+                tools:layout_editor_absoluteY="205dp" />
 
-    <TextView
-        android:id="@+id/StatusText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        android:text="Status:Turned OFF"
-        android:textColor="@color/common_google_signin_btn_text_dark_default"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/StolenText" />
+            <TextView
+                android:id="@+id/StolenText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="110dp"
+                android:text="Stolen:"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="16sp" />
 
-</android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/StatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="135dp"
+                android:text="Status:"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="16sp"
+                tools:layout_editor_absoluteX="73dp"
+                tools:layout_editor_absoluteY="246dp" />
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+    </android.support.constraint.ConstraintLayout>

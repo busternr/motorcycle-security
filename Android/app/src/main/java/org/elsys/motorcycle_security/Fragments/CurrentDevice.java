@@ -1,6 +1,5 @@
 package org.elsys.motorcycle_security.Fragments;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,8 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
+
+import com.beardedhen.androidbootstrap.BootstrapButton;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
@@ -47,12 +47,14 @@ public class CurrentDevice extends Fragment implements View.OnClickListener {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        View fragmentMap = getActivity().findViewById(R.id.map);
+        fragmentMap.setVisibility(View.INVISIBLE);
         deviceIdText =  getActivity().findViewById(R.id.DeviceIdText);
         parkingStatusText =  getActivity().findViewById(R.id.ParkingStatusText);
         timeOutText =  getActivity().findViewById(R.id.TimeOutText);
         stolenText =  getActivity().findViewById(R.id.StolenText);
         statusText =  getActivity().findViewById(R.id.StatusText);
-        Button timeOutButton =  getActivity().findViewById(R.id.ChangeTimeOutBtn);
+        BootstrapButton timeOutButton =  getActivity().findViewById(R.id.ChangeTimeOutBtn);
         timeOutButton.setOnClickListener(this);
         deviceIdText.setText("Device pin number:" + Globals.deviceInUse);
         final Api api = Api.RetrofitInstance.create();
@@ -61,11 +63,11 @@ public class CurrentDevice extends Fragment implements View.OnClickListener {
             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
                 if(response.isSuccessful()){
                     DeviceConfiguration deviceConfiguration = response.body();
-                    if(deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "ON");
-                    if(!deviceConfiguration.isParked()) parkingStatusText.setText("Vehicle is parked:" + "OFF");
+                    if(deviceConfiguration.isParked()) parkingStatusText.setText("Is parked:" + "Yes");
+                    if(!deviceConfiguration.isParked()) parkingStatusText.setText("Is parked:" + "No");
                     if(deviceConfiguration.isStolen()) stolenText.setText("Stolen:" + "Yes");
                     if(!deviceConfiguration.isStolen()) stolenText.setText("Stolen:" + "No");
-                    timeOutText.setText("GPS Sending frequency:" + String.valueOf(deviceConfiguration.getTimeOut() / 1000)  + " seconds");
+                    timeOutText.setText("GPS frequency:" + String.valueOf(deviceConfiguration.getTimeOut() / 1000)  + " seconds");
                     Log.d("TEXT", timeOutText.getText().toString());
                 }
             }
