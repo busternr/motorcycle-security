@@ -202,7 +202,7 @@ public class ClientController {
         }
     }
 
-    @RequestMapping(value="/client/{deviceId}/receive/device-only-deviceid",method=GET)
+    @RequestMapping(value="/client/{deviceId}/receive/device-only-deviceId",method=GET)
     @ResponseBody
     public ResponseEntity getDeviceOnlyDeviceId(@PathVariable(value = "deviceId") String deviceId) {
         try {

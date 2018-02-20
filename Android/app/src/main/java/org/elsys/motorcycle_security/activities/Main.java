@@ -380,9 +380,14 @@ public class Main extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
+        if (getFragmentManager().getBackStackEntryCount() == 0) {
+            Intent myIntent = new Intent(Main.this, Main.class);
+            startActivity(myIntent);
+        }
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
-        }else {
+        }
+        else {
             super.onBackPressed();
         }
     }

@@ -43,6 +43,8 @@ public class ChangePassword extends Fragment implements View.OnClickListener {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        View fragmentMap = getActivity().findViewById(R.id.map);
+        fragmentMap.setVisibility(View.GONE);
         newPasswordInput = getActivity().findViewById(R.id.NewPassInput);
         emailInput = getActivity().findViewById(R.id.EmailInput);
         errorsText = getActivity().findViewById(R.id.ErrorsChangePassText);
