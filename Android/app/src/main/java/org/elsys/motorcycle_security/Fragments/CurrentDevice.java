@@ -64,7 +64,7 @@ public class CurrentDevice extends Fragment implements View.OnClickListener {
         timeOutText =  getActivity().findViewById(R.id.TimeOutText);
         stolenText =  getActivity().findViewById(R.id.StolenText);
         statusText =  getActivity().findViewById(R.id.StatusText);
-        BootstrapButton timeOutButton =  getActivity().findViewById(R.id.ChangeTimeoutBtn);
+        BootstrapButton timeOutButton =  getActivity().findViewById(R.id.RegisterBtn);
         timeOutButton.setOnClickListener(this);
         deviceIdText.setText("Device pin number:" + Globals.deviceInUse);
         final Api api = Api.RetrofitInstance.create();
@@ -157,7 +157,7 @@ public class CurrentDevice extends Fragment implements View.OnClickListener {
 
     public void onClick(final View v) {
         switch (v.getId()) {
-            case R.id.ChangeTimeoutBtn: {
+            case R.id.RegisterBtn: {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, new ChangeTimeOut());
                 ft.commit();

@@ -4,30 +4,84 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
-    tools:context="org.elsys.motorcycle_security.activities.Main">
+    tools:context="org.elsys.motorcycle_security.activities.LoginRegister">
 
-    <Button
+    <com.beardedhen.androidbootstrap.BootstrapButton
         android:id="@+id/RegisterBtn"
-        android:layout_width="178dp"
-        android:layout_height="60dp"
+        android:layout_width="170dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="24dp"
         android:text="Register"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="parent"
+        app:bootstrapBrand="primary"
+        app:bootstrapSize="lg"
+        app:buttonMode="regular"
+        app:layout_constraintBottom_toTopOf="@+id/LoginBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.367" />
+        app:layout_constraintTop_toBottomOf="@+id/InfoText"
+        app:roundedCorners="true"
+        app:showOutline="false" />
 
-    <Button
+    <com.beardedhen.androidbootstrap.BootstrapButton
         android:id="@+id/LoginBtn"
-        android:layout_width="178dp"
-        android:layout_height="60dp"
+        android:layout_width="170dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="186dp"
         android:text="Log in"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="parent"
+        app:bootstrapBrand="primary"
+        app:bootstrapSize="lg"
+        app:buttonMode="regular"
+        app:layout_constraintBottom_toTopOf="@+id/infoText2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/RegisterBtn"
+        app:roundedCorners="true"
+        app:showOutline="false" />
+
+    <TextView
+        android:id="@+id/WelcomeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="31dp"
+        android:text="Welcome to Motorcycle security!"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/InfoText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+    <TextView
+        android:id="@+id/InfoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="42dp"
+        android:layout_marginEnd="26dp"
+        android:text="Live GPS vehicle tracking and control."
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/RegisterBtn"
+        app:layout_constraintEnd_toEndOf="@+id/WelcomeText"
+        app:layout_constraintTop_toBottomOf="@+id/WelcomeText" />
+
+    <TextView
+        android:id="@+id/infoText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="2017-2018 Motorycle security project"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/LoginBtn" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        app:layout_constraintBottom_toTopOf="@+id/WelcomeText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/icon" />
 
 </android.support.constraint.ConstraintLayout>

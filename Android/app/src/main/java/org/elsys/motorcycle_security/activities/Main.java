@@ -122,16 +122,16 @@ public class Main extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         Menu menu = navigationView.getMenu();
         MenuItem nav_history_day_1 = menu.findItem(R.id.nav_history_day_1);
@@ -158,14 +158,11 @@ public class Main extends AppCompatActivity
             currentDeviceText.setText("Current device: " + Globals.deviceInUse);
             if(isParked) parkingStatusText.setText("Status: " + "Parked");
             if(!isParked) parkingStatusText.setText("Status: " + "NOT parked");
-            Long date = System.currentTimeMillis();
-            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy");
-            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-DD");
             nav_history_day_1.setTitle(calculateDateForMenu(0));
             nav_history_day_2.setTitle(calculateDateForMenu(1));
             nav_history_day_3.setTitle(calculateDateForMenu(2));
         }
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = findViewById(R.id.fab);
         fab.setImageResource(R.drawable.park);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -332,7 +329,7 @@ public class Main extends AppCompatActivity
 
     private void scheduleJob() {
         final ComponentName name = new ComponentName(this, LocationCheckerJob.class);
-        JobInfo jobInfo = null;
+        JobInfo jobInfo;
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             jobInfo= new JobInfo.Builder(1, name)
                     .setMinimumLatency(1000*5)
@@ -377,7 +374,7 @@ public class Main extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
@@ -393,32 +390,9 @@ public class Main extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        /*if (id == R.id.action_settings) {
-            return true;
-        }*/
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        Log.d("HERE", "");
         int id = item.getItemId();
         Fragment fragment = null;
         if (id == R.id.nav_history_day_1) {
@@ -467,10 +441,8 @@ public class Main extends AppCompatActivity
             ft.replace(R.id.content_frame, fragment);
             ft.commit();
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 }
-
-//MENU BUTTON LISTENER IS NOT WORKING CURRENTLY MUST FIX !!!

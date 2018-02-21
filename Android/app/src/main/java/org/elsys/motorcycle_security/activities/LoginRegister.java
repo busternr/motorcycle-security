@@ -4,7 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+
+import com.beardedhen.androidbootstrap.BootstrapButton;
 
 import org.elsys.motorcycle_security.R;
 
@@ -16,8 +17,8 @@ public class LoginRegister extends AppCompatActivity implements View.OnClickList
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_register);
-        Button RegisterButton =  findViewById(R.id.RegisterBtn);
-        Button LoginButton =  findViewById(R.id.LoginBtn);
+        BootstrapButton RegisterButton =  findViewById(R.id.RegisterBtn);
+        BootstrapButton LoginButton =  findViewById(R.id.LoginBtn);
         RegisterButton.setOnClickListener(this);
         LoginButton.setOnClickListener(this);
     }
