@@ -41,6 +41,8 @@ public class ChangeTimeOut extends Fragment implements View.OnClickListener {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        View fragmentMap = getActivity().findViewById(R.id.map);
+        fragmentMap.setVisibility(View.GONE);
         timeOutInput = getActivity().findViewById(R.id.TimeOutInput);
         errorsText = getActivity().findViewById(R.id.ErrorsChangeTimeoutText);
         Button timeOutButton = getActivity().findViewById(R.id.ChangeTimeOutBtn2);

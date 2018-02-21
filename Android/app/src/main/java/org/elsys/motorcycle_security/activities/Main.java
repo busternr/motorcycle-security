@@ -5,7 +5,6 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -39,7 +38,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.elsys.motorcycle_security.Fragments.AddDevice;
-import org.elsys.motorcycle_security.Fragments.AllDevices;
 import org.elsys.motorcycle_security.Fragments.ChangePassword;
 import org.elsys.motorcycle_security.Fragments.CurrentDevice;
 import org.elsys.motorcycle_security.Fragments.HistoryForDifferentDays;
@@ -167,7 +165,7 @@ public class Main extends AppCompatActivity
             nav_history_day_2.setTitle(calculateDateForMenu(1));
             nav_history_day_3.setTitle(calculateDateForMenu(2));
         }
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(R.drawable.park);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,6 +195,7 @@ public class Main extends AppCompatActivity
                         public void onFailure(Call<GpsCordinates> call, Throwable t) {
                         }
                     });
+
                     parkingStatusText.setText("Status: " + "Parked");
                     Snackbar.make(view, "Vehicle is now parked", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
@@ -204,7 +203,7 @@ public class Main extends AppCompatActivity
                     isParked = false;
                     jobScheduler.cancelAll();
                     parkingStatusText.setText("Status: " + "NOT parked");
-                    Snackbar.make(view, "Vehicle is now NOT parked", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    Snackbar.make(view, "Vehicle is NOT parked", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                 deviceConfiguration.setDeviceId(Globals.deviceInUse);
@@ -360,9 +359,11 @@ public class Main extends AppCompatActivity
             @Override
             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
                 DeviceConfiguration deviceConfiguration = response.body();
-                isParked = deviceConfiguration.isParked();
+                isParked = false;
+                Globals.isStolen = false;
+                if(deviceConfiguration.isParked() || !deviceConfiguration.isParked()) isParked = deviceConfiguration.isParked();
+                if(deviceConfiguration.isStolen() || !deviceConfiguration.isStolen()) Globals.isStolen = deviceConfiguration.isStolen();
                 if(isParked) scheduleJob();
-                Globals.isStolen = deviceConfiguration.isStolen();
             }
             @Override
             public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
@@ -443,10 +444,6 @@ public class Main extends AppCompatActivity
         }
         if (id == R.id.nav_current_device) {
             fragment = new CurrentDevice();
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).addToBackStack("Main").commit();
-        }
-        if (id == R.id.nav_all_devices) {
-            fragment = new AllDevices();
             getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).addToBackStack("Main").commit();
         }
         if (id == R.id.nav_add_device) {

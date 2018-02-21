@@ -44,6 +44,8 @@ public class AddDevice extends Fragment implements View.OnClickListener {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        View fragmentMap = getActivity().findViewById(R.id.map);
+        fragmentMap.setVisibility(View.INVISIBLE);
         deviceIdInput = getActivity().findViewById(R.id.DeviceIdInput);
         errorsText = getActivity().findViewById(R.id.ErrorsAddDevText);
         Button addDeviceButton = getActivity().findViewById(R.id.AddDeviceBtn);

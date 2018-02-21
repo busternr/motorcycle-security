@@ -6,40 +6,36 @@
     android:layout_height="match_parent"
     tools:layout_editor_absoluteY="81dp">
 
-    <com.beardedhen.androidbootstrap.BootstrapButton
-        android:id="@+id/ChangeTimeOutBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="43dp"
-        android:layout_marginBottom="129dp"
-        android:layout_marginEnd="4dp"
-        android:text="Change GPS frequency"
-        app:bootstrapBrand="primary"
-        app:bootstrapSize="lg"
-        app:buttonMode="regular"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/card_view"
-        app:layout_constraintTop_toBottomOf="@+id/card_view"
-        app:roundedCorners="true"
-        app:showOutline="false" />
-
     <android.support.v7.widget.CardView
-        android:id="@+id/card_view"
+        android:id="@+id/card_view_curr_dev"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="167dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="21dp"
         android:layout_marginEnd="64dp"
         android:layout_marginStart="64dp"
-        android:layout_marginTop="158dp"
+        android:layout_marginTop="10dp"
         app:cardCornerRadius="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/ChangeTimeOutBtn"
+        app:layout_constraintBottom_toTopOf="@+id/ChangeTimeoutBtn"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/CurrentDeviceText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="65dp"
+                android:layout_marginTop="10dp"
+                android:text="Current device:"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="16sp" />
+
 
             <TextView
                 android:id="@+id/DeviceIdText"
@@ -97,6 +93,58 @@
                 tools:layout_editor_absoluteX="73dp"
                 tools:layout_editor_absoluteY="246dp" />
         </RelativeLayout>
-
     </android.support.v7.widget.CardView>
-    </android.support.constraint.ConstraintLayout>
+
+    <com.beardedhen.androidbootstrap.BootstrapButton
+        android:id="@+id/ChangeTimeoutBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginBottom="18dp"
+        android:layout_marginEnd="3dp"
+        android:text="Change GPS frequency"
+        app:bootstrapBrand="primary"
+        app:bootstrapSize="lg"
+        app:buttonMode="regular"
+        app:layout_constraintBottom_toTopOf="@+id/card_view_all_devs"
+        app:layout_constraintEnd_toEndOf="@+id/card_view_all_devs"
+        app:layout_constraintTop_toBottomOf="@+id/card_view_curr_dev"
+        app:roundedCorners="true"
+        app:showOutline="false" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view_all_devs"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="68dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginStart="64dp"
+        app:cardCornerRadius="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ChangeTimeoutBtn">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/AllDevicesText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="75dp"
+                android:layout_marginTop="10dp"
+                android:text="All devices:"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="16sp" />
+
+            <ListView
+                android:id="@+id/all_devices_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</android.support.constraint.ConstraintLayout>
