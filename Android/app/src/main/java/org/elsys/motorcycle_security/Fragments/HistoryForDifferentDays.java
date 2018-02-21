@@ -16,7 +16,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.Globals;
-import org.elsys.motorcycle_security.models.GpsCordinates;
+import org.elsys.motorcycle_security.models.GPSCoordinates;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -42,11 +42,11 @@ public class HistoryForDifferentDays extends Fragment implements OnMapReadyCallb
         mMap = googleMap;
         final float zoomlevel = 18;
         Api api = Api.RetrofitInstance.create();
-        api.getGPSCordinatesForDay(Globals.authorization, Globals.deviceInUse, day).enqueue(new Callback<List<GpsCordinates>>() {
+        api.getGPSCoordinatesForDay(Globals.authorization, Globals.deviceInUse, day).enqueue(new Callback<List<GPSCoordinates>>() {
             @Override
-            public void onResponse(Call<List<GpsCordinates>> call, Response<List<GpsCordinates>> response) {
+            public void onResponse(Call<List<GPSCoordinates>> call, Response<List<GPSCoordinates>> response) {
                 if (response.isSuccessful()) {
-                    List<GpsCordinates> gpsCordinates = response.body();
+                    List<GPSCoordinates> gpsCordinates = response.body();
                     for(int counter = 0; counter < gpsCordinates.size(); counter++) {
                         LatLng currentLocation = new LatLng(gpsCordinates.get(counter).getX(), gpsCordinates.get(counter).getY());
                         SimpleDateFormat sdf = new SimpleDateFormat("kk:mm:ss");
@@ -56,7 +56,7 @@ public class HistoryForDifferentDays extends Fragment implements OnMapReadyCallb
                 }
             }
             @Override
-            public void onFailure(Call<List<GpsCordinates>> call, Throwable t) {
+            public void onFailure(Call<List<GPSCoordinates>> call, Throwable t) {
             }
         });
     }

@@ -15,7 +15,7 @@ import org.elsys.motorcycle_security.activities.Main;
 import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
-import org.elsys.motorcycle_security.models.GpsCordinates;
+import org.elsys.motorcycle_security.models.GPSCoordinates;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -53,14 +53,14 @@ public class LocationCheckerJob extends JobService {
             public void onFailure(Call<Device> call, Throwable t) {
             }
         });
-        api.getGPSCoordinates(deviceId, authorization).enqueue(new Callback<GpsCordinates>() {
+        api.getGPSCoordinates(deviceId, authorization).enqueue(new Callback<GPSCoordinates>() {
             @Override
-            public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
+            public void onResponse(Call<GPSCoordinates> call, Response<GPSCoordinates> response) {
                 if (response.isSuccessful()) {
-                    GpsCordinates gpsCordinates = response.body();
+                    GPSCoordinates GPSCoordinates = response.body();
                     boolean moving = false;
-                    currentX = gpsCordinates.getX();
-                    currentY = gpsCordinates.getY();
+                    currentX = GPSCoordinates.getX();
+                    currentY = GPSCoordinates.getY();
                     BigDecimal bdX = new BigDecimal(currentX).setScale(4, RoundingMode.HALF_EVEN);
                     BigDecimal bdY = new BigDecimal(currentY).setScale(4, RoundingMode.HALF_EVEN);
                     BigDecimal bdpX = new BigDecimal(parkedX).setScale(4, RoundingMode.HALF_EVEN);
@@ -108,7 +108,7 @@ public class LocationCheckerJob extends JobService {
                 }
             }
             @Override
-            public void onFailure(Call<GpsCordinates> call, Throwable t) {
+            public void onFailure(Call<GPSCoordinates> call, Throwable t) {
             }
         });
 

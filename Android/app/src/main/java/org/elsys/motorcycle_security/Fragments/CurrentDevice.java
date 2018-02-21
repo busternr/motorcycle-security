@@ -25,7 +25,7 @@ import org.elsys.motorcycle_security.activities.Main;
 import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.Globals;
-import org.elsys.motorcycle_security.models.GpsCordinates;
+import org.elsys.motorcycle_security.models.GPSCoordinates;
 
 import java.util.Date;
 
@@ -64,7 +64,7 @@ public class CurrentDevice extends Fragment implements View.OnClickListener {
         timeOutText =  getActivity().findViewById(R.id.TimeOutText);
         stolenText =  getActivity().findViewById(R.id.StolenText);
         statusText =  getActivity().findViewById(R.id.StatusText);
-        BootstrapButton timeOutButton =  getActivity().findViewById(R.id.RegisterBtn);
+        BootstrapButton timeOutButton =  getActivity().findViewById(R.id.ChangeTimeOutBtn);
         timeOutButton.setOnClickListener(this);
         deviceIdText.setText("Device pin number:" + Globals.deviceInUse);
         final Api api = Api.RetrofitInstance.create();
@@ -84,22 +84,22 @@ public class CurrentDevice extends Fragment implements View.OnClickListener {
             public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
             }
         });
-        api.getGPSCoordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GpsCordinates>() {
+        api.getGPSCoordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GPSCoordinates>() {
             @Override
-            public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
-                GpsCordinates gpsCordinates = response.body();
-                if(gpsCordinates == null) statusText.setText("Status:" + "No information");
+            public void onResponse(Call<GPSCoordinates> call, Response<GPSCoordinates> response) {
+                GPSCoordinates GPSCoordinates = response.body();
+                if(GPSCoordinates == null) statusText.setText("Status:" + "No information");
                 else {
                     Date date = new Date();
                     long currTimeMills = date.getTime();
-                    if (currTimeMills - gpsCordinates.getDate() < 600000)
+                    if (currTimeMills - GPSCoordinates.getDate() < 600000)
                         statusText.setText("Status:" + "Turned ON");
-                    else if (currTimeMills - gpsCordinates.getDate() > 600000)
+                    else if (currTimeMills - GPSCoordinates.getDate() > 600000)
                         statusText.setText("Status:" + "Turned OFF");
                 }
             }
             @Override
-            public void onFailure(Call<GpsCordinates> call, Throwable t) {
+            public void onFailure(Call<GPSCoordinates> call, Throwable t) {
             }
         });
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("PREFERENCE", Context.MODE_PRIVATE);

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-public class GpsCordinates {
+public class GPSCoordinates {
 
     @SerializedName("x")
     @Expose

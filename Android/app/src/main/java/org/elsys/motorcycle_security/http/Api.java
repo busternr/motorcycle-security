@@ -3,7 +3,7 @@ package org.elsys.motorcycle_security.http;
 import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.DevicePin;
-import org.elsys.motorcycle_security.models.GpsCordinates;
+import org.elsys.motorcycle_security.models.GPSCoordinates;
 import org.elsys.motorcycle_security.models.LoginDetails;
 import org.elsys.motorcycle_security.models.User;
 
@@ -25,11 +25,11 @@ public interface Api {
     @PUT("/login")
     Call<Void> Login(@Body LoginDetails loginDetails);
 
-    @PUT("/client/send/park-status")
+    @PUT("/client/send/parking-status")
     Call<DeviceConfiguration> updateParkingStatus(@Header("authorization") String authorization, @Body DeviceConfiguration deviceConfiguration);
 
     @PUT("/client/send/parked-cordinates")
-    Call<Device> updateParkedCordinates(@Header("authorization") String authorization, @Body Device device);
+    Call<Device> updateParkedCoordinates(@Header("authorization") String authorization, @Body Device device);
 
     @PUT("/client/send/timeout")
     Call<DeviceConfiguration> updateTimeOut(@Header("authorization") String authorization, @Body DeviceConfiguration deviceConfiguration);
@@ -62,10 +62,10 @@ public interface Api {
     Call<DevicePin> getDevicePin(@Path("deviceId") String deviceId);
 
     @GET("/client/{deviceId}/receive/gps-coordinates")
-    Call<GpsCordinates> getGPSCoordinates(@Header("authorization") String authorization, @Path("deviceId") String deviceId);
+    Call<GPSCoordinates> getGPSCoordinates(@Header("authorization") String authorization, @Path("deviceId") String deviceId);
 
     @GET("/client/{deviceId}/receive/gps-cordinates-for-day")
-    Call<List<GpsCordinates>> getGPSCordinatesForDay(@Header("authorization") String authorization, @Path("deviceId") String deviceId, @Query("day") String day);
+    Call<List<GPSCoordinates>> getGPSCoordinatesForDay(@Header("authorization") String authorization, @Path("deviceId") String deviceId, @Query("day") String day);
 
     @GET("/client/{deviceId}/receive/device-configuration")
     Call<DeviceConfiguration> getDeviceConfiguration(@Header("authorization") String authorization, @Path("deviceId") String deviceId);

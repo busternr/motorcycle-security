@@ -5,6 +5,8 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -15,7 +17,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -25,10 +26,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -46,7 +47,7 @@ import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.Globals;
-import org.elsys.motorcycle_security.models.GpsCordinates;
+import org.elsys.motorcycle_security.models.GPSCoordinates;
 import org.elsys.motorcycle_security.services.LocationCheckerJob;
 
 import java.text.SimpleDateFormat;
@@ -69,7 +70,7 @@ public class Main extends AppCompatActivity
     private int counter;
     private GoogleMap mMap;
     private Marker deviceInUseMarker;
-    private Button notStolenButton;
+    private BootstrapButton notStolenButton;
     private int countOfRequests = 0;
 
     private String calculateDateForMenu(int day) {
@@ -91,10 +92,16 @@ public class Main extends AppCompatActivity
         if(isAuthorized) {
             setGlobals();
             currentDeviceText.setText("Current device: " + Globals.deviceInUse);
-            if(isParked) parkingStatusText.setText("Status: " + "Parked");
-            if(!isParked) parkingStatusText.setText("Status: " + "NOT parked");
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.map);
+            final FloatingActionButton fab = findViewById(R.id.fab);
+            if(isParked) {
+                parkingStatusText.setText("Status: " + "Parked");
+                fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#3F51B5")));
+            }
+            if(!isParked) {
+                parkingStatusText.setText("Status: " + "NOT parked");
+                fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+            }
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
             notStolenButton =  findViewById(R.id.NotStolenBtn);
             notStolenButton.setOnClickListener(new View.OnClickListener() {
@@ -121,7 +128,7 @@ public class Main extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-
+        final FloatingActionButton fab = findViewById(R.id.fab);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -152,17 +159,23 @@ public class Main extends AppCompatActivity
         if (!isAuthorized) {
             Intent myIntent = new Intent(this,LoginRegister.class);
             startActivity(myIntent);
+            finish();
         }
         else if(isAuthorized) {
             setGlobals();
             currentDeviceText.setText("Current device: " + Globals.deviceInUse);
-            if(isParked) parkingStatusText.setText("Status: " + "Parked");
-            if(!isParked) parkingStatusText.setText("Status: " + "NOT parked");
+            if(isParked) {
+                parkingStatusText.setText("Status: " + "Parked");
+                fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#3F51B5")));
+            }
+            if(!isParked) {
+                parkingStatusText.setText("Status: " + "NOT parked");
+                fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+            }
             nav_history_day_1.setTitle(calculateDateForMenu(0));
             nav_history_day_2.setTitle(calculateDateForMenu(1));
             nav_history_day_3.setTitle(calculateDateForMenu(2));
         }
-        final FloatingActionButton fab = findViewById(R.id.fab);
         fab.setImageResource(R.drawable.park);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,16 +184,16 @@ public class Main extends AppCompatActivity
                 if(isParked == false) {
                     isParked = true;
                     scheduleJob();
-                    api.getGPSCoordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GpsCordinates>() {
+                    api.getGPSCoordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GPSCoordinates>() {
                         @Override
-                        public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
+                        public void onResponse(Call<GPSCoordinates> call, Response<GPSCoordinates> response) {
                             if (response.isSuccessful()) {
-                                final GpsCordinates gpsCordinates = response.body();
+                                final GPSCoordinates GPSCoordinates = response.body();
                                 Device device = new Device();
                                 device.setDeviceId(Globals.deviceInUse);
-                                device.setParkedX(gpsCordinates.getX());
-                                device.setParkedY(gpsCordinates.getY());
-                                api.updateParkedCordinates(Globals.authorization, device).enqueue(new Callback<Device>() {
+                                device.setParkedX(GPSCoordinates.getX());
+                                device.setParkedY(GPSCoordinates.getY());
+                                api.updateParkedCoordinates(Globals.authorization, device).enqueue(new Callback<Device>() {
                                     @Override
                                     public void onResponse(Call<Device> call, Response<Device> response) {}
                                     @Override
@@ -189,14 +202,15 @@ public class Main extends AppCompatActivity
                             }
                         }
                         @Override
-                        public void onFailure(Call<GpsCordinates> call, Throwable t) {
+                        public void onFailure(Call<GPSCoordinates> call, Throwable t) {
                         }
                     });
-
+                    fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#3F51B5")));
                     parkingStatusText.setText("Status: " + "Parked");
                     Snackbar.make(view, "Vehicle is now parked", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
                 else if(isParked == true) {
+                    fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
                     isParked = false;
                     jobScheduler.cancelAll();
                     parkingStatusText.setText("Status: " + "NOT parked");
@@ -207,7 +221,7 @@ public class Main extends AppCompatActivity
                 deviceConfiguration.setParked(isParked);
                 api.updateParkingStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
                     @Override
-                    public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
+                    public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) { }
                     @Override
                     public void onFailure(Call<DeviceConfiguration> call, Throwable t) { }
                 });
@@ -237,19 +251,19 @@ public class Main extends AppCompatActivity
         final Api api = Api.RetrofitInstance.create();
         for (counter = 0; counter <= numberOfUserDevices; counter++) {
             final String deviceId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Device " + counter ,"");
-            api.getGPSCoordinates(Globals.authorization, deviceId).enqueue(new Callback<GpsCordinates>() {
+            api.getGPSCoordinates(Globals.authorization, deviceId).enqueue(new Callback<GPSCoordinates>() {
                 @Override
-                public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
+                public void onResponse(Call<GPSCoordinates> call, Response<GPSCoordinates> response) {
                     if (response.isSuccessful()) {
-                        GpsCordinates gpsCordinates = response.body();
-                        LatLng currLocation = new LatLng(gpsCordinates.getX(), gpsCordinates.getY());
+                        GPSCoordinates GPSCoordinates = response.body();
+                        LatLng currLocation = new LatLng(GPSCoordinates.getX(), GPSCoordinates.getY());
                         if(deviceId.matches(Globals.deviceInUse)) deviceInUseMarker = mMap.addMarker(new MarkerOptions().position(currLocation).title(deviceId));
                         else mMap.addMarker(new MarkerOptions().position(currLocation).title(deviceId));
                         if(deviceId.equals(Globals.deviceInUse)) mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLocation, zoomlevel));
                     }
                 }
                 @Override
-                public void onFailure(Call<GpsCordinates> call, Throwable t) {
+                public void onFailure(Call<GPSCoordinates> call, Throwable t) {
                 }
             });
         }
@@ -273,9 +287,9 @@ public class Main extends AppCompatActivity
     void updatePos() {
         final float zoomlevel = 18;
         final Api api = Api.RetrofitInstance.create();
-        api.getGPSCoordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GpsCordinates>() {
+        api.getGPSCoordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GPSCoordinates>() {
             @Override
-            public void onResponse(Call<GpsCordinates> call, Response<GpsCordinates> response) {
+            public void onResponse(Call<GPSCoordinates> call, Response<GPSCoordinates> response) {
                 if (response.isSuccessful()) {
                     if(countOfRequests >= 10) {
                         countOfRequests = 0;
@@ -314,15 +328,15 @@ public class Main extends AppCompatActivity
                         timer.cancel();
                     }
                     countOfRequests++;
-                    GpsCordinates gpsCordinates = response.body();
-                    LatLng currLocation = new LatLng(gpsCordinates.getX(), gpsCordinates.getY());
+                    GPSCoordinates GPSCoordinates = response.body();
+                    LatLng currLocation = new LatLng(GPSCoordinates.getX(), GPSCoordinates.getY());
                     deviceInUseMarker.remove();
-                    deviceInUseMarker = mMap.addMarker(new MarkerOptions().position(currLocation).title(Globals.deviceInUse + " speed:" + Double.toString(gpsCordinates.getSpeed()) + "km/h"));
+                    deviceInUseMarker = mMap.addMarker(new MarkerOptions().position(currLocation).title(Globals.deviceInUse + " speed:" + Double.toString(GPSCoordinates.getSpeed()) + "km/h"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLocation, zoomlevel));
                 }
             }
             @Override
-            public void onFailure(Call<GpsCordinates> call, Throwable t) {
+            public void onFailure(Call<GPSCoordinates> call, Throwable t) {
             }
         });
     }
@@ -435,6 +449,7 @@ public class Main extends AppCompatActivity
           Globals.isStolen = false;
           Intent myIntent = new Intent(Main.this, Login.class);
           startActivity(myIntent);
+          finish();
         }
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
