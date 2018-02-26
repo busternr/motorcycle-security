@@ -97,7 +97,7 @@ public class Main extends AppCompatActivity
                 parkingStatusText.setText("Status: " + "Parked");
                 fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#3F51B5")));
             }
-            if(!isParked) {
+           else {
                 parkingStatusText.setText("Status: " + "NOT parked");
                 fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
             }
@@ -378,6 +378,7 @@ public class Main extends AppCompatActivity
             }
             @Override
             public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -461,3 +462,8 @@ public class Main extends AppCompatActivity
         return true;
     }
 }
+//String utils za proverka - NOT NEEDED
+//si fixna butonite - IZI
+//ON FAILIRE API DA FURLQ TOAST S SERVER OFFLINE - IZI
+// .claim(object); v servera da dobava kum tokena
+//da pravq proverka na tokena i da go delq ma tochki( mangal it from valio)

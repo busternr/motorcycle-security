@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
@@ -21,7 +22,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChangeTimeOut extends Fragment implements View.OnClickListener {
+public class ChangeTimeOut extends Fragment {
     private EditText timeOutInput;
     private TextView errorsText;
 
@@ -46,16 +47,8 @@ public class ChangeTimeOut extends Fragment implements View.OnClickListener {
         timeOutInput = getActivity().findViewById(R.id.TimeOutInput);
         errorsText = getActivity().findViewById(R.id.ErrorsChangeTimeoutText);
         Button timeOutButton = getActivity().findViewById(R.id.ChangeTimeOutBtn2);
-        timeOutButton.setOnClickListener(this);
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
-
-    public void onClick(final View v) {
-        switch (v.getId()) {
-            case R.id.ChangeTimeOutBtn2: {
+        timeOutButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 if (timeOutInput.getText().toString().length() == 0)
                     errorsText.setText("Seconds field can't be blank");
                 else {
@@ -70,18 +63,27 @@ public class ChangeTimeOut extends Fragment implements View.OnClickListener {
                         api.updateTimeOut(Globals.authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
                             @Override
                             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
+                                if(response.isSuccessful()) {
+                                    Toast toast = Toast.makeText(getActivity(), "Change successful", Toast.LENGTH_LONG);
+                                    toast.show();
+                                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                                    ft.replace(R.id.content_frame, new CurrentDevice());
+                                    ft.commit();
+                                }
                             }
 
                             @Override
                             public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
+                                Toast.makeText(getContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
                             }
                         });
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.replace(R.id.content_frame, new CurrentDevice());
-                        ft.commit();
                     }
                 }
             }
-        }
+        });
+    }
+
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
     }
 }
