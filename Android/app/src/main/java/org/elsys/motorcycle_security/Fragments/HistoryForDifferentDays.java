@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -58,7 +57,6 @@ public class HistoryForDifferentDays extends Fragment implements OnMapReadyCallb
             }
             @Override
             public void onFailure(Call<List<GPSCoordinates>> call, Throwable t) {
-                Toast.makeText(getContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
             }
         });
     }

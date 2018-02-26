@@ -1,14 +1,12 @@
 package org.elsys.motorcycle_security.activities;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
@@ -22,7 +20,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Login extends AppCompatActivity {
+public class Login extends AppCompatActivity implements View.OnClickListener {
     private EditText passwordInput;
     private EditText emailInput;
     private TextView errorsText;
@@ -32,12 +30,15 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         passwordInput = findViewById(R.id.LoginPassword);
-        passwordInput.setTypeface(Typeface.DEFAULT);
         emailInput = findViewById(R.id.LoginEmail);
         errorsText = findViewById(R.id.ErrorsLoginText);
         Button loginButton = findViewById(R.id.LoginBtn);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(final View v) {
+        loginButton.setOnClickListener(this);
+    }
+
+    public void onClick(final View v) {
+        switch (v.getId()) {
+            case R.id.LoginBtn: {
                 if(emailInput.getText().toString().length() == 0) errorsText.setText("Email field can't be blank");
                 else if(passwordInput.getText().toString().length() == 0) errorsText.setText("Password field can't be blank");
                 else {
@@ -73,12 +74,10 @@ public class Login extends AppCompatActivity {
                             });
                         }
                         @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                            Toast.makeText(getApplicationContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
-                        }
+                        public void onFailure(Call<Void> call, Throwable t) {}
                     });
                 }
             }
-        });
+        }
     }
 }
