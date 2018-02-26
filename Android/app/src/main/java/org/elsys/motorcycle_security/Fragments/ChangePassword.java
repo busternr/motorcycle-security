@@ -1,6 +1,7 @@
 package org.elsys.motorcycle_security.Fragments;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChangePassword extends Fragment implements View.OnClickListener {
+public class ChangePassword extends Fragment {
     private EditText newPasswordInput;
     private EditText emailInput;
     private TextView errorsText;
@@ -46,19 +47,12 @@ public class ChangePassword extends Fragment implements View.OnClickListener {
         View fragmentMap = getActivity().findViewById(R.id.map);
         fragmentMap.setVisibility(View.GONE);
         newPasswordInput = getActivity().findViewById(R.id.NewPassInput);
+        newPasswordInput.setTypeface(Typeface.DEFAULT);
         emailInput = getActivity().findViewById(R.id.EmailInput);
         errorsText = getActivity().findViewById(R.id.ErrorsChangePassText);
         Button changePasswordButton = getActivity().findViewById(R.id.ChangePassBtn);
-        changePasswordButton.setOnClickListener(this);
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
-
-    public void onClick(final View v) {
-        switch (v.getId()) {
-            case R.id.ChangePassBtn: {
+        changePasswordButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(final View v) {
                 if (newPasswordInput.getText().toString().length() == 0) errorsText.setText("New password field can't be blank");
                 else if (emailInput.getText().toString().length() == 0) errorsText.setText("Email field can't be blank");
                 else if (newPasswordInput.getText().toString().length() < 6) errorsText.setText("New password is too short (Minimum 6 characters)");
@@ -73,16 +67,19 @@ public class ChangePassword extends Fragment implements View.OnClickListener {
                                     api.updatePassword(emailInput.getText().toString(), newPasswordInput.getText().toString(), Globals.authorization).enqueue(new Callback<User>() {
                                         @Override
                                         public void onResponse(Call<User> call, Response<User> response) {
+                                            if(response.isSuccessful()) {
+                                                Toast toast = Toast.makeText(getActivity(), "Password change successful", Toast.LENGTH_LONG);
+                                                toast.show();
+                                                Intent myIntent = new Intent(v.getContext(), Main.class);
+                                                startActivity(myIntent);
+                                            }
                                         }
 
                                         @Override
                                         public void onFailure(Call<User> call, Throwable t) {
+                                            Toast.makeText(getContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
                                         }
                                     });
-                                    Toast toast = Toast.makeText(getActivity(), "Password change successful", Toast.LENGTH_LONG);
-                                    toast.show();
-                                    Intent myIntent = new Intent(v.getContext(), Main.class);
-                                    startActivity(myIntent);
                                 }
                                 else errorsText.setText("Wrong email.");
                             }
@@ -93,7 +90,11 @@ public class ChangePassword extends Fragment implements View.OnClickListener {
                     });
                 }
             }
-        }
+        });
+    }
+
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
     }
 }
 

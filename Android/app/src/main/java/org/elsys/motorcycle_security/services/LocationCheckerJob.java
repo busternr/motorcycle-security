@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
+
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.activities.Main;
 import org.elsys.motorcycle_security.http.Api;
@@ -46,77 +48,72 @@ public class LocationCheckerJob extends JobService {
                     Device device = response.body();
                     parkedX = device.getParkedX();
                     parkedY = device.getParkedY();
-                    Log.d("Job", "Response from device request");
+                    api.getGPSCoordinates(deviceId, authorization).enqueue(new Callback<GPSCoordinates>() {
+                        @Override
+                        public void onResponse(Call<GPSCoordinates> call, Response<GPSCoordinates> response) {
+                            if (response.isSuccessful()) {
+                                GPSCoordinates GPSCoordinates = response.body();
+                                boolean moving = false;
+                                currentX = GPSCoordinates.getX();
+                                currentY = GPSCoordinates.getY();
+                                BigDecimal bdX = new BigDecimal(currentX).setScale(4, RoundingMode.HALF_EVEN);
+                                BigDecimal bdY = new BigDecimal(currentY).setScale(4, RoundingMode.HALF_EVEN);
+                                BigDecimal bdpX = new BigDecimal(parkedX).setScale(4, RoundingMode.HALF_EVEN);
+                                BigDecimal bdpY = new BigDecimal(parkedY).setScale(4, RoundingMode.HALF_EVEN);
+                                parkedX = bdpX.doubleValue();
+                                parkedY = bdpY.doubleValue();
+                                currentX = bdX.doubleValue();
+                                currentY = bdY.doubleValue();
+                                for(int adder = 0 ; adder != 5; adder++) {
+                                    double adder2 = adder;
+                                    if(adder != 0)  adder2 = adder2/ 10000;
+                                    if(parkedX != currentX + adder2 || parkedX != currentX - adder2) {
+                                        moving = true;
+                                        break;
+                                    }
+                                    if(parkedY != currentY + adder2 || parkedY != currentY - adder2) {
+                                        moving = true;
+                                        break;
+                                    }
+                                }
+                                if(parkedX == 0 || parkedY == 0) moving = false; //Against failed server response
+                                if(moving) {
+                                    Log.d("Job", "Notify");
+                                    DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+                                    deviceConfiguration.setDeviceId(deviceId);
+                                    deviceConfiguration.setStolen(true);
+                                    api.updateStolenStatus(authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
+                                        @Override
+                                        public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
+                                        @Override
+                                        public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
+                                    });
+                                    DeviceConfiguration deviceConfiguration2 = new DeviceConfiguration();
+                                    deviceConfiguration2.setDeviceId(deviceId);
+                                    deviceConfiguration2.setTimeOut(10000);
+                                    api.updateTimeOut(authorization, deviceConfiguration2).enqueue(new Callback<DeviceConfiguration>() {
+                                        @Override
+                                        public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
+                                        @Override
+                                        public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
+                                    });
+                                    sendNotification();
+                                }
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<GPSCoordinates> call, Throwable t) {
+                        }
+                    });
                 }
             }
             @Override
             public void onFailure(Call<Device> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
             }
         });
-        api.getGPSCoordinates(deviceId, authorization).enqueue(new Callback<GPSCoordinates>() {
-            @Override
-            public void onResponse(Call<GPSCoordinates> call, Response<GPSCoordinates> response) {
-                if (response.isSuccessful()) {
-                    GPSCoordinates GPSCoordinates = response.body();
-                    boolean moving = false;
-                    currentX = GPSCoordinates.getX();
-                    currentY = GPSCoordinates.getY();
-                    BigDecimal bdX = new BigDecimal(currentX).setScale(4, RoundingMode.HALF_EVEN);
-                    BigDecimal bdY = new BigDecimal(currentY).setScale(4, RoundingMode.HALF_EVEN);
-                    BigDecimal bdpX = new BigDecimal(parkedX).setScale(4, RoundingMode.HALF_EVEN);
-                    BigDecimal bdpY = new BigDecimal(parkedY).setScale(4, RoundingMode.HALF_EVEN);
-                    parkedX = bdpX.doubleValue();
-                    parkedY = bdpY.doubleValue();
-                    currentX = bdX.doubleValue();
-                    currentY = bdY.doubleValue();
-                    for(int adder = 0 ; adder != 5; adder++) {
-                        double adder2 = adder;
-                        if(adder != 0)  adder2 = adder2/ 10000;
-                        if(parkedX != currentX + adder2 || parkedX != currentX - adder2) {
-                            moving = true;
-                            break;
-                        }
-                        if(parkedY != currentY + adder2 || parkedY != currentY - adder2) {
-                            moving = true;
-                            break;
-                        }
-                    }
-                    if(parkedX == 0 || parkedY == 0) moving = false; //Against failed server response
-                    if(moving) {
-                        Log.d("Job", "Notify");
-                        DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
-                        deviceConfiguration.setDeviceId(deviceId);
-                        deviceConfiguration.setStolen(true);
-                        api.updateStolenStatus(authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
-                            @Override
-                            public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
-                            @Override
-                            public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
-                        });
-                        DeviceConfiguration deviceConfiguration2 = new DeviceConfiguration();
-                        deviceConfiguration2.setDeviceId(deviceId);
-                        deviceConfiguration2.setTimeOut(10000);
-                        api.updateTimeOut(authorization, deviceConfiguration2).enqueue(new Callback<DeviceConfiguration>() {
-                            @Override
-                            public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
-                            @Override
-                            public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
-                        });
-                        sendNotification();
-                    }
-                    else System.out.println("BIKE's safe man dont kill the nigga");
-                }
-            }
-            @Override
-            public void onFailure(Call<GPSCoordinates> call, Throwable t) {
-            }
-        });
-
-        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.N){
-            jobFinished(jobParameters, true);
-        }else {
-            jobFinished(jobParameters, false);
-        }
+        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.N) jobFinished(jobParameters, true);
+        else jobFinished(jobParameters, false);
         return true;
     }
 

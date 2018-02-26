@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 
@@ -33,7 +34,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CurrentDevice extends Fragment implements View.OnClickListener {
+public class CurrentDevice extends Fragment {
     private TextView deviceIdText;
     private TextView parkingStatusText;
     private TextView timeOutText;
@@ -65,7 +66,13 @@ public class CurrentDevice extends Fragment implements View.OnClickListener {
         stolenText =  getActivity().findViewById(R.id.StolenText);
         statusText =  getActivity().findViewById(R.id.StatusText);
         BootstrapButton timeOutButton =  getActivity().findViewById(R.id.ChangeTimeOutBtn);
-        timeOutButton.setOnClickListener(this);
+        timeOutButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, new ChangeTimeOut());
+                ft.commit();
+            }
+        });
         deviceIdText.setText("Device pin number:" + Globals.deviceInUse);
         final Api api = Api.RetrofitInstance.create();
         api.getDeviceConfiguration(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
@@ -82,6 +89,7 @@ public class CurrentDevice extends Fragment implements View.OnClickListener {
             }
             @Override
             public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
+                Toast.makeText(getContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
             }
         });
         api.getGPSCoordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GPSCoordinates>() {
@@ -153,15 +161,5 @@ public class CurrentDevice extends Fragment implements View.OnClickListener {
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
-    }
-
-    public void onClick(final View v) {
-        switch (v.getId()) {
-            case R.id.RegisterBtn: {
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.content_frame, new ChangeTimeOut());
-                ft.commit();
-            }
-        }
     }
 }

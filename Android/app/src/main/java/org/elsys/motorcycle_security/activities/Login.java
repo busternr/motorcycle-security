@@ -1,12 +1,14 @@
 package org.elsys.motorcycle_security.activities;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.http.Api;
@@ -20,7 +22,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Login extends AppCompatActivity implements View.OnClickListener {
+public class Login extends AppCompatActivity {
     private EditText passwordInput;
     private EditText emailInput;
     private TextView errorsText;
@@ -30,15 +32,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         passwordInput = findViewById(R.id.LoginPassword);
+        passwordInput.setTypeface(Typeface.DEFAULT);
         emailInput = findViewById(R.id.LoginEmail);
         errorsText = findViewById(R.id.ErrorsLoginText);
         Button loginButton = findViewById(R.id.LoginBtn);
-        loginButton.setOnClickListener(this);
-    }
-
-    public void onClick(final View v) {
-        switch (v.getId()) {
-            case R.id.LoginBtn: {
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(final View v) {
                 if(emailInput.getText().toString().length() == 0) errorsText.setText("Email field can't be blank");
                 else if(passwordInput.getText().toString().length() == 0) errorsText.setText("Password field can't be blank");
                 else {
@@ -50,34 +49,36 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                             if(response.isSuccessful()) {
                                 String token = response.headers().get("authorization");
                                 getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Authorization", token).apply();
+                                api.getUserAccount(getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", ""), emailInput.getText().toString()).enqueue(new Callback<User>() {
+                                    @Override
+                                    public void onResponse(Call<User> call, Response<User> response) {
+                                        if (response.isSuccessful()) {
+                                            User user = response.body();
+                                            List<Device> userDevices = user.getDevices();
+                                            for (int counter = 0; counter < userDevices.size(); counter++) {
+                                                String deviceId = user.getDevices().get(counter).getDeviceId();
+                                                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device " + counter, deviceId).apply();
+                                                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", counter).apply();
+                                                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceId).apply();
+                                            }
+                                            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
+                                            Intent myIntent = new Intent(v.getContext(), Main.class);
+                                            startActivity(myIntent);
+                                        }
+                                    }
+                                    @Override
+                                    public void onFailure(Call<User> call, Throwable t) {}
+                                });
                             }
                             else errorsText.setText("Email or password doesn't match.");
-                            api.getUserAccount(getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", ""), emailInput.getText().toString()).enqueue(new Callback<User>() {
-                                @Override
-                                public void onResponse(Call<User> call, Response<User> response) {
-                                    if (response.isSuccessful()) {
-                                        User user = response.body();
-                                        List<Device> userDevices = user.getDevices();
-                                        for (int counter = 0; counter < userDevices.size(); counter++) {
-                                            String deviceId = user.getDevices().get(counter).getDeviceId();
-                                            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device " + counter, deviceId).apply();
-                                            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", counter).apply();
-                                            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceId).apply();
-                                        }
-                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
-                                        Intent myIntent = new Intent(v.getContext(), Main.class);
-                                        startActivity(myIntent);
-                                    }
-                                }
-                                @Override
-                                public void onFailure(Call<User> call, Throwable t) {}
-                            });
                         }
                         @Override
-                        public void onFailure(Call<Void> call, Throwable t) {}
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(getApplicationContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
+                        }
                     });
                 }
             }
-        }
+        });
     }
 }

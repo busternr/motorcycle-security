@@ -462,8 +462,3 @@ public class Main extends AppCompatActivity
         return true;
     }
 }
-//String utils za proverka - NOT NEEDED
-//si fixna butonite - IZI
-//ON FAILIRE API DA FURLQ TOAST S SERVER OFFLINE - IZI
-// .claim(object); v servera da dobava kum tokena
-//da pravq proverka na tokena i da go delq ma tochki( mangal it from valio)

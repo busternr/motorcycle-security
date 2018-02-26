@@ -71,8 +71,8 @@ public interface Api {
     Call<DeviceConfiguration> getDeviceConfiguration(@Header("authorization") String authorization, @Path("deviceId") String deviceId);
 
     //String API_HOST = "http://10.0.2.2";  //localhost connection
-    //String API_HOST = "http://10.19.9.85"; //Dreamix server
-    String API_HOST = "http://130.204.140.70"; //home pc
+    String API_HOST = "http://10.19.9.85"; //Dreamix server
+    //String API_HOST = "http://130.204.140.70"; //home pc
     String API_PORT = "8080";
 
     class RetrofitInstance {

@@ -10,7 +10,7 @@ import com.beardedhen.androidbootstrap.BootstrapButton;
 import org.elsys.motorcycle_security.R;
 
 
-public class LoginRegister extends AppCompatActivity implements View.OnClickListener {
+public class LoginRegister extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,24 +19,17 @@ public class LoginRegister extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login_register);
         BootstrapButton RegisterButton =  findViewById(R.id.RegisterBtn);
         BootstrapButton LoginButton =  findViewById(R.id.LoginBtn);
-        RegisterButton.setOnClickListener(this);
-        LoginButton.setOnClickListener(this);
-    }
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.RegisterBtn:
-            {
+        RegisterButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 Intent myIntent = new Intent(v.getContext(),Register.class);
                 startActivity(myIntent);
-                break;
             }
-            case R.id.LoginBtn:
-            {
+        });
+        LoginButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 Intent myIntent = new Intent(v.getContext(),Login.class);
                 startActivity(myIntent);
-                break;
             }
-        }
+        });
     }
 }
