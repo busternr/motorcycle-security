@@ -21,7 +21,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 public class Login extends AppCompatActivity {
     private EditText passwordInput;
     private EditText emailInput;

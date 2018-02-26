@@ -51,9 +51,14 @@ import org.elsys.motorcycle_security.models.GPSCoordinates;
 import org.elsys.motorcycle_security.services.LocationCheckerJob;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.Jwts;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -365,6 +370,19 @@ public class Main extends AppCompatActivity
     private void setGlobals() {
         Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
         Globals.authorization = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", "");
+        String token = Globals.authorization.replace("USER","");
+        int indexOfLastDot = token.lastIndexOf('.');
+        String withoutSignature = token.substring(0, indexOfLastDot+1);
+        Jwt<Header,Claims> untrusted = Jwts.parser().parseClaimsJwt(withoutSignature);
+        Claims tokenBody = untrusted.getBody();
+        boolean isTokenValid = tokenBody.getExpiration().after(new Date(System.currentTimeMillis()));
+        if(!isTokenValid) {
+            Toast toast = Toast.makeText(getApplicationContext(), "Session is expired, please log in again.", Toast.LENGTH_LONG);
+            toast.show();
+            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", false).apply();
+            Intent myIntent = new Intent(getApplicationContext(), Login.class);
+            startActivity(myIntent);
+        }
         Api api = Api.RetrofitInstance.create();
         api.getDeviceConfiguration(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
             @Override

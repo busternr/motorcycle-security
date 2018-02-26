@@ -22,7 +22,7 @@ public class TokenAuthService {
   static void addAuthentication(HttpServletResponse res, String username) {
     String JWT = Jwts.builder().setSubject(username).setExpiration(new Date(System.currentTimeMillis() + VALIDITY)).signWith(SignatureAlgorithm.HS512, KEY).compact();
     res.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + JWT);
-  }
+}
 
   static Authentication getAuthenticationFromReq(HttpServletRequest request) {
     String token = request.getHeader(HEADER_STRING);
