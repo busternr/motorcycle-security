@@ -17,6 +17,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -56,6 +57,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
@@ -92,40 +94,63 @@ public class Main extends AppCompatActivity
 
     @Override
     protected void onResume() {
+        boolean caughtException = false;
+        /*
+        For debugging purposes. When ExpiredJwtException is caught the application still continues
+         and executes the rest of onResume() which may cause the application to crash this is why we
+         have to check if the exception is caught so we don't execute the rest of the code here.
+        */
         super.onResume();
         final boolean isAuthorized = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isAuthorized", false);
         if(isAuthorized) {
-            setGlobals();
-            currentDeviceText.setText("Current device: " + Globals.deviceInUse);
-            final FloatingActionButton fab = findViewById(R.id.fab);
-            if(isParked) {
-                parkingStatusText.setText("Status: " + "Parked");
-                fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#3F51B5")));
+            try {
+                String token = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", "").replace("User ", "");
+                int indexOfLastDot = token.lastIndexOf('.');
+                String withoutSignature = token.substring(0, indexOfLastDot + 1);
+                Jwts.parser().parseClaimsJwt(withoutSignature);
+            } catch (ExpiredJwtException exception) {
+                caughtException = true;
+                Toast toast = Toast.makeText(this, "Session is expired, please log in again.", Toast.LENGTH_LONG);
+                toast.show();
+                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", false).apply();
+                Intent myIntent = new Intent(this, Login.class);
+                startActivity(myIntent);
             }
-           else {
-                parkingStatusText.setText("Status: " + "NOT parked");
-                fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-            }
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-            mapFragment.getMapAsync(this);
-            notStolenButton =  findViewById(R.id.NotStolenBtn);
-            notStolenButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Api api = Api.RetrofitInstance.create();
-                    DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
-                    deviceConfiguration.setDeviceId(Globals.deviceInUse);
-                    deviceConfiguration.setStolen(false);
-                    api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
-                        @Override
-                        public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
-                        @Override
-                        public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
-                    });
-                    Intent myIntent = new Intent(v.getContext(),Main.class);
-                    startActivity(myIntent);
+            if (!caughtException) {
+                setGlobals();
+                currentDeviceText.setText("Current device: " + Globals.deviceInUse);
+                final FloatingActionButton fab = findViewById(R.id.fab);
+                if (isParked) {
+                    parkingStatusText.setText("Status: " + "Parked");
+                    fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#3F51B5")));
+                } else {
+                    parkingStatusText.setText("Status: " + "NOT parked");
+                    fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
                 }
-            });
-            notStolenButton.setVisibility(View.GONE);
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                mapFragment.getMapAsync(this);
+                notStolenButton = findViewById(R.id.NotStolenBtn);
+                notStolenButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Api api = Api.RetrofitInstance.create();
+                        DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+                        deviceConfiguration.setDeviceId(Globals.deviceInUse);
+                        deviceConfiguration.setStolen(false);
+                        api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
+                            @Override
+                            public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
+                            }
+
+                            @Override
+                            public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
+                            }
+                        });
+                        Intent myIntent = new Intent(v.getContext(), Main.class);
+                        startActivity(myIntent);
+                    }
+                });
+                notStolenButton.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -370,19 +395,6 @@ public class Main extends AppCompatActivity
     private void setGlobals() {
         Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
         Globals.authorization = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", "");
-        String token = Globals.authorization.replace("USER","");
-        int indexOfLastDot = token.lastIndexOf('.');
-        String withoutSignature = token.substring(0, indexOfLastDot+1);
-        Jwt<Header,Claims> untrusted = Jwts.parser().parseClaimsJwt(withoutSignature);
-        Claims tokenBody = untrusted.getBody();
-        boolean isTokenValid = tokenBody.getExpiration().after(new Date(System.currentTimeMillis()));
-        if(!isTokenValid) {
-            Toast toast = Toast.makeText(getApplicationContext(), "Session is expired, please log in again.", Toast.LENGTH_LONG);
-            toast.show();
-            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", false).apply();
-            Intent myIntent = new Intent(getApplicationContext(), Login.class);
-            startActivity(myIntent);
-        }
         Api api = Api.RetrofitInstance.create();
         api.getDeviceConfiguration(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
             @Override

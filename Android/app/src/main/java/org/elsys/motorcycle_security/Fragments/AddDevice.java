@@ -53,7 +53,9 @@ public class AddDevice extends Fragment {
         addDeviceButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(final View v) {
                 final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("PREFERENCE", Context.MODE_PRIVATE);
-                if (deviceIdInput.getText().toString().length() == 0)
+                int devices = sharedPreferences.getInt("Number of devices", 0);
+                if(devices >= 3) errorsText.setText("You cannot add fourth device.");
+                else if (deviceIdInput.getText().toString().length() == 0)
                     errorsText.setText("Device pin field can't be blank");
                 else {
                     final Api api = Api.RetrofitInstance.create();
