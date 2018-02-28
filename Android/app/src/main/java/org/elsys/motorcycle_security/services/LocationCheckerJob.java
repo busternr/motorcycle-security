@@ -82,20 +82,20 @@ public class LocationCheckerJob extends JobService {
                                     DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                                     deviceConfiguration.setDeviceId(deviceId);
                                     deviceConfiguration.setStolen(true);
-                                    api.updateStolenStatus(authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
+                                    api.updateStolenStatus(authorization, deviceConfiguration).enqueue(new Callback<Void>() {
                                         @Override
-                                        public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
+                                        public void onResponse(Call<Void> call, Response<Void> response) {}
                                         @Override
-                                        public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
+                                        public void onFailure(Call<Void> call, Throwable t) {}
                                     });
                                     DeviceConfiguration deviceConfiguration2 = new DeviceConfiguration();
                                     deviceConfiguration2.setDeviceId(deviceId);
                                     deviceConfiguration2.setTimeOut(10000);
-                                    api.updateTimeOut(authorization, deviceConfiguration2).enqueue(new Callback<DeviceConfiguration>() {
+                                    api.updateTimeOut(authorization, deviceConfiguration2).enqueue(new Callback<Void>() {
                                         @Override
-                                        public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
+                                        public void onResponse(Call<Void> call, Response<Void> response) {}
                                         @Override
-                                        public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
+                                        public void onFailure(Call<Void> call, Throwable t) {}
                                     });
                                     sendNotification();
                                 }

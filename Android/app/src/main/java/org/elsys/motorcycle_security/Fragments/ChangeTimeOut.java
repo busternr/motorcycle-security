@@ -60,9 +60,9 @@ public class ChangeTimeOut extends Fragment {
                         DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                         deviceConfiguration.setDeviceId(Globals.deviceInUse);
                         deviceConfiguration.setTimeOut(seconds);
-                        api.updateTimeOut(Globals.authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
+                        api.updateTimeOut(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
                             @Override
-                            public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
+                            public void onResponse(Call<Void> call, Response<Void> response) {
                                 if(response.isSuccessful()) {
                                     Toast toast = Toast.makeText(getActivity(), "Change successful", Toast.LENGTH_LONG);
                                     toast.show();
@@ -73,7 +73,7 @@ public class ChangeTimeOut extends Fragment {
                             }
 
                             @Override
-                            public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
+                            public void onFailure(Call<Void> call, Throwable t) {
                                 Toast.makeText(getContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
                             }
                         });

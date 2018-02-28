@@ -67,9 +67,9 @@ public class AddDevice extends Fragment {
                                 if (devicePin.getPin().equals(deviceIdInput.getText().toString())) {
                                     long userId = sharedPreferences.getLong("UserId", 1);
                                     final Device device = new Device(deviceIdInput.getText().toString(), userId);
-                                    api.createDevice(Globals.authorization, device).enqueue(new Callback<Device>() {
+                                    api.createDevice(Globals.authorization, device).enqueue(new Callback<Void>() {
                                         @Override
-                                        public void onResponse(Call<Device> call, Response<Device> response) {
+                                        public void onResponse(Call<Void> call, Response<Void> response) {
                                             if(response.isSuccessful()) {
                                                 int devices = sharedPreferences.getInt("Number of devices", 1);
                                                 devices++;
@@ -82,7 +82,7 @@ public class AddDevice extends Fragment {
                                         }
 
                                         @Override
-                                        public void onFailure(Call<Device> call, Throwable t) {
+                                        public void onFailure(Call<Void> call, Throwable t) {
                                             Toast.makeText(getContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
                                         }
                                     });

@@ -60,6 +60,7 @@ public class Login extends AppCompatActivity {
                                                 getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", counter).apply();
                                                 getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceId).apply();
                                             }
+                                            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Email", user.getEmail()).apply();
                                             getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
                                             Intent myIntent = new Intent(v.getContext(), Main.class);
                                             startActivity(myIntent);

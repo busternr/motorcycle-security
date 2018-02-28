@@ -136,13 +136,13 @@ public class Main extends AppCompatActivity
                         DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                         deviceConfiguration.setDeviceId(Globals.deviceInUse);
                         deviceConfiguration.setStolen(false);
-                        api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
+                        api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
                             @Override
-                            public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
+                            public void onResponse(Call<Void> call, Response<Void> response) {
                             }
 
                             @Override
-                            public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
+                            public void onFailure(Call<Void> call, Throwable t) {
                             }
                         });
                         Intent myIntent = new Intent(v.getContext(), Main.class);
@@ -223,11 +223,11 @@ public class Main extends AppCompatActivity
                                 device.setDeviceId(Globals.deviceInUse);
                                 device.setParkedX(GPSCoordinates.getX());
                                 device.setParkedY(GPSCoordinates.getY());
-                                api.updateParkedCoordinates(Globals.authorization, device).enqueue(new Callback<Device>() {
+                                api.updateParkedCoordinates(Globals.authorization, device).enqueue(new Callback<Void>() {
                                     @Override
-                                    public void onResponse(Call<Device> call, Response<Device> response) {}
+                                    public void onResponse(Call<Void> call, Response<Void> response) {}
                                     @Override
-                                    public void onFailure(Call<Device> call, Throwable t) { }
+                                    public void onFailure(Call<Void> call, Throwable t) { }
                                 });
                             }
                         }
@@ -249,11 +249,11 @@ public class Main extends AppCompatActivity
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                 deviceConfiguration.setDeviceId(Globals.deviceInUse);
                 deviceConfiguration.setParked(isParked);
-                api.updateParkingStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
+                api.updateParkingStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
                     @Override
-                    public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) { }
+                    public void onResponse(Call<Void> call, Response<Void> response) { }
                     @Override
-                    public void onFailure(Call<DeviceConfiguration> call, Throwable t) { }
+                    public void onFailure(Call<Void> call, Throwable t) { }
                 });
             }
         });
@@ -340,20 +340,20 @@ public class Main extends AppCompatActivity
                         DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                         deviceConfiguration.setDeviceId(Globals.deviceInUse);
                         deviceConfiguration.setStolen(false);
-                        api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<DeviceConfiguration>() {
+                        api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
                             @Override
-                            public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
+                            public void onResponse(Call<Void> call, Response<Void> response) {}
                             @Override
-                            public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
+                            public void onFailure(Call<Void> call, Throwable t) {}
                         });
                         DeviceConfiguration deviceConfiguration2 = new DeviceConfiguration();
                         deviceConfiguration2.setDeviceId(Globals.deviceInUse);
                         deviceConfiguration2.setTimeOut(150000);
-                        api.updateTimeOut(Globals.authorization, deviceConfiguration2).enqueue(new Callback<DeviceConfiguration>() {
+                        api.updateTimeOut(Globals.authorization, deviceConfiguration2).enqueue(new Callback<Void>() {
                             @Override
-                            public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {}
+                            public void onResponse(Call<Void> call, Response<Void> response) {}
                             @Override
-                            public void onFailure(Call<DeviceConfiguration> call, Throwable t) {}
+                            public void onFailure(Call<Void> call, Throwable t) {}
                         });
                         timer.cancel();
                     }

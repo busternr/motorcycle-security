@@ -1,6 +1,8 @@
 package org.elsys.motorcycle_security.Fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -63,10 +65,11 @@ public class ChangePassword extends Fragment {
                         public void onResponse(Call<User> call, Response<User> response) {
                             if (response.isSuccessful()) {
                                 User user = response.body();
-                                if (user.getEmail().equals(emailInput.getText().toString())) {
-                                    api.updatePassword(emailInput.getText().toString(), newPasswordInput.getText().toString(), Globals.authorization).enqueue(new Callback<User>() {
+                                SharedPreferences sharedPreferences = getContext().getSharedPreferences("PREFERENCE", Context.MODE_PRIVATE);
+                                if (user.getEmail().equals(sharedPreferences.getString("Email", ""))) {
+                                    api.updatePassword(emailInput.getText().toString(), newPasswordInput.getText().toString(), Globals.authorization).enqueue(new Callback<Void>() {
                                         @Override
-                                        public void onResponse(Call<User> call, Response<User> response) {
+                                        public void onResponse(Call<Void> call, Response<Void> response) {
                                             if(response.isSuccessful()) {
                                                 Toast toast = Toast.makeText(getActivity(), "Password change successful", Toast.LENGTH_LONG);
                                                 toast.show();
@@ -76,7 +79,7 @@ public class ChangePassword extends Fragment {
                                         }
 
                                         @Override
-                                        public void onFailure(Call<User> call, Throwable t) {
+                                        public void onFailure(Call<Void> call, Throwable t) {
                                             Toast.makeText(getContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
                                         }
                                     });

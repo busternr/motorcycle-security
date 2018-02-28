@@ -65,14 +65,10 @@ public class Register extends AppCompatActivity {
                                                         User checkUser = response.body();
                                                         if(checkUser == null) {
                                                             final User user = new User(emailInput.getText().toString(), passwordInput.getText().toString(), deviceIdInput.getText().toString());
-                                                            api.createUserAccount(user).enqueue(new Callback<User>() {
+                                                            api.createUserAccount(user).enqueue(new Callback<Void>() {
                                                                 @Override
-                                                                public void onResponse(Call<User> call, Response<User> response) {
+                                                                public void onResponse(Call<Void> call, Response<Void> response) {
                                                                     if(response.isSuccessful()) {
-                                                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putInt("Number of devices", 1).apply();
-                                                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", true).apply();
-                                                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Device 1", user.getDevices().get(0).getDeviceId()).apply();
-                                                                        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("Current device in use", deviceIdInput.getText().toString()).apply();
                                                                         Toast toast = Toast.makeText(getApplicationContext(), "Successfully  registered.", Toast.LENGTH_LONG);
                                                                         toast.show();
                                                                         Intent myIntent = new Intent(v.getContext(), Login.class);
@@ -80,7 +76,7 @@ public class Register extends AppCompatActivity {
                                                                     }
                                                                 }
                                                                 @Override
-                                                                public void onFailure(Call<User> call, Throwable t) {
+                                                                public void onFailure(Call<Void> call, Throwable t) {
                                                                     Toast.makeText(getApplicationContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
                                                                 }
                                                             });

@@ -26,25 +26,25 @@ public interface Api {
     Call<Void> Login(@Body LoginDetails loginDetails);
 
     @PUT("/client/send/parking-status")
-    Call<DeviceConfiguration> updateParkingStatus(@Header("authorization") String authorization, @Body DeviceConfiguration deviceConfiguration);
+    Call<Void> updateParkingStatus(@Header("authorization") String authorization, @Body DeviceConfiguration deviceConfiguration);
 
     @PUT("/client/send/parked-cordinates")
-    Call<Device> updateParkedCoordinates(@Header("authorization") String authorization, @Body Device device);
+    Call<Void> updateParkedCoordinates(@Header("authorization") String authorization, @Body Device device);
 
     @PUT("/client/send/timeout")
-    Call<DeviceConfiguration> updateTimeOut(@Header("authorization") String authorization, @Body DeviceConfiguration deviceConfiguration);
+    Call<Void> updateTimeOut(@Header("authorization") String authorization, @Body DeviceConfiguration deviceConfiguration);
 
     @PUT("/client/send/stolen-status")
-    Call<DeviceConfiguration> updateStolenStatus(@Header("authorization") String authorization, @Body DeviceConfiguration deviceConfiguration);
+    Call<Void> updateStolenStatus(@Header("authorization") String authorization, @Body DeviceConfiguration deviceConfiguration);
 
     @PUT("/client/send/change-password")
-    Call<User> updatePassword(@Header("email") String oldPassword, @Header("newPassword") String newPassword, @Header("authorization") String authorization);
+    Call<Void> updatePassword(@Header("email") String oldPassword, @Header("newPassword") String newPassword, @Header("authorization") String authorization);
 
     @POST("/client/send/create-new-user")
-    Call<User> createUserAccount(@Body User user);
+    Call<Void> createUserAccount(@Body User user);
 
     @POST("/client/send/create-new-device")
-    Call<Device> createDevice(@Header("authorization") String authorization, @Body Device device);
+    Call<Void> createDevice(@Header("authorization") String authorization, @Body Device device);
 
     @GET("/client/receive/user-account")
     Call<User> getUserAccount(@Header("authorization") String authorization, @Header("email") String email);
