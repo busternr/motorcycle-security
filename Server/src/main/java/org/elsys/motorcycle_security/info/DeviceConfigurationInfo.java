@@ -1,4 +1,4 @@
-package org.elsys.motorcycle_security.dto;
+package org.elsys.motorcycle_security.info;
 
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 

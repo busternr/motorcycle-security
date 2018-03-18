@@ -3,7 +3,7 @@ package org.elsys.motorcycle_security.business.logic.handlers;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
 import org.elsys.motorcycle_security.business.logic.exceptions.UserDoesNotOwnDeviceException;
 import org.elsys.motorcycle_security.dto.DataTransmitterDto;
-import org.elsys.motorcycle_security.dto.DataTransmitterInfo;
+import org.elsys.motorcycle_security.info.DataTransmitterInfo;
 import org.elsys.motorcycle_security.models.DataTransmitter;
 import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.repository.DataTransmitterRepository;

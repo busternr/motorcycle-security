@@ -1,7 +1,7 @@
 package org.elsys.motorcycle_security.business.logic.handlers;
 
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
-import org.elsys.motorcycle_security.dto.DevicePinInfo;
+import org.elsys.motorcycle_security.info.DevicePinInfo;
 import org.elsys.motorcycle_security.models.DevicePin;
 import org.elsys.motorcycle_security.repository.DevicePinRepository;
 import org.springframework.beans.factory.annotation.Autowired;

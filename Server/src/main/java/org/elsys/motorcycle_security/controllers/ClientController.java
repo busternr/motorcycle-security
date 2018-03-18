@@ -6,6 +6,7 @@ import org.elsys.motorcycle_security.business.logic.exceptions.InvalidEmailExcep
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
 import org.elsys.motorcycle_security.business.logic.exceptions.UserDoesNotOwnDeviceException;
 import org.elsys.motorcycle_security.dto.*;
+import org.elsys.motorcycle_security.info.*;
 import org.elsys.motorcycle_security.repository.DeviceRepository;
 import org.elsys.motorcycle_security.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

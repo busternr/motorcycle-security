@@ -1,7 +1,7 @@
 package org.elsys.motorcycle_security.business.logic;
 
 import org.elsys.motorcycle_security.dto.DataTransmitterDto;
-import org.elsys.motorcycle_security.dto.DataTransmitterInfo;
+import org.elsys.motorcycle_security.info.DataTransmitterInfo;
 
 import java.util.List;
 

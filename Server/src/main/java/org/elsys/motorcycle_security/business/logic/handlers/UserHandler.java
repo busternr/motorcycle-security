@@ -4,7 +4,7 @@ import org.elsys.motorcycle_security.business.logic.exceptions.InvalidEmailExcep
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
 import org.elsys.motorcycle_security.dto.DeviceDto;
 import org.elsys.motorcycle_security.dto.UserDto;
-import org.elsys.motorcycle_security.dto.UserInfo;
+import org.elsys.motorcycle_security.info.UserInfo;
 import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.User;

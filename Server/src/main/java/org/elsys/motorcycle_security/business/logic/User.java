@@ -1,7 +1,7 @@
 package org.elsys.motorcycle_security.business.logic;
 
 import org.elsys.motorcycle_security.dto.UserDto;
-import org.elsys.motorcycle_security.dto.UserInfo;
+import org.elsys.motorcycle_security.info.UserInfo;
 
 public interface User {
     void createNewUser(UserDto userDto);

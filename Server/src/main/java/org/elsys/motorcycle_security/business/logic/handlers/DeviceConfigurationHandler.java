@@ -4,7 +4,7 @@ import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdEx
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
 import org.elsys.motorcycle_security.business.logic.exceptions.UserDoesNotOwnDeviceException;
 import org.elsys.motorcycle_security.dto.DeviceConfigurationDto;
-import org.elsys.motorcycle_security.dto.DeviceConfigurationInfo;
+import org.elsys.motorcycle_security.info.DeviceConfigurationInfo;
 import org.elsys.motorcycle_security.models.DataTransmitter;
 import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
