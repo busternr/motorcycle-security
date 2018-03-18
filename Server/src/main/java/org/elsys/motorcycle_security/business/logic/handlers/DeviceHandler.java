@@ -2,6 +2,7 @@ package org.elsys.motorcycle_security.business.logic.handlers;
 
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
+import org.elsys.motorcycle_security.business.logic.exceptions.UserDoesNotOwnDeviceException;
 import org.elsys.motorcycle_security.dto.DeviceDto;
 import org.elsys.motorcycle_security.dto.DeviceInfo;
 import org.elsys.motorcycle_security.models.Device;
@@ -16,10 +17,9 @@ import org.springframework.stereotype.Component;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.security.InvalidParameterException;
 
 @Component
-public class DeviceHandler implements org.elsys.motorcycle_security.business.logic.Device {
+public class DeviceHandler extends AbstractHandler implements org.elsys.motorcycle_security.business.logic.Device {
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -49,6 +49,7 @@ public class DeviceHandler implements org.elsys.motorcycle_security.business.log
     public DeviceInfo getDevice(String deviceId) {
         Device device = deviceRepository.getDeviceByDeviceId(deviceId);
         if(device == null) throw new InvalidDeviceIdException("Invalid device id");
+        if(!checkUserOwnsDevice(new DeviceDto(deviceId))) throw new UserDoesNotOwnDeviceException("This user doesn't own the specified device");
         return new DeviceInfo(device);
     }
 
@@ -57,6 +58,7 @@ public class DeviceHandler implements org.elsys.motorcycle_security.business.log
         Device device = deviceRepository.getDeviceByDeviceId(deviceDto.getDeviceId());
         if(device == null) throw new InvalidDeviceIdException("Invalid device id");
         if(deviceDto.getParkedX() == 0 || deviceDto.getParkedY() == 0) throw new InvalidInputException("Invalid input");
+        if(!checkUserOwnsDevice(deviceDto)) throw new UserDoesNotOwnDeviceException("This user doesn't own the specified device");
         device.setParkedX(deviceDto.getParkedX());
         device.setParkedY(deviceDto.getParkedY());
         deviceRepository.save(device);

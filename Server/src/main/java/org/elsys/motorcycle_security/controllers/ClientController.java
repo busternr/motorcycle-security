@@ -4,6 +4,7 @@ import org.elsys.motorcycle_security.business.logic.*;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidEmailException;
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidInputException;
+import org.elsys.motorcycle_security.business.logic.exceptions.UserDoesNotOwnDeviceException;
 import org.elsys.motorcycle_security.dto.*;
 import org.elsys.motorcycle_security.repository.DeviceRepository;
 import org.elsys.motorcycle_security.repository.UserRepository;
@@ -49,8 +50,9 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/send/parking-status", method = PUT)
-    public ResponseEntity updateParkingStatusByDeviceId(@RequestBody DeviceConfigurationDto deviceConfigurationDto) {
+    public ResponseEntity updateParkingStatusByDeviceId(@RequestBody DeviceConfigurationDto deviceConfigurationDto) throws Exception {
         try {
+
             deviceConfigurationHandler.updateParkingStatus(deviceConfigurationDto);
         }
         catch(InvalidDeviceIdException exception) {
@@ -59,11 +61,14 @@ public class ClientController {
         catch(InvalidInputException exception) {
             return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
         }
+        catch (UserDoesNotOwnDeviceException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/client/send/timeout", method = PUT)
-    public ResponseEntity updateTimeoutByDeviceId(@RequestBody DeviceConfigurationDto deviceConfigurationDto) {
+    public ResponseEntity updateTimeoutByDeviceId(@RequestBody DeviceConfigurationDto deviceConfigurationDto) throws Exception {
         try {
             deviceConfigurationHandler.updateTimeOut(deviceConfigurationDto);
         }
@@ -71,6 +76,9 @@ public class ClientController {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
         }
         catch(InvalidInputException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
+        catch (UserDoesNotOwnDeviceException exception) {
             return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity(HttpStatus.OK);
@@ -87,6 +95,9 @@ public class ClientController {
         catch(InvalidInputException exception) {
             return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
         }
+        catch (UserDoesNotOwnDeviceException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -99,6 +110,9 @@ public class ClientController {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
         }
         catch(InvalidInputException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
+        catch (UserDoesNotOwnDeviceException exception) {
             return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity(HttpStatus.OK);
@@ -142,13 +156,16 @@ public class ClientController {
 
     @RequestMapping(value = "/client/{deviceId}/receive/gps-coordinates", method = GET)
     @ResponseBody
-    public ResponseEntity<DataTransmitterInfo> getGpsCoordinatesBydeviceId(@PathVariable(value = "deviceId") String deviceId) {
+    public ResponseEntity<DataTransmitterInfo> getGpsCoordinatesByDeviceId(@PathVariable(value = "deviceId") String deviceId) {
         try {
             DataTransmitterInfo dataTransmitterInfo = dataTransmitterHandler.getGPSCoordinates(deviceId);
             return new ResponseEntity(dataTransmitterInfo,HttpStatus.OK);
         }
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
+        catch (UserDoesNotOwnDeviceException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -161,6 +178,9 @@ public class ClientController {
         }
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
+        catch (UserDoesNotOwnDeviceException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -200,6 +220,9 @@ public class ClientController {
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
         }
+        catch (UserDoesNotOwnDeviceException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(value="/client/{deviceId}/receive/device-only-deviceId",method=GET)
@@ -236,6 +259,9 @@ public class ClientController {
             deviceConfigurationInfo = deviceConfigurationHandler.getDeviceConfiguration(deviceId);
         }
         catch(InvalidDeviceIdException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
+        catch (UserDoesNotOwnDeviceException exception) {
             return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity(deviceConfigurationInfo,HttpStatus.OK);

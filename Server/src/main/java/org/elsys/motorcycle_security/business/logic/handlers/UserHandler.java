@@ -58,8 +58,7 @@ public class UserHandler implements org.elsys.motorcycle_security.business.logic
     public UserInfo getUser(String email) {
         User user = userRepository.getUserAccountByEmail(email);
         if(user == null) throw new InvalidEmailException("Invalid email");
-        UserInfo userInfo= new UserInfo(user);
-        return userInfo;
+        return new UserInfo(user);
     }
 
     @Override
@@ -74,9 +73,7 @@ public class UserHandler implements org.elsys.motorcycle_security.business.logic
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.getUserAccountByEmail(username);
-        if(user==null)
-            throw new UsernameNotFoundException("Username not found");
-
+        if(user == null) throw new UsernameNotFoundException("Username not found");
         return user;
     }
 }

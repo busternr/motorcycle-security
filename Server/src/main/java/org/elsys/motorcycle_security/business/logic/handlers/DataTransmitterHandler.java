@@ -1,6 +1,7 @@
 package org.elsys.motorcycle_security.business.logic.handlers;
 
 import org.elsys.motorcycle_security.business.logic.exceptions.InvalidDeviceIdException;
+import org.elsys.motorcycle_security.business.logic.exceptions.UserDoesNotOwnDeviceException;
 import org.elsys.motorcycle_security.dto.DataTransmitterDto;
 import org.elsys.motorcycle_security.dto.DataTransmitterInfo;
 import org.elsys.motorcycle_security.models.DataTransmitter;
@@ -17,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class DataTransmitterHandler implements org.elsys.motorcycle_security.business.logic.DataTransmitter {
+public class DataTransmitterHandler extends AbstractHandler implements org.elsys.motorcycle_security.business.logic.DataTransmitter {
     @Autowired
     private DataTransmitterRepository dataTransmitterRepository;
     @Autowired
@@ -27,6 +28,7 @@ public class DataTransmitterHandler implements org.elsys.motorcycle_security.bus
     public void updateGPSCoordinates(DataTransmitterDto dataTransmitterDto) {
         Device device = deviceRepository.getDeviceByDeviceId(dataTransmitterDto.getDeviceId());
         if(device == null) throw new InvalidDeviceIdException("Invalid device id");
+        if(!checkUserOwnsDevice(dataTransmitterDto)) throw new UserDoesNotOwnDeviceException("This user doesn't own the specified device");
         DataTransmitter dataTransmitter = new DataTransmitter();
         dataTransmitter.setDevice(device);
         dataTransmitter.setX(dataTransmitterDto.getX());
@@ -41,15 +43,17 @@ public class DataTransmitterHandler implements org.elsys.motorcycle_security.bus
     public DataTransmitterInfo getGPSCoordinates(String deviceId) {
         DataTransmitter dataTransmitter = dataTransmitterRepository.getGpsCoordinatesByDeviceId(deviceId);
         if(dataTransmitter == null) throw new InvalidDeviceIdException("Invalid device id");
+        if(!checkUserOwnsDevice(new DataTransmitterDto(deviceId))) throw new UserDoesNotOwnDeviceException("This user doesn't own the specified device");
         return new DataTransmitterInfo(dataTransmitter);
     }
 
    @Override
     public List<DataTransmitterInfo> getGPSCoordinatesForDay(String deviceId, String day) {
+       if(!checkUserOwnsDevice(new DataTransmitterDto(deviceId))) throw new UserDoesNotOwnDeviceException("This user doesn't own the specified device");
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         String startFrom;
         String endFrom;
-        List<DataTransmitterInfo> dataTransmiters = new ArrayList<>();
+        List<DataTransmitterInfo> dataTransmitters = new ArrayList<>();
         for(int hour = 0; hour<24; hour++) {
             Date start_ = null;
             Date end_ = null;
@@ -67,10 +71,10 @@ public class DataTransmitterHandler implements org.elsys.motorcycle_security.bus
             } catch(java.text.ParseException exception) {}
             DataTransmitter dataTransmitter = dataTransmitterRepository.getGpsCoordinatesForDay(deviceId, start_, end_);
             if(dataTransmitter != null) {
-                dataTransmiters.add(new DataTransmitterInfo(dataTransmitter));
+                dataTransmitters.add(new DataTransmitterInfo(dataTransmitter));
             }
         }
-        if(dataTransmiters.size() == 0) throw new InvalidDeviceIdException("Invalid device id");
-        return dataTransmiters;
+        if(dataTransmitters.size() == 0) throw new InvalidDeviceIdException("Invalid device id");
+        return dataTransmitters;
     }
 }

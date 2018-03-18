@@ -3,10 +3,7 @@ package org.elsys.motorcycle_security.dto;
 
 import javax.validation.constraints.NotNull;
 
-public class DeviceConfigurationDto {
-    @NotNull
-    private String deviceId;
-
+public class DeviceConfigurationDto extends AbstractDto {
     @NotNull
     private long timeOut;
 
@@ -17,6 +14,10 @@ public class DeviceConfigurationDto {
     private boolean isStolen;
 
     public DeviceConfigurationDto() {
+    }
+
+    public DeviceConfigurationDto(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public DeviceConfigurationDto(String deviceId, long timeOut, boolean isParked, boolean isStolen) {

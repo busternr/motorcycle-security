@@ -2,10 +2,7 @@ package org.elsys.motorcycle_security.dto;
 
 import javax.validation.constraints.NotNull;
 
-public class DataTransmitterDto {
-    @NotNull
-    private String deviceId;
-
+public class DataTransmitterDto extends AbstractDto{
     @NotNull
     private double x;
 
@@ -16,6 +13,10 @@ public class DataTransmitterDto {
     private double speed;
 
     public DataTransmitterDto() {
+    }
+
+    public DataTransmitterDto(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public DataTransmitterDto(String deviceId, double x, double y, double speed) {

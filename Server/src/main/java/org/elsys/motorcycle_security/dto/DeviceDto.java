@@ -3,11 +3,7 @@ package org.elsys.motorcycle_security.dto;
 
 import javax.validation.constraints.NotNull;
 
-public class DeviceDto {
-
-    @NotNull
-    private String deviceId;
-
+public class DeviceDto extends AbstractDto {
     @NotNull
     long userId;
 
@@ -18,6 +14,10 @@ public class DeviceDto {
     double parkedY;
 
     public DeviceDto() {
+    }
+
+    public DeviceDto(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public DeviceDto(String deviceId, long userId, double parkedX, double parkedY) {
