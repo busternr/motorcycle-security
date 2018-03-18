@@ -3,6 +3,7 @@
 #include <EEPROM.h>
 #include <string.h>
 #include <stdlib.h>
+#include "LowPower.h"
 
 #define PIN_TX    10
 #define PIN_RX    11
@@ -47,9 +48,21 @@ void loop()
   else if(timesLooped %5 == 0 && timesLooped != 0) getConfiguration("GET /device/" + deviceId + "/receive/device-configuration  HTTP/1.0\r\ndevice-token: " + token + "\n\r\r\n");
   else
   {
-    Serial.print("Delaying ");
-    Serial.println(timeout);
-    delay(timeout);
+    //Putting the SIM808 module to sleep
+    int currentRetries = 0;
+    
+    sim808.sleep();
+    //Putting Arduino to sleep
+    delay(100); // just so this chinese shit doesn't make 9/11.
+    for (int i = 0; i <= timeout -4; i=i+8)
+    { 
+      Serial.println("Sleeping now");
+      sim808.sleep();
+      LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);  
+    }
+    currentRetries = 0;
+    sim808.wakeUp();
+    Serial.println("just wokeup");
     getAndPostGPSCoordinates();
   }
   timesLooped++;
