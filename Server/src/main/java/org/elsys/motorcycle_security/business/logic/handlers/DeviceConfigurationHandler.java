@@ -24,10 +24,17 @@ public class DeviceConfigurationHandler extends AbstractHandler implements org.e
     private DeviceRepository deviceRepository;
 
     @Override
-    public DeviceConfigurationInfo getDeviceConfiguration(String deviceId) {
+    public DeviceConfigurationInfo getDeviceConfigurationForClient(String deviceId) {
         DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceId);
         if(deviceConfiguration == null) throw new InvalidDeviceIdException("Invalid device id");
         if(!checkUserOwnsDevice(new DeviceConfigurationDto(deviceId))) throw new UserDoesNotOwnDeviceException("This user doesn't own the specified device");
+        return new DeviceConfigurationInfo(deviceConfiguration);
+    }
+
+    @Override
+    public DeviceConfigurationInfo getDeviceConfigurationForDevice(String deviceId) {
+        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceId);
+        if(deviceConfiguration == null) throw new InvalidDeviceIdException("Invalid device id");
         return new DeviceConfigurationInfo(deviceConfiguration);
     }
 

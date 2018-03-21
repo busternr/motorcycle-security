@@ -28,7 +28,6 @@ public class DataTransmitterHandler extends AbstractHandler implements org.elsys
     public void updateGPSCoordinates(DataTransmitterDto dataTransmitterDto) {
         Device device = deviceRepository.getDeviceByDeviceId(dataTransmitterDto.getDeviceId());
         if(device == null) throw new InvalidDeviceIdException("Invalid device id");
-        if(!checkUserOwnsDevice(dataTransmitterDto)) throw new UserDoesNotOwnDeviceException("This user doesn't own the specified device");
         DataTransmitter dataTransmitter = new DataTransmitter();
         dataTransmitter.setDevice(device);
         dataTransmitter.setX(dataTransmitterDto.getX());

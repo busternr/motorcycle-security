@@ -51,7 +51,7 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/send/parking-status", method = PUT)
-    public ResponseEntity updateParkingStatusByDeviceId(@RequestBody DeviceConfigurationDto deviceConfigurationDto) throws Exception {
+    public ResponseEntity updateParkingStatusByDeviceId(@RequestBody DeviceConfigurationDto deviceConfigurationDto) {
         try {
 
             deviceConfigurationHandler.updateParkingStatus(deviceConfigurationDto);
@@ -69,7 +69,7 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/send/timeout", method = PUT)
-    public ResponseEntity updateTimeoutByDeviceId(@RequestBody DeviceConfigurationDto deviceConfigurationDto) throws Exception {
+    public ResponseEntity updateTimeoutByDeviceId(@RequestBody DeviceConfigurationDto deviceConfigurationDto) {
         try {
             deviceConfigurationHandler.updateTimeOut(deviceConfigurationDto);
         }
@@ -141,6 +141,12 @@ public class ClientController {
         catch(InvalidInputException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
         }
+        catch(InvalidEmailException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
+        catch(InvalidDeviceIdException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -150,6 +156,9 @@ public class ClientController {
             deviceHandler.createNewDevice(deviceDto);
         }
         catch(InvalidInputException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
+        catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity(HttpStatus.OK);
@@ -257,7 +266,7 @@ public class ClientController {
     public ResponseEntity getDeviceConfigurationByDeviceId(@PathVariable (value="deviceId") String deviceId) {
         DeviceConfigurationInfo deviceConfigurationInfo;
         try {
-            deviceConfigurationInfo = deviceConfigurationHandler.getDeviceConfiguration(deviceId);
+            deviceConfigurationInfo = deviceConfigurationHandler.getDeviceConfigurationForClient(deviceId);
         }
         catch(InvalidDeviceIdException exception) {
             return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);

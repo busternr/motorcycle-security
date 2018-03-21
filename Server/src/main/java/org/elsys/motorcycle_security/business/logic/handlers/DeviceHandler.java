@@ -33,16 +33,20 @@ public class DeviceHandler extends AbstractHandler implements org.elsys.motorcyc
         Validator validator = factory.getValidator();
         long violations = validator.validate(deviceDto).size();
         if(violations>0) throw new InvalidInputException("Invalid input");
-        Device device = new Device();
-        User user = userRepository.getUserAccountById(deviceDto.getUserId());
-        device.setUser(user);
-        device.setDeviceId(deviceDto.getDeviceId());
-        user.getUserDevices().add(device);
-        DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
-        deviceConfiguration.setDevice(device);
-        userRepository.save(user);
-        deviceRepository.save(device);
-        deviceConfigurationRepository.save(deviceConfiguration);
+        Device checkDevice = deviceRepository.getDeviceByDeviceId(deviceDto.getDeviceId());
+        if(checkDevice != null) {
+            Device device = new Device();
+            User user = userRepository.getUserAccountById(deviceDto.getUserId());
+            device.setUser(user);
+            device.setDeviceId(deviceDto.getDeviceId());
+            user.getUserDevices().add(device);
+            DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+            deviceConfiguration.setDevice(device);
+            userRepository.save(user);
+            deviceRepository.save(device);
+            deviceConfigurationRepository.save(deviceConfiguration);
+        }
+        else throw new InvalidDeviceIdException("Device with specified deviceId already exists.");
     }
 
     @Override

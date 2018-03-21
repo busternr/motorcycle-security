@@ -66,7 +66,7 @@ public class DeviceController {
     public ResponseEntity getDeviceConfigurationByDeviceId(@RequestHeader(value = "device-token") String token, @PathVariable (value="deviceId") String deviceId) {
         DeviceConfigurationInfo deviceConfigurationInfo;
         try {
-            deviceConfigurationInfo = deviceConfigurationHandler.getDeviceConfiguration(deviceId);
+            deviceConfigurationInfo = deviceConfigurationHandler.getDeviceConfigurationForDevice(deviceId);
             DevicePin devicePin = devicePinRepository.getPinByDeviceId(deviceId);
             if(!token.matches(devicePin.getToken())) throw new InvalidDeviceTokenException("Invalid device token");
         }
