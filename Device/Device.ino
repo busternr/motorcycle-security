@@ -14,7 +14,8 @@ DFRobot_SIM808 sim808(&mySerial);
 
 const String deviceId = "cbr600";
 String token;
-long int timeout;
+long int timeoutInMils;
+double timeout;
 int timesLooped = 0;
 
 void setup()
@@ -48,21 +49,19 @@ void loop()
   else if(timesLooped %5 == 0 && timesLooped != 0) getConfiguration("GET /device/" + deviceId + "/receive/device-configuration  HTTP/1.0\r\ndevice-token: " + token + "\n\r\r\n");
   else
   {
-    //Putting the SIM808 module to sleep
     int currentRetries = 0;
-    
     sim808.sleep();
-    //Putting Arduino to sleep
+    Serial.println("SIM808 is sleeping now");
     delay(100); // just so this chinese shit doesn't make 9/11.
-    for (int i = 0; i <= timeout -4; i=i+8)
+    for (int i = 0; i <= timeout; i=i+8)
     { 
-      Serial.println("Sleeping now");
-      sim808.sleep();
+      Serial.println("Arduino is sleeping now");
       LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);  
     }
+    Serial.println("Arduino just woke up");
     currentRetries = 0;
     sim808.wakeUp();
-    Serial.println("just wokeup");
+    Serial.println("SIM808 just woke up");
     getAndPostGPSCoordinates();
   }
   timesLooped++;
@@ -120,7 +119,7 @@ void getAndPostGPSCoordinates()
   float speedInKm;
   if( sim808.attachGPS()) Serial.println("Open the GPS power success");
   else Serial.println("Open the GPS power failure");
-  while(1)
+  while(true)
   {
     if (sim808.getGPS()) 
     {
@@ -147,31 +146,33 @@ void getAndPostGPSCoordinates()
 
 void getToken(String ConfGetUrl)
 {
-  boolean done = false;
   int currentRetries = 0;
   char buffer[512];
   String tokenString;
   char requestString[ConfGetUrl.length()+1];
   ConfGetUrl.toCharArray(requestString, ConfGetUrl.length()+1);
-  while(done == false)
-  {
-    Serial.println("Executing");
-    Serial.println(requestString);
-    sim808.send(requestString, sizeof(requestString)-1);
-    while (true)
-    {
-        int ret = sim808.recv(buffer, sizeof(buffer)-1);
-        if (ret <= 0) Serial.println("fetch over..."); 
-        if(++currentRetries >= MAX_RETRIES)
-        {
-          resetDevice(); 
-          break;
-        }
-        buffer[ret] = '\0';
-        Serial.print(buffer);
-        done = true;
-        break;
-    }
+  while(true)
+   {
+      Serial.println("Executing");
+      Serial.println(requestString);
+      sim808.send(requestString, sizeof(requestString)-1);
+      int ret = sim808.recv(buffer, sizeof(buffer)-1);
+      if (ret <= 0)
+      {
+         Serial.println("Request failed..."); 
+         if(++currentRetries >= MAX_RETRIES)
+         {
+           resetDevice(); 
+           break;
+         }
+       }
+       else
+       {
+         buffer[ret] = '\0';
+         Serial.print(buffer);
+         break;
+       }
+   }
     Serial.println("");
     for(int counter = 0; counter <= sizeof(buffer) - 1; counter++)
     {
@@ -187,81 +188,83 @@ void getToken(String ConfGetUrl)
       }
     }
     Serial.println("");
-  }
 }
 
 void getConfiguration(String ConfGetUrl)
 {
-  boolean done = false;
-  int currentRetries = 0;
-  char buffer[512];
-  String timeoutString;
-  char requestString[ConfGetUrl.length()+1];
-  ConfGetUrl.toCharArray(requestString, ConfGetUrl.length()+1);
-  while(done == false)
-  {
-    Serial.println("Executing");
-    Serial.println(requestString);
-    sim808.send(requestString, sizeof(requestString)-1);
-    while (true)
-    {
-        int ret = sim808.recv(buffer, sizeof(buffer)-1);
-        if (ret <= 0) Serial.println("fetch over..."); 
-        if(++currentRetries >= MAX_RETRIES)
-        {
-          resetDevice(); 
-          break;
-        }
-        buffer[ret] = '\0';
-        Serial.print(buffer);
-        done = true;
-        break;
-    }
-    Serial.println("");
-    for(int counter = 0; counter <= sizeof(buffer) - 1; counter++)
-    {
-      if(buffer[counter] == '"') 
+   int currentRetries = 0;
+   char buffer[512];
+   String timeoutString;
+   char requestString[ConfGetUrl.length()+1];
+   ConfGetUrl.toCharArray(requestString, ConfGetUrl.length()+1);
+   while(true)
+   {
+      Serial.println("Executing");
+      Serial.println(requestString);
+      sim808.send(requestString, sizeof(requestString)-1);
+      int ret = sim808.recv(buffer, sizeof(buffer)-1);
+      if (ret <= 0)
       {
-        while(buffer[counter] != ',')
-        {
-          timeoutString += buffer[counter];
-          counter++;
-        }
-        timeoutString = timeoutString.substring(timeoutString.indexOf(":") + 1, timeoutString.length());
-        timeout = timeoutString.toInt();
-        break;
-      }
-    }
-    Serial.println("");
-  }
+         Serial.println("Request failed..."); 
+         if(++currentRetries >= MAX_RETRIES)
+         {
+           resetDevice(); 
+           break;
+         }
+       }
+       else
+       {
+         buffer[ret] = '\0';
+         Serial.print(buffer);
+         break;
+       }
+   }
+   Serial.println("");
+   for(int counter = 0; counter <= sizeof(buffer) - 1; counter++)
+   {
+     if(buffer[counter] == '"') 
+     {
+       while(buffer[counter] != ',')
+       {
+         timeoutString += buffer[counter];
+         counter++;
+       }
+       timeoutString = timeoutString.substring(timeoutString.indexOf(":") + 1, timeoutString.length());
+       timeoutInMils = timeoutString.toInt();
+       timeout = timeoutInMils / 1000; //To make it in seconds.
+      break;
+     }
+   }
+   Serial.println("");
 }
 
 void sendGPSCoordinates(String GPSPostUrl)
 {
-  boolean done = false;
   int currentRetries = 0;
   char buffer[512];
   char requestString[GPSPostUrl.length()+1];
   GPSPostUrl.toCharArray(requestString, GPSPostUrl.length()+1);
-  while(done == false)
-  {
-    Serial.println("Executing");
-    Serial.println(requestString);
-    sim808.send(requestString, sizeof(requestString)-1);
-    while (true)
-    {
-        int ret = sim808.recv(buffer, sizeof(buffer)-1);
-        if (ret <= 0) Serial.println("fetch over...");
-        if(++currentRetries >= MAX_RETRIES)
-        {
-          resetDevice(); 
-          break;
-        }
-        buffer[ret] = '\0';
-        Serial.print(buffer);
-        done = true;
-        break;
-    }
-    Serial.println("");
-  }
+  while(true)
+   {
+      Serial.println("Executing");
+      Serial.println(requestString);
+      sim808.send(requestString, sizeof(requestString)-1);
+      int ret = sim808.recv(buffer, sizeof(buffer)-1);
+      if (ret <= 0)
+      {
+         Serial.println("Request failed..."); 
+         if(++currentRetries >= MAX_RETRIES)
+         {
+           resetDevice(); 
+           break;
+         }
+       }
+       else
+       {
+         buffer[ret] = '\0';
+         Serial.print(buffer);
+         break;
+       }
+   }
+   Serial.println("");
 }
