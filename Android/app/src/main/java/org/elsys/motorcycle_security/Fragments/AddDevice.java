@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,7 @@ public class AddDevice extends Fragment {
                         public void onResponse(Call<DevicePin> call, Response<DevicePin> response) {
                             if (response.isSuccessful()) {
                                 DevicePin devicePin = response.body();
+                                Log.d("RESPONSE", devicePin.getPin());
                                 if (devicePin.getPin().equals(deviceIdInput.getText().toString())) {
                                     long userId = sharedPreferences.getLong("UserId", 1);
                                     final Device device = new Device(deviceIdInput.getText().toString(), userId);
@@ -71,6 +73,7 @@ public class AddDevice extends Fragment {
                                         @Override
                                         public void onResponse(Call<Void> call, Response<Void> response) {
                                             if(response.isSuccessful()) {
+                                                Log.d("RES MESIG", response.message());
                                                 int devices = sharedPreferences.getInt("Number of devices", 1);
                                                 devices++;
                                                 sharedPreferences.edit().putInt("Number of devices", devices).apply();
@@ -87,11 +90,13 @@ public class AddDevice extends Fragment {
                                         }
                                     });
                                 }
-                            } else errorsText.setText("Invalid device pin number");
+                            }
+                            else errorsText.setText("Invalid device pin number");
                         }
 
                         @Override
                         public void onFailure(Call<DevicePin> call, Throwable t) {
+                            Toast.makeText(getContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
                         }
                     });
                 }

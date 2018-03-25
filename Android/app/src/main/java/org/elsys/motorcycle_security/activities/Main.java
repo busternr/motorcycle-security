@@ -52,14 +52,10 @@ import org.elsys.motorcycle_security.models.GPSCoordinates;
 import org.elsys.motorcycle_security.services.LocationCheckerJob;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -92,66 +88,61 @@ public class Main extends AppCompatActivity
         return sdf.format(date - 86400000 * day);
     }
 
-    @Override
-    protected void onResume() {
-        boolean caughtException = false;
-        /*
-        For debugging purposes. When ExpiredJwtException is caught the application still continues
-         and executes the rest of onResume() which may cause the application to crash this is why we
-         have to check if the exception is caught so we don't execute the rest of the code here.
-        */
-        super.onResume();
-        final boolean isAuthorized = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isAuthorized", false);
-        if(isAuthorized) {
-            try {
-                String token = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", "").replace("User ", "");
-                int indexOfLastDot = token.lastIndexOf('.');
-                String withoutSignature = token.substring(0, indexOfLastDot + 1);
-                Jwts.parser().parseClaimsJwt(withoutSignature);
-            } catch (ExpiredJwtException exception) {
-                caughtException = true;
-                Toast toast = Toast.makeText(this, "Session is expired, please log in again.", Toast.LENGTH_LONG);
-                toast.show();
-                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", false).apply();
-                Intent myIntent = new Intent(this, Login.class);
-                startActivity(myIntent);
-            }
-            if (!caughtException) {
-                setGlobals();
-                currentDeviceText.setText("Current device: " + Globals.deviceInUse);
-                final FloatingActionButton fab = findViewById(R.id.fab);
-                if (isParked) {
-                    parkingStatusText.setText("Status: " + "Parked");
-                    fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#3F51B5")));
-                } else {
-                    parkingStatusText.setText("Status: " + "NOT parked");
-                    fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-                }
-                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-                mapFragment.getMapAsync(this);
-                notStolenButton = findViewById(R.id.NotStolenBtn);
-                notStolenButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Api api = Api.RetrofitInstance.create();
-                        DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
-                        deviceConfiguration.setDeviceId(Globals.deviceInUse);
-                        deviceConfiguration.setStolen(false);
-                        api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
-                            @Override
-                            public void onResponse(Call<Void> call, Response<Void> response) {
-                            }
-
-                            @Override
-                            public void onFailure(Call<Void> call, Throwable t) {
-                            }
-                        });
-                        Intent myIntent = new Intent(v.getContext(), Main.class);
-                        startActivity(myIntent);
-                    }
-                });
-                notStolenButton.setVisibility(View.GONE);
-            }
+    private void checkTokenValidity() {
+        String token = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", "").replace("User ", "");
+        try {
+            token .replace("User ", "");
+            int indexOfLastDot = token.lastIndexOf('.');
+            String withoutSignature = token.substring(0, indexOfLastDot + 1);
+            Jwts.parser().parseClaimsJwt(withoutSignature);
+        } catch (ExpiredJwtException exception) {
+            Toast toast = Toast.makeText(this, "Session is expired, please log in again.", Toast.LENGTH_LONG);
+            toast.show();
+            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isAuthorized", false).apply();
+            Intent myIntent = new Intent(this, Login.class);
+            startActivity(myIntent);
         }
+    }
+    private void setAdditionalInformation() {
+        Log.d("Main", "setAdditionalInformation called");
+        currentDeviceText.setText("Current device: " + Globals.deviceInUse);
+        final FloatingActionButton fab = findViewById(R.id.fab);
+        if (isParked) {
+            Log.d("Main", "Parked from setAdditionalInformation");
+            parkingStatusText.setText("Status: " + "Parked");
+            fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#3F51B5")));
+        }
+        else {
+            Log.d("Main", "NOT Parked from setAdditionalInformation");
+            parkingStatusText.setText("Status: " + "NOT parked");
+            fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+        }
+    }
+
+    private void setGlobals() {
+        Log.d("Main", "setGlobals called");
+        Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
+        Globals.authorization = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", "");
+        Api api = Api.RetrofitInstance.create();
+        api.getDeviceConfiguration(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
+            @Override
+            public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
+                if(response.isSuccessful()) {
+                    DeviceConfiguration deviceConfiguration = response.body();
+                    isParked = false;
+                    Globals.isStolen = false;
+                    if (deviceConfiguration.isParked() || !deviceConfiguration.isParked()) isParked = deviceConfiguration.isParked();
+                    if (deviceConfiguration.isStolen() || !deviceConfiguration.isStolen()) Globals.isStolen = deviceConfiguration.isStolen();
+                    if (isParked) scheduleJob();
+                    Log.d("Main", "isParked from setGlobals:" + Boolean.toString(isParked));
+                    setAdditionalInformation();
+                }
+            }
+            @Override
+            public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
@@ -161,7 +152,7 @@ public class Main extends AppCompatActivity
         final FloatingActionButton fab = findViewById(R.id.fab);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        Log.d("Main", "Oncreate called");
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -191,73 +182,95 @@ public class Main extends AppCompatActivity
             startActivity(myIntent);
             finish();
         }
-        else if(isAuthorized) {
+       if(isAuthorized) {
             setGlobals();
-            currentDeviceText.setText("Current device: " + Globals.deviceInUse);
-            if(isParked) {
-                parkingStatusText.setText("Status: " + "Parked");
-                fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#3F51B5")));
-            }
-            if(!isParked) {
-                parkingStatusText.setText("Status: " + "NOT parked");
-                fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-            }
             nav_history_day_1.setTitle(calculateDateForMenu(0));
             nav_history_day_2.setTitle(calculateDateForMenu(1));
             nav_history_day_3.setTitle(calculateDateForMenu(2));
-        }
-        fab.setImageResource(R.drawable.park);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final Api api = Api.RetrofitInstance.create();
-                if(isParked == false) {
-                    isParked = true;
-                    scheduleJob();
-                    api.getGPSCoordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GPSCoordinates>() {
-                        @Override
-                        public void onResponse(Call<GPSCoordinates> call, Response<GPSCoordinates> response) {
-                            if (response.isSuccessful()) {
-                                final GPSCoordinates GPSCoordinates = response.body();
-                                Device device = new Device();
-                                device.setDeviceId(Globals.deviceInUse);
-                                device.setParkedX(GPSCoordinates.getX());
-                                device.setParkedY(GPSCoordinates.getY());
-                                api.updateParkedCoordinates(Globals.authorization, device).enqueue(new Callback<Void>() {
-                                    @Override
-                                    public void onResponse(Call<Void> call, Response<Void> response) {}
-                                    @Override
-                                    public void onFailure(Call<Void> call, Throwable t) { }
-                                });
+            fab.setImageResource(R.drawable.park);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final Api api = Api.RetrofitInstance.create();
+                    if(isParked == false) {
+                        isParked = true;
+                        scheduleJob();
+                        api.getGPSCoordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GPSCoordinates>() {
+                            @Override
+                            public void onResponse(Call<GPSCoordinates> call, Response<GPSCoordinates> response) {
+                                if (response.isSuccessful()) {
+                                    final GPSCoordinates GPSCoordinates = response.body();
+                                    Device device = new Device();
+                                    device.setDeviceId(Globals.deviceInUse);
+                                    device.setParkedX(GPSCoordinates.getX());
+                                    device.setParkedY(GPSCoordinates.getY());
+                                    api.updateParkedCoordinates(Globals.authorization, device).enqueue(new Callback<Void>() {
+                                        @Override
+                                        public void onResponse(Call<Void> call, Response<Void> response) {}
+                                        @Override
+                                        public void onFailure(Call<Void> call, Throwable t) { }
+                                    });
+                                }
                             }
-                        }
+                            @Override
+                            public void onFailure(Call<GPSCoordinates> call, Throwable t) {
+                            }
+                        });
+                        fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#3F51B5")));
+                        parkingStatusText.setText("Status: " + "Parked");
+                        Snackbar.make(view, "Vehicle is now parked", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    }
+                    else if(isParked == true) {
+                        fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                        isParked = false;
+                        jobScheduler.cancelAll();
+                        parkingStatusText.setText("Status: " + "NOT parked");
+                        Snackbar.make(view, "Vehicle is NOT parked", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    }
+                    DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+                    deviceConfiguration.setDeviceId(Globals.deviceInUse);
+                    deviceConfiguration.setParked(isParked);
+                    api.updateParkingStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
                         @Override
-                        public void onFailure(Call<GPSCoordinates> call, Throwable t) {
-                        }
+                        public void onResponse(Call<Void> call, Response<Void> response) { }
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) { }
                     });
-                    fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#3F51B5")));
-                    parkingStatusText.setText("Status: " + "Parked");
-                    Snackbar.make(view, "Vehicle is now parked", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
-                else if(isParked == true) {
-                    fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-                    isParked = false;
-                    jobScheduler.cancelAll();
-                    parkingStatusText.setText("Status: " + "NOT parked");
-                    Snackbar.make(view, "Vehicle is NOT parked", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                }
+            });
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("Main", "onResume called");
+        checkTokenValidity();
+        setGlobals();
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        notStolenButton = findViewById(R.id.NotStolenBtn);
+        notStolenButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Api api = Api.RetrofitInstance.create();
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                 deviceConfiguration.setDeviceId(Globals.deviceInUse);
-                deviceConfiguration.setParked(isParked);
-                api.updateParkingStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
+                deviceConfiguration.setStolen(false);
+                api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
                     @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) { }
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                    }
+
                     @Override
-                    public void onFailure(Call<Void> call, Throwable t) { }
+                    public void onFailure(Call<Void> call, Throwable t) {
+                    }
                 });
             }
         });
+        notStolenButton.setVisibility(View.GONE);
     }
+
+
 
     final Handler handler = new Handler();
     Timer timer = new Timer(false);
@@ -390,27 +403,6 @@ public class Main extends AppCompatActivity
                     .build();
         }
         jobScheduler.schedule(jobInfo);
-    }
-
-    private void setGlobals() {
-        Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
-        Globals.authorization = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", "");
-        Api api = Api.RetrofitInstance.create();
-        api.getDeviceConfiguration(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
-            @Override
-            public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
-                DeviceConfiguration deviceConfiguration = response.body();
-                isParked = false;
-                Globals.isStolen = false;
-                if(deviceConfiguration.isParked() || !deviceConfiguration.isParked()) isParked = deviceConfiguration.isParked();
-                if(deviceConfiguration.isStolen() || !deviceConfiguration.isStolen()) Globals.isStolen = deviceConfiguration.isStolen();
-                if(isParked) scheduleJob();
-            }
-            @Override
-            public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
-            }
-        });
     }
 
     @Override

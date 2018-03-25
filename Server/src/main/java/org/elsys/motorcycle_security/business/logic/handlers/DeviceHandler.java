@@ -34,7 +34,7 @@ public class DeviceHandler extends AbstractHandler implements org.elsys.motorcyc
         long violations = validator.validate(deviceDto).size();
         if(violations>0) throw new InvalidInputException("Invalid input");
         Device checkDevice = deviceRepository.getDeviceByDeviceId(deviceDto.getDeviceId());
-        if(checkDevice != null) {
+        if(checkDevice == null) {
             Device device = new Device();
             User user = userRepository.getUserAccountById(deviceDto.getUserId());
             device.setUser(user);

@@ -1,10 +1,10 @@
 package org.elsys.motorcycle_security.Fragments;
 
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.elsys.motorcycle_security.R;
+import org.elsys.motorcycle_security.activities.Main;
 import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.Globals;
@@ -21,6 +22,7 @@ import org.elsys.motorcycle_security.models.Globals;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 public class ChangeTimeOut extends Fragment {
     private EditText timeOutInput;
@@ -66,9 +68,8 @@ public class ChangeTimeOut extends Fragment {
                                 if(response.isSuccessful()) {
                                     Toast toast = Toast.makeText(getActivity(), "Change successful", Toast.LENGTH_LONG);
                                     toast.show();
-                                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                                    ft.replace(R.id.content_frame, new CurrentDevice());
-                                    ft.commit();
+                                    Intent myIntent = new Intent(getContext(), Main.class);
+                                    startActivity(myIntent);
                                 }
                             }
 
