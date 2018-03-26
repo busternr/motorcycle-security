@@ -27,8 +27,11 @@ public class TokenAuthService {
   static Authentication getAuthenticationFromReq(HttpServletRequest request) {
     String token = request.getHeader(HEADER_STRING);
     if (token != null) {
-      String user = Jwts.parser().setSigningKey(KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().getSubject();
-      return user != null ? new UsernamePasswordAuthenticationToken(user, null, emptyList()) : null;
+
+      try {
+        String user = Jwts.parser().setSigningKey(KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().getSubject();
+        return user != null ? new UsernamePasswordAuthenticationToken(user, null, emptyList()) : null;
+      }catch (io.jsonwebtoken.MalformedJwtException ex) {}
     }
     return null;
   }

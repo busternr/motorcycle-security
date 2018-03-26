@@ -65,7 +65,6 @@ public class AddDevice extends Fragment {
                         public void onResponse(Call<DevicePin> call, Response<DevicePin> response) {
                             if (response.isSuccessful()) {
                                 DevicePin devicePin = response.body();
-                                Log.d("RESPONSE", devicePin.getPin());
                                 if (devicePin.getPin().equals(deviceIdInput.getText().toString())) {
                                     long userId = sharedPreferences.getLong("UserId", 1);
                                     final Device device = new Device(deviceIdInput.getText().toString(), userId);
@@ -73,7 +72,6 @@ public class AddDevice extends Fragment {
                                         @Override
                                         public void onResponse(Call<Void> call, Response<Void> response) {
                                             if(response.isSuccessful()) {
-                                                Log.d("RES MESIG", response.message());
                                                 int devices = sharedPreferences.getInt("Number of devices", 1);
                                                 devices++;
                                                 sharedPreferences.edit().putInt("Number of devices", devices).apply();

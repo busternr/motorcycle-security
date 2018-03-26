@@ -9,7 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
+import android.util.Range;
 import android.widget.Toast;
 
 import org.elsys.motorcycle_security.R;
@@ -19,13 +19,9 @@ import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.GPSCoordinates;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 
 public class LocationCheckerJob extends JobService {
     private double parkedX;
@@ -39,7 +35,6 @@ public class LocationCheckerJob extends JobService {
     public boolean onStartJob(final JobParameters jobParameters) {
         deviceId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
         authorization = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", "");
-        Log.d("Job","onStartJob");
         final Api api = Api.RetrofitInstance.create();
         api.getDevice(authorization, deviceId).enqueue(new Callback<Device>() {
             @Override
@@ -48,37 +43,23 @@ public class LocationCheckerJob extends JobService {
                     Device device = response.body();
                     parkedX = device.getParkedX();
                     parkedY = device.getParkedY();
-                    api.getGPSCoordinates(deviceId, authorization).enqueue(new Callback<GPSCoordinates>() {
+                    api.getGPSCoordinates(authorization, deviceId).enqueue(new Callback<GPSCoordinates>() {
                         @Override
                         public void onResponse(Call<GPSCoordinates> call, Response<GPSCoordinates> response) {
                             if (response.isSuccessful()) {
-                                GPSCoordinates GPSCoordinates = response.body();
+                                GPSCoordinates gpsCoordinates = response.body();
                                 boolean moving = false;
-                                currentX = GPSCoordinates.getX();
-                                currentY = GPSCoordinates.getY();
-                                BigDecimal bdX = new BigDecimal(currentX).setScale(4, RoundingMode.HALF_EVEN);
-                                BigDecimal bdY = new BigDecimal(currentY).setScale(4, RoundingMode.HALF_EVEN);
-                                BigDecimal bdpX = new BigDecimal(parkedX).setScale(4, RoundingMode.HALF_EVEN);
-                                BigDecimal bdpY = new BigDecimal(parkedY).setScale(4, RoundingMode.HALF_EVEN);
-                                parkedX = bdpX.doubleValue();
-                                parkedY = bdpY.doubleValue();
-                                currentX = bdX.doubleValue();
-                                currentY = bdY.doubleValue();
-                                for(int adder = 0 ; adder != 5; adder++) {
-                                    double adder2 = adder;
-                                    if(adder != 0)  adder2 = adder2/ 10000;
-                                    if(parkedX != currentX + adder2 || parkedX != currentX - adder2) {
-                                        moving = true;
-                                        break;
-                                    }
-                                    if(parkedY != currentY + adder2 || parkedY != currentY - adder2) {
-                                        moving = true;
-                                        break;
-                                    }
-                                }
+                                currentX = gpsCoordinates.getX();
+                                currentY = gpsCoordinates.getY();
+                                double minX = currentX - 0.025;
+                                double maxX = currentX + 0.025;
+                                Range<Double> rangeX = new Range<>(minX, maxX);
+                                double minY = currentY - 0.025;
+                                double maxY = currentY + 0.025;
+                                Range<Double> rangeY = new Range<>(minY, maxY);
+                                if (!rangeX.contains(parkedX) || !rangeY.contains(parkedY)) moving = true;
                                 if(parkedX == 0 || parkedY == 0) moving = false; //Against failed server response
                                 if(moving) {
-                                    Log.d("Job", "Notify");
                                     DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                                     deviceConfiguration.setDeviceId(deviceId);
                                     deviceConfiguration.setStolen(true);
@@ -119,7 +100,6 @@ public class LocationCheckerJob extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
-        Log.d("Job","onStopJob Called");
         return false;
     }
 
@@ -133,8 +113,8 @@ public class LocationCheckerJob extends JobService {
         notificationBuilder
                 .setDefaults(notification.defaults)
                 .setSmallIcon(R.drawable.icon)
-                .setContentTitle("Device " + getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "") + " is moving !")
-                .setContentText("Tap to see current location")
+                .setContentTitle("Device " + getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "") + " is moving!")
+                .setContentText("Tap to see current location.")
                 .setContentIntent(pendingIntent);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0 , notificationBuilder.build());

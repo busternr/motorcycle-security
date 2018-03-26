@@ -104,23 +104,19 @@ public class Main extends AppCompatActivity
         }
     }
     private void setAdditionalInformation() {
-        Log.d("Main", "setAdditionalInformation called");
         currentDeviceText.setText("Current device: " + Globals.deviceInUse);
         final FloatingActionButton fab = findViewById(R.id.fab);
         if (isParked) {
-            Log.d("Main", "Parked from setAdditionalInformation");
             parkingStatusText.setText("Status: " + "Parked");
             fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#3F51B5")));
         }
         else {
-            Log.d("Main", "NOT Parked from setAdditionalInformation");
             parkingStatusText.setText("Status: " + "NOT parked");
             fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
         }
     }
 
     private void setGlobals() {
-        Log.d("Main", "setGlobals called");
         Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
         Globals.authorization = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", "");
         Api api = Api.RetrofitInstance.create();
@@ -134,7 +130,6 @@ public class Main extends AppCompatActivity
                     if (deviceConfiguration.isParked() || !deviceConfiguration.isParked()) isParked = deviceConfiguration.isParked();
                     if (deviceConfiguration.isStolen() || !deviceConfiguration.isStolen()) Globals.isStolen = deviceConfiguration.isStolen();
                     if (isParked) scheduleJob();
-                    Log.d("Main", "isParked from setGlobals:" + Boolean.toString(isParked));
                     setAdditionalInformation();
                 }
             }
@@ -152,7 +147,6 @@ public class Main extends AppCompatActivity
         final FloatingActionButton fab = findViewById(R.id.fab);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Log.d("Main", "Oncreate called");
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -168,6 +162,8 @@ public class Main extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         currentDeviceText = headerView.findViewById(R.id.current_device_text);
         parkingStatusText = headerView.findViewById(R.id.parking_status_text);
+        notStolenButton = findViewById(R.id.NotStolenButton);
+        notStolenButton.setVisibility(View.GONE);
         jobScheduler = (JobScheduler) getSystemService(
                 Context.JOB_SCHEDULER_SERVICE);
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -238,39 +234,47 @@ public class Main extends AppCompatActivity
                     });
                 }
             });
+           SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+           mapFragment.getMapAsync(this);
+           notStolenButton.setOnClickListener(new View.OnClickListener() {
+               public void onClick(View v) {
+                   Api api = Api.RetrofitInstance.create();
+                   DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+                   deviceConfiguration.setDeviceId(Globals.deviceInUse);
+                   deviceConfiguration.setStolen(false);
+                   deviceConfiguration.setParked(false);
+                   api.updateParkingStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
+                       @Override
+                       public void onResponse(Call<Void> call, Response<Void> response) {
+                           parkingStatusText.setText("Status: " + "NOT parked");
+                           fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                       }
+                       @Override
+                       public void onFailure(Call<Void> call, Throwable t) {
+                       }
+                   });
+                   api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
+                       @Override
+                       public void onResponse(Call<Void> call, Response<Void> response) {
+                           notStolenButton.setVisibility(View.GONE);
+                           Globals.isStolen = false;
+                           jobScheduler.cancelAll();
+                       }
+                       @Override
+                       public void onFailure(Call<Void> call, Throwable t) {
+                       }
+                   });
+               }
+           });
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("Main", "onResume called");
         checkTokenValidity();
         setGlobals();
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        notStolenButton = findViewById(R.id.NotStolenBtn);
-        notStolenButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Api api = Api.RetrofitInstance.create();
-                DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
-                deviceConfiguration.setDeviceId(Globals.deviceInUse);
-                deviceConfiguration.setStolen(false);
-                api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                    }
-                });
-            }
-        });
-        notStolenButton.setVisibility(View.GONE);
     }
-
-
 
     final Handler handler = new Handler();
     Timer timer = new Timer(false);
@@ -310,22 +314,11 @@ public class Main extends AppCompatActivity
                 }
             });
         }
-        api.getDeviceConfiguration(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
-            @Override
-            public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
-                if (response.isSuccessful()) {
-                    DeviceConfiguration deviceConfiguration = response.body();
-                    Globals.isStolen = deviceConfiguration.isStolen();
-                    if(deviceConfiguration.isStolen()) {
-                        notStolenButton.setVisibility(View.VISIBLE);
-                        timer.schedule(timerTask, 1000, 10000);
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
-            }
-        });
+        if(Globals.isStolen) {
+            notStolenButton.setVisibility(View.VISIBLE);
+            timer.schedule(timerTask, 1000, 10000);
+        }
+
     }
     void updatePos() {
         final float zoomlevel = 18;
