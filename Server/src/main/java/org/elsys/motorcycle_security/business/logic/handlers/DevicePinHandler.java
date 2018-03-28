@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DevicePinHandler implements org.elsys.motorcycle_security.business.logic.DevicePin {
+public class DevicePinHandler extends AbstractHandler implements org.elsys.motorcycle_security.business.logic.DevicePin {
     @Autowired
     private DevicePinRepository devicePinRepository;
 
@@ -16,6 +16,7 @@ public class DevicePinHandler implements org.elsys.motorcycle_security.business.
     public DevicePinInfo getDevicePin(String deviceId) {
         DevicePin devicePin = devicePinRepository.getPinByDeviceId(deviceId);
         if(devicePin == null) throw new InvalidDeviceIdException("Invalid device id");
+        writeLog("Received device pin for device:" + deviceId, true);
         return new DevicePinInfo(devicePin);
     }
 }

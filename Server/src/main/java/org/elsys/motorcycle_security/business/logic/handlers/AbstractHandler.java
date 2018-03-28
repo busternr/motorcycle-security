@@ -8,6 +8,12 @@ import org.elsys.motorcycle_security.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public abstract class AbstractHandler {
     @Autowired
     private UserRepository userRepository;
@@ -24,5 +30,19 @@ public abstract class AbstractHandler {
             if(device.getDeviceId().equals(checkDevice.getDeviceId())) found = true;
         }
         return found;
+    }
+
+    public void writeLog(String message, boolean type) {
+        try {
+            String filename;
+            if(type) filename = "log/client.log";
+            else filename = "log/device.log";
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filename, true));
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            Date date = new Date();
+            bufferedWriter.write(formatter.format(date) + " || " + message);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        } catch (java.io.IOException ex) {}
     }
 }

@@ -28,6 +28,7 @@ public class DeviceConfigurationHandler extends AbstractHandler implements org.e
         DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceId);
         if(deviceConfiguration == null) throw new InvalidDeviceIdException("Invalid device id");
         if(!checkUserOwnsDevice(new DeviceConfigurationDto(deviceId))) throw new UserDoesNotOwnDeviceException("This user doesn't own the specified device");
+        writeLog("Received device configuration for device:" + deviceId, true);
         return new DeviceConfigurationInfo(deviceConfiguration);
     }
 
@@ -35,6 +36,7 @@ public class DeviceConfigurationHandler extends AbstractHandler implements org.e
     public DeviceConfigurationInfo getDeviceConfigurationForDevice(String deviceId) {
         DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceId);
         if(deviceConfiguration == null) throw new InvalidDeviceIdException("Invalid device id");
+        writeLog("Received device configuration for device:" + deviceId, false);
         return new DeviceConfigurationInfo(deviceConfiguration);
     }
 
@@ -45,6 +47,7 @@ public class DeviceConfigurationHandler extends AbstractHandler implements org.e
         if(deviceConfigurationDto.getTimeOut() == 0) throw new InvalidInputException("Invalid input");
         if(!checkUserOwnsDevice(deviceConfigurationDto)) throw new UserDoesNotOwnDeviceException("This user doesn't own the specified device");
         deviceConfiguration.setTimeOut(deviceConfigurationDto.getTimeOut());
+        writeLog("Updated device configuration for device:" + deviceConfigurationDto.getDeviceId(), true);
         deviceConfigurationRepository.save(deviceConfiguration);
     }
 
@@ -60,6 +63,7 @@ public class DeviceConfigurationHandler extends AbstractHandler implements org.e
         Device device = deviceRepository.getDeviceByDeviceId(deviceConfigurationDto.getDeviceId());
         device.setParkedX(dataTransmitter.getX());
         device.setParkedY(dataTransmitter.getY());
+        writeLog("Updated parking status for device:" + deviceConfigurationDto.getDeviceId(), true);
         deviceRepository.save(device);
     }
 
@@ -69,6 +73,7 @@ public class DeviceConfigurationHandler extends AbstractHandler implements org.e
         if(deviceConfiguration == null) throw new InvalidDeviceIdException("Invalid device id");
         if(!checkUserOwnsDevice(deviceConfigurationDto)) throw new UserDoesNotOwnDeviceException("This user doesn't own the specified device");
         deviceConfiguration.setStolen(deviceConfigurationDto.isStolen());
+        writeLog("Updated stolen status for device:" + deviceConfigurationDto.getDeviceId(), true);
         deviceConfigurationRepository.save(deviceConfiguration);
     }
 }

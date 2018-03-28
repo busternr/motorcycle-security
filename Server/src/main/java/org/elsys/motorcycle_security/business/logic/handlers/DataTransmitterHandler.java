@@ -36,6 +36,7 @@ public class DataTransmitterHandler extends AbstractHandler implements org.elsys
         Date date = new Date();
         dataTransmitter.setDate(date);
         dataTransmitterRepository.save(dataTransmitter);
+        writeLog("Updated GPS coordinates for device:" + dataTransmitterDto.getDeviceId(), false);
     }
 
     @Override
@@ -43,6 +44,7 @@ public class DataTransmitterHandler extends AbstractHandler implements org.elsys
         DataTransmitter dataTransmitter = dataTransmitterRepository.getGpsCoordinatesByDeviceId(deviceId);
         if(dataTransmitter == null) throw new InvalidDeviceIdException("Invalid device id");
         if(!checkUserOwnsDevice(new DataTransmitterDto(deviceId))) throw new UserDoesNotOwnDeviceException("This user doesn't own the specified device");
+        writeLog("Received GPS coordinates for device:" + deviceId, true);
         return new DataTransmitterInfo(dataTransmitter);
     }
 
@@ -74,6 +76,7 @@ public class DataTransmitterHandler extends AbstractHandler implements org.elsys
             }
         }
         if(dataTransmitters.size() == 0) throw new InvalidDeviceIdException("Invalid device id");
+        writeLog("Received GPS coordinates for date:" + day + " for device:" + deviceId, true);
         return dataTransmitters;
     }
 }

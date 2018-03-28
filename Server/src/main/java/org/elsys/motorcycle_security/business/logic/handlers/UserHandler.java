@@ -25,7 +25,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 @Component
-public class UserHandler implements org.elsys.motorcycle_security.business.logic.User,UserDetailsService {
+public class UserHandler extends AbstractHandler implements org.elsys.motorcycle_security.business.logic.User,UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -61,6 +61,7 @@ public class UserHandler implements org.elsys.motorcycle_security.business.logic
                 deviceConfiguration.setDevice(device);
                 deviceConfigurationRepository.save(deviceConfiguration);
             }
+            writeLog("Created user with email:" + userDto.getEmail(), true);
         }
         else throw new InvalidEmailException("Account with specified email already exists.");
     }
@@ -69,6 +70,7 @@ public class UserHandler implements org.elsys.motorcycle_security.business.logic
     public UserInfo getUser(String email) {
         User user = userRepository.getUserAccountByEmail(email);
         if(user == null) throw new InvalidEmailException("Invalid email");
+        writeLog("Received user with email:" + email, true);
         return new UserInfo(user);
     }
 
@@ -79,6 +81,7 @@ public class UserHandler implements org.elsys.motorcycle_security.business.logic
         if(newPassword.length() == 0) throw new InvalidInputException("Invalid input");
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+        writeLog("Updated password for userId:" + user.getId(), true);
     }
 
     @Override

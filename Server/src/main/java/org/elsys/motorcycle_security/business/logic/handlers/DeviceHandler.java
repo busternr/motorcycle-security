@@ -45,6 +45,7 @@ public class DeviceHandler extends AbstractHandler implements org.elsys.motorcyc
             userRepository.save(user);
             deviceRepository.save(device);
             deviceConfigurationRepository.save(deviceConfiguration);
+            writeLog("Created device:" +  deviceDto.getDeviceId() + " for userId:" + deviceDto.getUserId(), true);
         }
         else throw new InvalidDeviceIdException("Device with specified deviceId already exists.");
     }
@@ -54,6 +55,7 @@ public class DeviceHandler extends AbstractHandler implements org.elsys.motorcyc
         Device device = deviceRepository.getDeviceByDeviceId(deviceId);
         if(device == null) throw new InvalidDeviceIdException("Invalid device id");
         if(!checkUserOwnsDevice(new DeviceDto(deviceId))) throw new UserDoesNotOwnDeviceException("This user doesn't own the specified device");
+        writeLog("Received device:" + deviceId, true);
         return new DeviceInfo(device);
     }
 
@@ -66,5 +68,6 @@ public class DeviceHandler extends AbstractHandler implements org.elsys.motorcyc
         device.setParkedX(deviceDto.getParkedX());
         device.setParkedY(deviceDto.getParkedY());
         deviceRepository.save(device);
+        writeLog("Updated parking coordinates for device:" + deviceDto.getDeviceId(), true);
     }
 }
