@@ -8,6 +8,9 @@ public class DeviceConfigurationDto extends AbstractDto {
     private long timeOut;
 
     @NotNull
+    private long radius;
+
+    @NotNull
     private boolean isParked;
 
     @NotNull
@@ -20,9 +23,10 @@ public class DeviceConfigurationDto extends AbstractDto {
         this.deviceId = deviceId;
     }
 
-    public DeviceConfigurationDto(String deviceId, long timeOut, boolean isParked, boolean isStolen) {
+    public DeviceConfigurationDto(String deviceId, long timeOut, long radius, boolean isParked, boolean isStolen) {
         this.deviceId = deviceId;
         this.timeOut = timeOut;
+        this.radius = radius;
         this.isParked = isParked;
         this.isStolen = isStolen;
     }
@@ -41,6 +45,14 @@ public class DeviceConfigurationDto extends AbstractDto {
 
     public void setTimeOut(long timeOut) {
         this.timeOut = timeOut;
+    }
+
+    public long getRadius() {
+        return radius;
+    }
+
+    public void setRadius(long radius) {
+        this.radius = radius;
     }
 
     public boolean isParked() {

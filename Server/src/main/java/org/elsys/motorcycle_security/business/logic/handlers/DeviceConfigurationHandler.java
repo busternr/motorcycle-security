@@ -28,7 +28,7 @@ public class DeviceConfigurationHandler extends AbstractHandler implements org.e
         DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceId);
         if(deviceConfiguration == null) throw new InvalidDeviceIdException("Invalid device id");
         if(!checkUserOwnsDevice(new DeviceConfigurationDto(deviceId))) throw new UserDoesNotOwnDeviceException("This user doesn't own the specified device");
-        writeLog("Received device configuration for device:" + deviceId, true);
+        writeLog("Received device configuration for client:" + deviceId, true);
         return new DeviceConfigurationInfo(deviceConfiguration);
     }
 
@@ -44,10 +44,21 @@ public class DeviceConfigurationHandler extends AbstractHandler implements org.e
     public void updateTimeOut(DeviceConfigurationDto deviceConfigurationDto) {
         DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceConfigurationDto.getDeviceId());
         if(deviceConfiguration == null) throw new InvalidDeviceIdException("Invalid device id");
-        if(deviceConfigurationDto.getTimeOut() == 0) throw new InvalidInputException("Invalid input");
+        if(deviceConfigurationDto.getTimeOut() == 0 || deviceConfiguration.getTimeOut() < 0) throw new InvalidInputException("Invalid input");
         if(!checkUserOwnsDevice(deviceConfigurationDto)) throw new UserDoesNotOwnDeviceException("This user doesn't own the specified device");
         deviceConfiguration.setTimeOut(deviceConfigurationDto.getTimeOut());
-        writeLog("Updated device configuration for device:" + deviceConfigurationDto.getDeviceId(), true);
+        writeLog("Updated timeOut for device:" + deviceConfigurationDto.getDeviceId(), true);
+        deviceConfigurationRepository.save(deviceConfiguration);
+    }
+
+    @Override
+    public void updateRadius(DeviceConfigurationDto deviceConfigurationDto) {
+        DeviceConfiguration deviceConfiguration = deviceConfigurationRepository.getDeviceConfigurationByDeviceId(deviceConfigurationDto.getDeviceId());
+        if(deviceConfiguration == null) throw new InvalidDeviceIdException("Invalid device id");
+        if(deviceConfigurationDto.getRadius() < 0) throw new InvalidInputException("Invalid input");
+        if(!checkUserOwnsDevice(deviceConfigurationDto)) throw new UserDoesNotOwnDeviceException("This user doesn't own the specified device");
+        deviceConfiguration.setRadius(deviceConfigurationDto.getRadius());
+        writeLog("Updated radius for device:" + deviceConfigurationDto.getDeviceId(), true);
         deviceConfigurationRepository.save(deviceConfiguration);
     }
 

@@ -18,6 +18,9 @@ public class DeviceConfiguration {
     @Column(name="timeout")
     private long timeOut;
 
+    @Column(name="radius")
+    private long radius;
+
     @OneToOne
     @JoinColumn(name="deviceId", nullable=false)
     private Device device;
@@ -25,7 +28,8 @@ public class DeviceConfiguration {
     public DeviceConfiguration() {
         this.isParked = false;
         this.isStolen = false;
-        this.timeOut = 150000;
+        this.timeOut = 120000;
+        this.radius = 0;
     }
 
     public long getId() {
@@ -66,5 +70,13 @@ public class DeviceConfiguration {
 
     public void setDevice(Device device) {
         this.device = device;
+    }
+
+    public long getRadius() {
+        return radius;
+    }
+
+    public void setRadius(long radius) {
+        this.radius = radius;
     }
 }

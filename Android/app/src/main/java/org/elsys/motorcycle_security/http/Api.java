@@ -34,6 +34,9 @@ public interface Api {
     @PUT("/client/send/timeout")
     Call<Void> updateTimeOut(@Header("authorization") String authorization, @Body DeviceConfiguration deviceConfiguration);
 
+    @PUT("/client/send/radius")
+    Call<Void> updateRadius(@Header("authorization") String authorization, @Body DeviceConfiguration deviceConfiguration);
+
     @PUT("/client/send/stolen-status")
     Call<Void> updateStolenStatus(@Header("authorization") String authorization, @Body DeviceConfiguration deviceConfiguration);
 

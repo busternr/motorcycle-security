@@ -85,6 +85,23 @@ public class ClientController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/client/send/radius", method = PUT)
+    public ResponseEntity updateRadiusByDeviceId(@RequestBody DeviceConfigurationDto deviceConfigurationDto) {
+        try {
+            deviceConfigurationHandler.updateRadius(deviceConfigurationDto);
+        }
+        catch(InvalidDeviceIdException exception) {
+            return new ResponseEntity(new ErrorDto(exception), HttpStatus.BAD_REQUEST);
+        }
+        catch(InvalidInputException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
+        catch (UserDoesNotOwnDeviceException exception) {
+            return new ResponseEntity(new ErrorDto(exception),HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/client/send/parked-coordinates", method = PUT)
     public ResponseEntity updateParkedCoordinates(@RequestBody DeviceDto deviceDto) {
         try {

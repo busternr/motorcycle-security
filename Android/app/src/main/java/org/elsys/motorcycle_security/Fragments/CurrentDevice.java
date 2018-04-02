@@ -40,6 +40,7 @@ public class CurrentDevice extends Fragment {
     private TextView timeOutText;
     private TextView stolenText;
     private TextView statusText;
+    private TextView radiusText;
     String[] device = {"","","","",""};
 
     public CurrentDevice() {
@@ -60,12 +61,14 @@ public class CurrentDevice extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         View fragmentMap = getActivity().findViewById(R.id.map);
         fragmentMap.setVisibility(View.INVISIBLE);
-        deviceIdText =  getActivity().findViewById(R.id.DeviceIdText);
+        deviceIdText =  getActivity().findViewById(R.id.DeviceText);
         parkingStatusText =  getActivity().findViewById(R.id.ParkingStatusText);
         timeOutText =  getActivity().findViewById(R.id.TimeOutText);
         stolenText =  getActivity().findViewById(R.id.StolenText);
         statusText =  getActivity().findViewById(R.id.StatusText);
+        radiusText =  getActivity().findViewById(R.id.RadiusText);
         BootstrapButton timeOutButton =  getActivity().findViewById(R.id.ChangeTimeOutBtn);
+        BootstrapButton radiusButton =  getActivity().findViewById(R.id.SetRadiusBtn);
         timeOutButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -73,7 +76,18 @@ public class CurrentDevice extends Fragment {
                 ft.commit();
             }
         });
-        deviceIdText.setText("Device pin number:" + Globals.deviceInUse);
+        radiusButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, new SetRadius());
+                ft.commit();
+            }
+        });
+        if(!Globals.isParked) {
+            radiusButton.setVisibility(View.GONE);
+            timeOutButton.setBottom(50);
+        }
+        deviceIdText.setText("Device:" + Globals.deviceInUse);
         final Api api = Api.RetrofitInstance.create();
         api.getDeviceConfiguration(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
             @Override
@@ -85,6 +99,8 @@ public class CurrentDevice extends Fragment {
                     if(deviceConfiguration.isStolen()) stolenText.setText("Stolen:" + "Yes");
                     if(!deviceConfiguration.isStolen()) stolenText.setText("Stolen:" + "No");
                     timeOutText.setText("GPS frequency:" + String.valueOf(deviceConfiguration.getTimeOut() / 1000)  + " seconds");
+                    if(deviceConfiguration.getRadius() > 0) radiusText.setText("Radius:" + deviceConfiguration.getRadius() + " meters");
+                    if(deviceConfiguration.getRadius() == 0) radiusText.setText("Radius: feature turned off");
                 }
             }
             @Override
@@ -148,13 +164,6 @@ public class CurrentDevice extends Fragment {
 
                 AlertDialog dialog = builder.create();
                 dialog.show();
-                /*Fragment fragment = new SetCurrentDevice();
-                Bundle bundle=new Bundle();
-                bundle.putString("deviceId", device[position]);
-                fragment.setArguments(bundle);
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.content_frame, fragment);
-                ft.commit();*/
             }
         });
     }

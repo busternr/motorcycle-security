@@ -10,6 +10,8 @@ public interface DeviceConfiguration {
 
     void updateTimeOut(DeviceConfigurationDto deviceConfigurationDto);
 
+    void updateRadius(DeviceConfigurationDto deviceConfigurationDto);
+
     void updateParkingStatus(DeviceConfigurationDto deviceConfigurationDt);
 
     void updateStolenStatus(DeviceConfigurationDto deviceConfigurationDt);

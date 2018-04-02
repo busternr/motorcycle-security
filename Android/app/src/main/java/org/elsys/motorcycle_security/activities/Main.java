@@ -1,12 +1,14 @@
 package org.elsys.motorcycle_security.activities;
 
 import android.app.job.JobInfo;
+import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -35,6 +37,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -66,7 +69,6 @@ import static android.app.job.JobInfo.BACKOFF_POLICY_LINEAR;
 
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, CurrentDevice.OnFragmentInteractionListener, OnMapReadyCallback {
-    private boolean isParked;
     private JobScheduler jobScheduler;
     private TextView parkingStatusText;
     private TextView currentDeviceText;
@@ -75,6 +77,7 @@ public class Main extends AppCompatActivity
     private Marker deviceInUseMarker;
     private BootstrapButton notStolenButton;
     private int countOfRequests = 0;
+    private boolean calledSetGlobals;
 
     private String calculateDateForMenu(int day) {
         Long date = System.currentTimeMillis();
@@ -106,7 +109,7 @@ public class Main extends AppCompatActivity
     private void setAdditionalInformation() {
         currentDeviceText.setText("Current device: " + Globals.deviceInUse);
         final FloatingActionButton fab = findViewById(R.id.fab);
-        if (isParked) {
+        if (Globals.isParked) {
             parkingStatusText.setText("Status: " + "Parked");
             fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#3F51B5")));
         }
@@ -114,9 +117,33 @@ public class Main extends AppCompatActivity
             parkingStatusText.setText("Status: " + "NOT parked");
             fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
         }
+        if(Globals.isParked && Globals.radius > 0) {
+            Api api = Api.RetrofitInstance.create();
+            api.getDevice(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<Device>() {
+                @Override
+                public void onResponse(Call<Device> call, Response<Device> response) {
+                    if (response.isSuccessful()) {
+                        Device device = response.body();
+                        Globals.circle = mMap.addCircle(new CircleOptions()
+                                .center(new LatLng(device.getParkedX(), device.getParkedY()))
+                                .radius(Globals.radius)
+                                .strokeColor(Color.parseColor("#1AFF0000"))
+                                .fillColor(Color.parseColor("#1AFF0000")));
+                    }
+                }
+                @Override
+                public void onFailure(Call<Device> call, Throwable t) {
+                }
+            });
+        }
+        if(Globals.isStolen) {
+            notStolenButton.setVisibility(View.VISIBLE);
+            timer.schedule(timerTask, 1000, 10000);
+        }
     }
 
     private void setGlobals() {
+        calledSetGlobals = true;
         Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
         Globals.authorization = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", "");
         Api api = Api.RetrofitInstance.create();
@@ -125,11 +152,12 @@ public class Main extends AppCompatActivity
             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
                 if(response.isSuccessful()) {
                     DeviceConfiguration deviceConfiguration = response.body();
-                    isParked = false;
+                    Globals.isParked = false;
                     Globals.isStolen = false;
-                    if (deviceConfiguration.isParked() || !deviceConfiguration.isParked()) isParked = deviceConfiguration.isParked();
+                    if (deviceConfiguration.isParked() || !deviceConfiguration.isParked()) Globals.isParked = deviceConfiguration.isParked();
                     if (deviceConfiguration.isStolen() || !deviceConfiguration.isStolen()) Globals.isStolen = deviceConfiguration.isStolen();
-                    if (isParked) scheduleJob();
+                    Globals.radius = deviceConfiguration.getRadius();
+                    if (Globals.isParked) scheduleJob();
                     setAdditionalInformation();
                 }
             }
@@ -188,8 +216,8 @@ public class Main extends AppCompatActivity
                 @Override
                 public void onClick(View view) {
                     final Api api = Api.RetrofitInstance.create();
-                    if(isParked == false) {
-                        isParked = true;
+                    if(Globals.isParked == false) {
+                        Globals.isParked = true;
                         scheduleJob();
                         api.getGPSCoordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GPSCoordinates>() {
                             @Override
@@ -216,16 +244,28 @@ public class Main extends AppCompatActivity
                         parkingStatusText.setText("Status: " + "Parked");
                         Snackbar.make(view, "Vehicle is now parked", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
-                    else if(isParked == true) {
+                    else if(Globals.isParked == true) {
+                        DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+                        deviceConfiguration.setDeviceId(Globals.deviceInUse);
+                        deviceConfiguration.setRadius(0);
+                        api.updateRadius(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {}
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) { }
+                        });
+                        mMap.clear();
+                        onMapReady(mMap);
+                        Globals.radius = 0;
                         fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-                        isParked = false;
+                        Globals.isParked = false;
                         jobScheduler.cancelAll();
                         parkingStatusText.setText("Status: " + "NOT parked");
                         Snackbar.make(view, "Vehicle is NOT parked", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
                     DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                     deviceConfiguration.setDeviceId(Globals.deviceInUse);
-                    deviceConfiguration.setParked(isParked);
+                    deviceConfiguration.setParked(Globals.isParked);
                     api.updateParkingStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) { }
@@ -273,7 +313,13 @@ public class Main extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         checkTokenValidity();
-        setGlobals();
+        if(!calledSetGlobals) setGlobals();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        calledSetGlobals = false;
     }
 
     final Handler handler = new Handler();
@@ -314,11 +360,9 @@ public class Main extends AppCompatActivity
                 }
             });
         }
-        if(Globals.isStolen) {
-            notStolenButton.setVisibility(View.VISIBLE);
-            timer.schedule(timerTask, 1000, 10000);
-        }
+        if(true) {
 
+        }
     }
     void updatePos() {
         final float zoomlevel = 18;

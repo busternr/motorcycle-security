@@ -16,7 +16,6 @@
         android:layout_marginStart="64dp"
         android:layout_marginTop="10dp"
         app:cardCornerRadius="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/RegisterBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,23 +26,12 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/CurrentDeviceText"
+                android:id="@+id/DeviceText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="65dp"
                 android:layout_marginTop="10dp"
-                android:text="Current device:"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:textSize="16sp" />
-
-
-            <TextView
-                android:id="@+id/DeviceIdText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="35dp"
-                android:text="Device:"
+                android:text="Device:cbr600"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="16sp" />
 
@@ -52,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="35dp"
                 android:text="Is parked:"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="16sp"
@@ -64,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="85dp"
+                android:layout_marginTop="60dp"
                 android:text="GPS frequency:"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="16sp"
@@ -76,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="110dp"
+                android:layout_marginTop="85dp"
                 android:text="Stolen:"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="16sp" />
@@ -86,8 +74,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="135dp"
+                android:layout_marginTop="110dp"
                 android:text="Status:"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="16sp"
+                tools:layout_editor_absoluteX="73dp"
+                tools:layout_editor_absoluteY="246dp" />
+
+            <TextView
+                android:id="@+id/RadiusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="135dp"
+                android:text="Radius:"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="16sp"
                 tools:layout_editor_absoluteX="73dp"
@@ -100,7 +100,6 @@
         android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:layout_marginBottom="18dp"
-        android:layout_marginEnd="3dp"
         android:text="Change GPS frequency"
         app:bootstrapBrand="primary"
         app:bootstrapSize="lg"
@@ -108,6 +107,24 @@
         app:layout_constraintBottom_toTopOf="@+id/card_view_all_devs"
         app:layout_constraintEnd_toEndOf="@+id/card_view_all_devs"
         app:layout_constraintTop_toBottomOf="@+id/card_view_curr_dev"
+        app:layout_constraintVertical_bias="0.147"
+        app:roundedCorners="true"
+        app:showOutline="false" />
+
+    <com.beardedhen.androidbootstrap.BootstrapButton
+        android:id="@+id/SetRadiusBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginEnd="56dp"
+        android:layout_marginTop="1100dp"
+        android:text="Set radius"
+        app:bootstrapBrand="primary"
+        app:bootstrapSize="lg"
+        app:buttonMode="regular"
+        app:layout_constraintBottom_toTopOf="@+id/ChangeTimeOutBtn"
+        app:layout_constraintEnd_toEndOf="@+id/ChangeTimeOutBtn"
+        app:layout_constraintTop_toBottomOf="@+id/ChangeTimeOutBtn"
+        app:layout_constraintVertical_bias="0.915"
         app:roundedCorners="true"
         app:showOutline="false" />
 
@@ -116,14 +133,13 @@
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="68dp"
+        android:layout_marginBottom="70dp"
         android:layout_marginEnd="64dp"
         android:layout_marginStart="64dp"
         app:cardCornerRadius="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/RegisterBtn">
+        app:layout_constraintStart_toStartOf="parent">
 
         <RelativeLayout
             android:layout_width="match_parent"

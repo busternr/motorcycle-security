@@ -7,8 +7,10 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.util.Range;
 import android.widget.Toast;
 
@@ -18,6 +20,7 @@ import org.elsys.motorcycle_security.http.Api;
 import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.GPSCoordinates;
+import org.elsys.motorcycle_security.models.Globals;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,13 +54,20 @@ public class LocationCheckerJob extends JobService {
                                 boolean moving = false;
                                 currentX = gpsCoordinates.getX();
                                 currentY = gpsCoordinates.getY();
-                                double minX = currentX - 0.025;
-                                double maxX = currentX + 0.025;
-                                Range<Double> rangeX = new Range<>(minX, maxX);
-                                double minY = currentY - 0.025;
-                                double maxY = currentY + 0.025;
-                                Range<Double> rangeY = new Range<>(minY, maxY);
-                                if (!rangeX.contains(parkedX) || !rangeY.contains(parkedY)) moving = true;
+                                if(Globals.radius == 0) {
+                                    double minX = currentX - 0.05;
+                                    double maxX = currentX + 0.05;
+                                    Range<Double> rangeX = new Range<>(minX, maxX);
+                                    double minY = currentY - 0.05;
+                                    double maxY = currentY + 0.05;
+                                    Range<Double> rangeY = new Range<>(minY, maxY);
+                                    if (!rangeX.contains(parkedX) || !rangeY.contains(parkedY)) moving = true;
+                                }
+                                else if(Globals.radius > 0) {
+                                    float[] distance = new float[2];
+                                    Location.distanceBetween(currentX,currentY, Globals.circle.getCenter().latitude, Globals.circle.getCenter().longitude, distance);
+                                    if(distance[0] > Globals.circle.getRadius()) moving = true;
+                                }
                                 if(parkedX == 0 || parkedY == 0) moving = false; //Against failed server response
                                 if(moving) {
                                     DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
@@ -113,9 +123,10 @@ public class LocationCheckerJob extends JobService {
         notificationBuilder
                 .setDefaults(notification.defaults)
                 .setSmallIcon(R.drawable.icon)
-                .setContentTitle("Device " + getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "") + " is moving!")
                 .setContentText("Tap to see current location.")
                 .setContentIntent(pendingIntent);
+        if(Globals.radius == 0) notificationBuilder.setContentTitle("Device " + getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "") + " is moving!");
+        else notificationBuilder.setContentTitle("Device " + getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "") + " has just exited the range area!");
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0 , notificationBuilder.build());
     }

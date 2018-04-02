@@ -11,6 +11,10 @@ public class DeviceConfiguration {
     @SerializedName("timeOut")
     @Expose
     private long timeOut;
+
+    @SerializedName("radius")
+    @Expose
+    private long radius;
     @SerializedName("parked")
     @Expose
     private boolean parked;
@@ -32,6 +36,14 @@ public class DeviceConfiguration {
 
     public void setTimeOut(long timeOut) {
         this.timeOut = timeOut;
+    }
+
+    public long getRadius() {
+        return radius;
+    }
+
+    public void setRadius(long radius) {
+        this.radius = radius;
     }
 
     public boolean isParked() {
