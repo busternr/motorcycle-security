@@ -88,7 +88,7 @@ public class CurrentDevice extends Fragment {
             timeOutButton.setBottom(50);
         }
         deviceIdText.setText("Device:" + Globals.deviceInUse);
-        final Api api = Api.RetrofitInstance.create();
+        final Api api = Api.RetrofitInstance.create(getContext());
         api.getDeviceConfiguration(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
             @Override
             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {

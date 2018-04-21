@@ -40,7 +40,7 @@ public class Login extends AppCompatActivity {
                 if(emailInput.getText().toString().length() == 0) errorsText.setText("Email field can't be blank");
                 else if(passwordInput.getText().toString().length() == 0) errorsText.setText("Password field can't be blank");
                 else {
-                    final Api api = Api.RetrofitInstance.create();
+                    final Api api = Api.RetrofitInstance.create(getApplicationContext());
                     final LoginDetails loginDetails = new LoginDetails(emailInput.getText().toString(), passwordInput.getText().toString());
                     api.Login(loginDetails).enqueue(new Callback<Void>() {
                         @Override

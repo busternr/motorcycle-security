@@ -57,7 +57,7 @@ public class SetRadius extends Fragment {
                     if (Long.valueOf(radiusInput.getText().toString()) < 0 || Long.valueOf(radiusInput.getText().toString()) > 10000)
                         errorsText.setText("Radius must be between 0 and 10000 meters");
                     else {
-                        Api api = Api.RetrofitInstance.create();
+                        Api api = Api.RetrofitInstance.create(getContext());
                         DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                         deviceConfiguration.setDeviceId(Globals.deviceInUse);
                         deviceConfiguration.setRadius(Long.valueOf(radiusInput.getText().toString()));

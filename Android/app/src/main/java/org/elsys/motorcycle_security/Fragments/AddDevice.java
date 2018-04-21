@@ -59,7 +59,7 @@ public class AddDevice extends Fragment {
                 else if (deviceIdInput.getText().toString().length() == 0)
                     errorsText.setText("Device pin field can't be blank");
                 else {
-                    final Api api = Api.RetrofitInstance.create();
+                    final Api api = Api.RetrofitInstance.create(getContext());
                     api.getDevicePin(deviceIdInput.getText().toString()).enqueue(new Callback<DevicePin>() {
                         @Override
                         public void onResponse(Call<DevicePin> call, Response<DevicePin> response) {

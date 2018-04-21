@@ -47,7 +47,7 @@ public class Register extends AppCompatActivity {
                 else if(EMAIL_ADDRESS.matcher(emailInput.toString()).matches()) errorsText.setText("Invalid email address.");
                 else if(passwordInput.getText().toString().length() < 6) errorsText.setText("Password is too short (Minimum 6 characters)");
                 else {
-                    final Api api = Api.RetrofitInstance.create();
+                    final Api api = Api.RetrofitInstance.create(getApplicationContext());
                     api.getDevicePin(deviceIdInput.getText().toString()).enqueue(new Callback<DevicePin>() {
                         @Override
                         public void onResponse(Call<DevicePin> call, Response<DevicePin> response) {

@@ -42,7 +42,7 @@ public class HistoryForDifferentDays extends Fragment implements OnMapReadyCallb
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         final float zoomlevel = 18;
-        Api api = Api.RetrofitInstance.create();
+        Api api = Api.RetrofitInstance.create(getContext());
         api.getGPSCoordinatesForDay(Globals.authorization, Globals.deviceInUse, day).enqueue(new Callback<List<GPSCoordinates>>() {
             @Override
             public void onResponse(Call<List<GPSCoordinates>> call, Response<List<GPSCoordinates>> response) {

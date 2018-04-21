@@ -59,7 +59,7 @@ public class ChangePassword extends Fragment {
                 else if (emailInput.getText().toString().length() == 0) errorsText.setText("Email field can't be blank");
                 else if (newPasswordInput.getText().toString().length() < 6) errorsText.setText("New password is too short (Minimum 6 characters)");
                 else {
-                    final Api api = Api.RetrofitInstance.create();
+                    final Api api = Api.RetrofitInstance.create(getContext());
                     api.getUserAccount(Globals.authorization, emailInput.getText().toString()).enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {

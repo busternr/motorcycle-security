@@ -1,14 +1,13 @@
 package org.elsys.motorcycle_security.activities;
 
+import android.app.Activity;
 import android.app.job.JobInfo;
-import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -78,6 +77,7 @@ public class Main extends AppCompatActivity
     private BootstrapButton notStolenButton;
     private int countOfRequests = 0;
     private boolean calledSetGlobals;
+    private boolean doubleBackToExitPressedOnce = false;
 
     private String calculateDateForMenu(int day) {
         Long date = System.currentTimeMillis();
@@ -118,7 +118,7 @@ public class Main extends AppCompatActivity
             fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
         }
         if(Globals.isParked && Globals.radius > 0) {
-            Api api = Api.RetrofitInstance.create();
+            Api api = Api.RetrofitInstance.create(getApplicationContext());
             api.getDevice(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<Device>() {
                 @Override
                 public void onResponse(Call<Device> call, Response<Device> response) {
@@ -146,7 +146,7 @@ public class Main extends AppCompatActivity
         calledSetGlobals = true;
         Globals.deviceInUse = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Current device in use", "");
         Globals.authorization = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Authorization", "");
-        Api api = Api.RetrofitInstance.create();
+        Api api = Api.RetrofitInstance.create(getApplicationContext());
         api.getDeviceConfiguration(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<DeviceConfiguration>() {
             @Override
             public void onResponse(Call<DeviceConfiguration> call, Response<DeviceConfiguration> response) {
@@ -163,7 +163,7 @@ public class Main extends AppCompatActivity
             }
             @Override
             public void onFailure(Call<DeviceConfiguration> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
+                serverOffline();
             }
         });
     }
@@ -215,7 +215,7 @@ public class Main extends AppCompatActivity
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    final Api api = Api.RetrofitInstance.create();
+                    final Api api = Api.RetrofitInstance.create(getApplicationContext());
                     if(Globals.isParked == false) {
                         Globals.isParked = true;
                         scheduleJob();
@@ -278,7 +278,7 @@ public class Main extends AppCompatActivity
            mapFragment.getMapAsync(this);
            notStolenButton.setOnClickListener(new View.OnClickListener() {
                public void onClick(View v) {
-                   Api api = Api.RetrofitInstance.create();
+                   Api api = Api.RetrofitInstance.create(getApplicationContext());
                    DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                    deviceConfiguration.setDeviceId(Globals.deviceInUse);
                    deviceConfiguration.setStolen(false);
@@ -341,7 +341,7 @@ public class Main extends AppCompatActivity
         mMap = googleMap;
         final float zoomlevel = 18;
         int numberOfUserDevices = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getInt("Number of devices", 1);
-        final Api api = Api.RetrofitInstance.create();
+        final Api api = Api.RetrofitInstance.create(getApplicationContext());
         for (counter = 0; counter <= numberOfUserDevices; counter++) {
             final String deviceId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("Device " + counter ,"");
             api.getGPSCoordinates(Globals.authorization, deviceId).enqueue(new Callback<GPSCoordinates>() {
@@ -360,13 +360,10 @@ public class Main extends AppCompatActivity
                 }
             });
         }
-        if(true) {
-
-        }
     }
     void updatePos() {
         final float zoomlevel = 18;
-        final Api api = Api.RetrofitInstance.create();
+        final Api api = Api.RetrofitInstance.create(getApplicationContext());
         api.getGPSCoordinates(Globals.authorization, Globals.deviceInUse).enqueue(new Callback<GPSCoordinates>() {
             @Override
             public void onResponse(Call<GPSCoordinates> call, Response<GPSCoordinates> response) {
@@ -426,7 +423,7 @@ public class Main extends AppCompatActivity
         JobInfo jobInfo;
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             jobInfo= new JobInfo.Builder(1, name)
-                    .setMinimumLatency(1000*5)
+                    .setMinimumLatency(1000*30)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .setPersisted(true)
                     .setBackoffCriteria(1000, BACKOFF_POLICY_LINEAR )
@@ -434,7 +431,7 @@ public class Main extends AppCompatActivity
         }
         else {
             jobInfo= new JobInfo.Builder(1, name)
-                    .setPeriodic(1000*5)
+                    .setPeriodic(1000*30)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .setPersisted(true)
                     .build();
@@ -452,16 +449,10 @@ public class Main extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
-        if (getFragmentManager().getBackStackEntryCount() == 0) {
-            Intent myIntent = new Intent(Main.this, Main.class);
-            startActivity(myIntent);
-        }
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         }
-        else {
-            super.onBackPressed();
-        }
+        else super.onBackPressed();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -519,5 +510,15 @@ public class Main extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void serverOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if((connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED)) {
+            finish();
+            Intent myIntent = new Intent(this,ServerOffline.class);
+            startActivity(myIntent);
+        }
     }
 }

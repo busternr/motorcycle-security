@@ -57,7 +57,7 @@ public class ChangeTimeOut extends Fragment {
                     if (Long.valueOf(timeOutInput.getText().toString()) < 15 || Long.valueOf(timeOutInput.getText().toString()) > 600)
                         errorsText.setText("Seconds must be between 15 seconds and 10 minutes");
                     else {
-                        Api api = Api.RetrofitInstance.create();
+                        Api api = Api.RetrofitInstance.create(getContext());
                         long seconds = Long.valueOf(timeOutInput.getText().toString()) * 1000;
                         DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                         deviceConfiguration.setDeviceId(Globals.deviceInUse);

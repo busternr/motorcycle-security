@@ -1,5 +1,7 @@
 package org.elsys.motorcycle_security.http;
 
+import android.content.Context;
+
 import org.elsys.motorcycle_security.models.Device;
 import org.elsys.motorcycle_security.models.DeviceConfiguration;
 import org.elsys.motorcycle_security.models.DevicePin;
@@ -9,6 +11,8 @@ import org.elsys.motorcycle_security.models.User;
 
 import java.util.List;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -74,16 +78,21 @@ public interface Api {
     Call<DeviceConfiguration> getDeviceConfiguration(@Header("authorization") String authorization, @Path("deviceId") String deviceId);
 
     //String API_HOST = "http://10.0.2.2";  //localhost connection
-    //String API_HOST = "http://10.19.9.85"; //Dreamix server
+    //String API_HOST = "http://api2.tues.dreamix.eu"; //Dreamix server
     String API_HOST = "http://130.204.140.70"; //home pc
     String API_PORT = "8080";
 
     class RetrofitInstance {
         private static Api service;
-        public static Api create() {
+        public static Api create(Context context) {
+            int CACHE_SIZE_BYTES = 1024 * 1024 * 2;
+            OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
+            builder.cache(new Cache(context.getCacheDir(), CACHE_SIZE_BYTES));
+            OkHttpClient client = builder.build();
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(API_HOST + ":" + API_PORT)
                     .addConverterFactory(GsonConverterFactory.create())
+                    .client(client)
                     .build();
             service = retrofit.create(Api.class);
             return service;
