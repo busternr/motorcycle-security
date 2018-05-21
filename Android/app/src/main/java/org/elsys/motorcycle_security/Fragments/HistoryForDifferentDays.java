@@ -2,10 +2,12 @@ package org.elsys.motorcycle_security.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,11 +32,14 @@ public class HistoryForDifferentDays extends Fragment implements OnMapReadyCallb
 
     private GoogleMap mMap;
     private String day;
+    private TextView noInformationText;
+    private View fragmentMap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         day = getArguments().getString("day");
+        noInformationText = getActivity().findViewById(R.id.no_information_text);
         return inflater.inflate(R.layout.fragment_history_for_different_days, container, false);
     }
 
@@ -48,6 +53,11 @@ public class HistoryForDifferentDays extends Fragment implements OnMapReadyCallb
             public void onResponse(Call<List<GPSCoordinates>> call, Response<List<GPSCoordinates>> response) {
                 if (response.isSuccessful()) {
                     List<GPSCoordinates> gpsCordinates = response.body();
+                    if(gpsCordinates.isEmpty()) {
+                        noInformationText.setVisibility(View.VISIBLE);
+                        fragmentMap = getActivity().findViewById(R.id.map2);
+                        fragmentMap.setVisibility(View.INVISIBLE);
+                    }
                     for(int counter = 0; counter < gpsCordinates.size(); counter++) {
                         LatLng currentLocation = new LatLng(gpsCordinates.get(counter).getX(), gpsCordinates.get(counter).getY());
                         SimpleDateFormat sdf = new SimpleDateFormat("kk:mm:ss");
@@ -61,5 +71,12 @@ public class HistoryForDifferentDays extends Fragment implements OnMapReadyCallb
                 Toast.makeText(getContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.INVISIBLE);
     }
 }

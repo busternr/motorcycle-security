@@ -1,6 +1,5 @@
 package org.elsys.motorcycle_security.activities;
 
-import android.app.Activity;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -77,7 +76,6 @@ public class Main extends AppCompatActivity
     private BootstrapButton notStolenButton;
     private int countOfRequests = 0;
     private boolean calledSetGlobals;
-    private boolean doubleBackToExitPressedOnce = false;
 
     private String calculateDateForMenu(int day) {
         Long date = System.currentTimeMillis();
@@ -206,7 +204,7 @@ public class Main extends AppCompatActivity
             startActivity(myIntent);
             finish();
         }
-       if(isAuthorized) {
+        if(isAuthorized) {
             setGlobals();
             nav_history_day_1.setTitle(calculateDateForMenu(0));
             nav_history_day_2.setTitle(calculateDateForMenu(1));
@@ -274,38 +272,38 @@ public class Main extends AppCompatActivity
                     });
                 }
             });
-           SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-           mapFragment.getMapAsync(this);
-           notStolenButton.setOnClickListener(new View.OnClickListener() {
-               public void onClick(View v) {
-                   Api api = Api.RetrofitInstance.create(getApplicationContext());
-                   DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
-                   deviceConfiguration.setDeviceId(Globals.deviceInUse);
-                   deviceConfiguration.setStolen(false);
-                   deviceConfiguration.setParked(false);
-                   api.updateParkingStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
-                       @Override
-                       public void onResponse(Call<Void> call, Response<Void> response) {
-                           parkingStatusText.setText("Status: " + "NOT parked");
-                           fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-                       }
-                       @Override
-                       public void onFailure(Call<Void> call, Throwable t) {
-                       }
-                   });
-                   api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
-                       @Override
-                       public void onResponse(Call<Void> call, Response<Void> response) {
-                           notStolenButton.setVisibility(View.GONE);
-                           Globals.isStolen = false;
-                           jobScheduler.cancelAll();
-                       }
-                       @Override
-                       public void onFailure(Call<Void> call, Throwable t) {
-                       }
-                   });
-               }
-           });
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+            notStolenButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Api api = Api.RetrofitInstance.create(getApplicationContext());
+                    DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+                    deviceConfiguration.setDeviceId(Globals.deviceInUse);
+                    deviceConfiguration.setStolen(false);
+                    deviceConfiguration.setParked(false);
+                    api.updateParkingStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            parkingStatusText.setText("Status: " + "NOT parked");
+                            fab.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                        }
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                        }
+                    });
+                    api.updateStolenStatus(Globals.authorization, deviceConfiguration).enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            notStolenButton.setVisibility(View.GONE);
+                            Globals.isStolen = false;
+                            jobScheduler.cancelAll();
+                        }
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                        }
+                    });
+                }
+            });
         }
     }
 
@@ -446,6 +444,10 @@ public class Main extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setVisibility(View.VISIBLE);
+        View fragmentMap = findViewById(R.id.map);
+        fragmentMap.setVisibility(View.VISIBLE);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
@@ -494,13 +496,13 @@ public class Main extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).addToBackStack("Main").commit();
         }
         if (id == R.id.nav_logout) {
-          getSharedPreferences("PREFERENCE", 0).edit().clear().apply();
-          Globals.deviceInUse = null;
-          Globals.authorization = null;
-          Globals.isStolen = false;
-          Intent myIntent = new Intent(Main.this, Login.class);
-          startActivity(myIntent);
-          finish();
+            getSharedPreferences("PREFERENCE", 0).edit().clear().apply();
+            Globals.deviceInUse = null;
+            Globals.authorization = null;
+            Globals.isStolen = false;
+            Intent myIntent = new Intent(Main.this, Login.class);
+            startActivity(myIntent);
+            finish();
         }
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
