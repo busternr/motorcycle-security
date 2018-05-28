@@ -17,7 +17,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -85,7 +84,7 @@ public class Main extends AppCompatActivity
 
     private String calculateDateForServer(int day) {
         Long date = System.currentTimeMillis();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(date - 86400000 * day);
     }
 
@@ -206,9 +205,9 @@ public class Main extends AppCompatActivity
         }
         if(isAuthorized) {
             setGlobals();
-            nav_history_day_1.setTitle(calculateDateForMenu(0));
-            nav_history_day_2.setTitle(calculateDateForMenu(1));
-            nav_history_day_3.setTitle(calculateDateForMenu(2));
+            nav_history_day_1.setTitle(calculateDateForMenu(1));
+            nav_history_day_2.setTitle(calculateDateForMenu(2));
+            nav_history_day_3.setTitle(calculateDateForMenu(3));
             fab.setImageResource(R.drawable.park);
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -465,21 +464,21 @@ public class Main extends AppCompatActivity
         if (id == R.id.nav_history_day_1) {
             fragment = new HistoryForDifferentDays();
             Bundle bundle=new Bundle();
-            bundle.putString("day", calculateDateForServer(0));
+            bundle.putString("day", calculateDateForServer(1));
             fragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).addToBackStack("Main").commit();
         }
         if (id == R.id.nav_history_day_2) {
             fragment = new HistoryForDifferentDays();
             Bundle bundle=new Bundle();
-            bundle.putString("day", calculateDateForServer(1));
+            bundle.putString("day", calculateDateForServer(2));
             fragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).addToBackStack("Main").commit();
         }
         if (id == R.id.nav_history_day_3) {
             fragment = new HistoryForDifferentDays();
             Bundle bundle=new Bundle();
-            bundle.putString("day", calculateDateForServer(2));
+            bundle.putString("day", calculateDateForServer(3));
             fragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).addToBackStack("Main").commit();
         }

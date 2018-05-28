@@ -8,11 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -39,8 +39,21 @@ public class HistoryForDifferentDays extends Fragment implements OnMapReadyCallb
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         day = getArguments().getString("day");
+        View view = inflater.inflate(R.layout.fragment_history_for_different_days, container, false);
+        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map2);
+        mapFragment.getMapAsync(this);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         noInformationText = getActivity().findViewById(R.id.no_information_text);
-        return inflater.inflate(R.layout.fragment_history_for_different_days, container, false);
+        noInformationText.setVisibility(View.VISIBLE);
+        fragmentMap = getActivity().findViewById(R.id.map);
+        fragmentMap.setVisibility(View.INVISIBLE);
+        fragmentMap = getActivity().findViewById(R.id.map2);
+        fragmentMap.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -52,12 +65,9 @@ public class HistoryForDifferentDays extends Fragment implements OnMapReadyCallb
             @Override
             public void onResponse(Call<List<GPSCoordinates>> call, Response<List<GPSCoordinates>> response) {
                 if (response.isSuccessful()) {
+                    noInformationText.setVisibility(View.INVISIBLE);
+                    fragmentMap.setVisibility(View.VISIBLE);
                     List<GPSCoordinates> gpsCordinates = response.body();
-                    if(gpsCordinates.isEmpty()) {
-                        noInformationText.setVisibility(View.VISIBLE);
-                        fragmentMap = getActivity().findViewById(R.id.map2);
-                        fragmentMap.setVisibility(View.INVISIBLE);
-                    }
                     for(int counter = 0; counter < gpsCordinates.size(); counter++) {
                         LatLng currentLocation = new LatLng(gpsCordinates.get(counter).getX(), gpsCordinates.get(counter).getY());
                         SimpleDateFormat sdf = new SimpleDateFormat("kk:mm:ss");
@@ -68,7 +78,6 @@ public class HistoryForDifferentDays extends Fragment implements OnMapReadyCallb
             }
             @Override
             public void onFailure(Call<List<GPSCoordinates>> call, Throwable t) {
-                Toast.makeText(getContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
             }
         });
     }

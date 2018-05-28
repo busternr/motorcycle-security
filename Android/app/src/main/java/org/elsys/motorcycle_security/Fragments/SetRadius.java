@@ -76,7 +76,6 @@ public class SetRadius extends Fragment {
 
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
-                                Toast.makeText(getContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
                             }
                         });
                     }

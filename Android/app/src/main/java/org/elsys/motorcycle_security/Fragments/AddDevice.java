@@ -7,14 +7,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.elsys.motorcycle_security.R;
 import org.elsys.motorcycle_security.activities.Main;
@@ -85,7 +83,6 @@ public class AddDevice extends Fragment {
 
                                         @Override
                                         public void onFailure(Call<Void> call, Throwable t) {
-                                            Toast.makeText(getContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
                                         }
                                     });
                                 }
@@ -95,7 +92,6 @@ public class AddDevice extends Fragment {
 
                         @Override
                         public void onFailure(Call<DevicePin> call, Throwable t) {
-                            Toast.makeText(getContext(), "Server is not responding, please try again later.", Toast.LENGTH_LONG).show();
                         }
                     });
                 }

@@ -71,7 +71,7 @@ public interface Api {
     @GET("/client/{deviceId}/receive/gps-coordinates")
     Call<GPSCoordinates> getGPSCoordinates(@Header("authorization") String authorization, @Path("deviceId") String deviceId);
 
-    @GET("/client/{deviceId}/receive/gps-cordinates-for-day")
+    @GET("/client/{deviceId}/receive/gps-coordinates-for-day")
     Call<List<GPSCoordinates>> getGPSCoordinatesForDay(@Header("authorization") String authorization, @Path("deviceId") String deviceId, @Query("day") String day);
 
     @GET("/client/{deviceId}/receive/device-configuration")
