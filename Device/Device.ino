@@ -52,7 +52,7 @@ void loop()
     int currentRetries = 0;
     sim808.sleep();
     Serial.println("SIM808 is sleeping now");
-    delay(100); // just so this chinese shit doesn't make 9/11.
+    delay(100); 
     for (int i = 0; i <= timeout; i=i+8)
     { 
       Serial.println("Arduino is sleeping now");
